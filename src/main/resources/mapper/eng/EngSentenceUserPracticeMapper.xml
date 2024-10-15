@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.eng.mapper.eng.EngSentenceUserPracticeMapper">
+  <resultMap id="BaseResultMap" type="com.example.eng.entity.eng.EngSentenceUserPractice">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="main_id" jdbcType="VARCHAR" property="mainId" />
+    <result column="detail_id" jdbcType="VARCHAR" property="detailId" />
+    <result column="word_id" jdbcType="VARCHAR" property="wordId" />
+    <result column="practice_type" jdbcType="VARCHAR" property="practiceType" />
+    <result column="practice_val" jdbcType="VARCHAR" property="practiceVal" />
+    <result column="last_time" jdbcType="TIMESTAMP" property="lastTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, main_id, detail_id, word_id, practice_type, practice_val, last_time, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_eng_sentence_user_practice
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_eng_sentence_user_practice
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.eng.entity.eng.EngSentenceUserPractice">
+    insert into t_eng_sentence_user_practice (id, main_id, detail_id, 
+      word_id, practice_type, practice_val, 
+      last_time, create_time, update_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{detailId,jdbcType=VARCHAR}, 
+      #{wordId,jdbcType=VARCHAR}, #{practiceType,jdbcType=VARCHAR}, #{practiceVal,jdbcType=VARCHAR}, 
+      #{lastTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.eng.entity.eng.EngSentenceUserPractice">
+    insert into t_eng_sentence_user_practice
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mainId != null">
+        main_id,
+      </if>
+      <if test="detailId != null">
+        detail_id,
+      </if>
+      <if test="wordId != null">
+        word_id,
+      </if>
+      <if test="practiceType != null">
+        practice_type,
+      </if>
+      <if test="practiceVal != null">
+        practice_val,
+      </if>
+      <if test="lastTime != null">
+        last_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="mainId != null">
+        #{mainId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null">
+        #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="wordId != null">
+        #{wordId,jdbcType=VARCHAR},
+      </if>
+      <if test="practiceType != null">
+        #{practiceType,jdbcType=VARCHAR},
+      </if>
+      <if test="practiceVal != null">
+        #{practiceVal,jdbcType=VARCHAR},
+      </if>
+      <if test="lastTime != null">
+        #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.eng.entity.eng.EngSentenceUserPractice">
+    update t_eng_sentence_user_practice
+    <set>
+      <if test="mainId != null">
+        main_id = #{mainId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailId != null">
+        detail_id = #{detailId,jdbcType=VARCHAR},
+      </if>
+      <if test="wordId != null">
+        word_id = #{wordId,jdbcType=VARCHAR},
+      </if>
+      <if test="practiceType != null">
+        practice_type = #{practiceType,jdbcType=VARCHAR},
+      </if>
+      <if test="practiceVal != null">
+        practice_val = #{practiceVal,jdbcType=VARCHAR},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.eng.entity.eng.EngSentenceUserPractice">
+    update t_eng_sentence_user_practice
+    set main_id = #{mainId,jdbcType=VARCHAR},
+      detail_id = #{detailId,jdbcType=VARCHAR},
+      word_id = #{wordId,jdbcType=VARCHAR},
+      practice_type = #{practiceType,jdbcType=VARCHAR},
+      practice_val = #{practiceVal,jdbcType=VARCHAR},
+      last_time = #{lastTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

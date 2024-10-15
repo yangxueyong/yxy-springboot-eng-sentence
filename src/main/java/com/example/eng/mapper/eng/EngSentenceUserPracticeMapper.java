@@ -1,0 +1,50 @@
+package com.example.eng.mapper.eng;
+
+import com.example.eng.entity.eng.EngSentenceUserPractice;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+* Interface
+* EngSentenceUserPracticeMapper
+*
+* @author 系统
+* @date Create Time: Sat Oct 12 17:07:11 CST 2024
+*/
+@Mapper()
+public interface EngSentenceUserPracticeMapper {
+    /**
+     * 根据主键删除数据
+     * @param id
+     */
+    int deleteByPrimaryKey(String id);
+
+    /**
+     * 插入数据库记录（不建议使用）
+     * @param record
+     */
+    int insert(EngSentenceUserPractice record);
+
+    /**
+     * 插入数据库记录（建议使用）
+     * @param record
+     */
+    int insertSelective(EngSentenceUserPractice record);
+
+    /**
+     * 根据主键id查询
+     * @param id
+     */
+    EngSentenceUserPractice selectByPrimaryKey(String id);
+
+    /**
+     * 修改数据(推荐使用)
+     * @param record
+     */
+    int updateByPrimaryKeySelective(EngSentenceUserPractice record);
+
+    /**
+     * 修改数据
+     * @param record
+     */
+    int updateByPrimaryKey(EngSentenceUserPractice record);
+}

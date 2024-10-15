@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.eng.mapper.eng.UserMapper">
+  <resultMap id="BaseResultMap" type="com.example.eng.entity.eng.User">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="third_type" jdbcType="VARCHAR" property="thirdType" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="phone_no" jdbcType="VARCHAR" property="phoneNo" />
+    <result column="en_name" jdbcType="VARCHAR" property="enName" />
+    <result column="third_head_img_path" jdbcType="VARCHAR" property="thirdHeadImgPath" />
+    <result column="last_study_main_id" jdbcType="VARCHAR" property="lastStudyMainId" />
+    <result column="last_study_detail_id" jdbcType="VARCHAR" property="lastStudyDetailId" />
+    <result column="last_study_word_id" jdbcType="VARCHAR" property="lastStudyWordId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, third_type, open_id, phone_no, en_name, third_head_img_path, last_study_main_id,last_study_detail_id,last_study_word_id,
+    status, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.example.yxy.entity.eng.User">
+    insert into t_user (id, third_type, open_id, 
+      phone_no, en_name, third_head_img_path,
+                        last_study_main_id,last_study_detail_id,last_study_word_id,
+                        status, create_time,
+      update_time)
+    values (#{id,jdbcType=VARCHAR}, #{thirdType,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, 
+      #{phoneNo,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{thirdHeadImgPath,jdbcType=VARCHAR},
+      #{lastStudyMainId,jdbcType=VARCHAR},#{lastStudyDetailId,jdbcType=VARCHAR},#{lastStudyWordId,jdbcType=VARCHAR},
+            #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.yxy.entity.eng.User">
+    update t_user
+    <set>
+      <if test="thirdType != null">
+        third_type = #{thirdType,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNo != null">
+        phone_no = #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdHeadImgPath != null">
+        third_head_img_path = #{thirdHeadImgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="lastStudyMainId != null">
+        last_study_main_id = #{lastStudyMainId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastStudyDetailId != null">
+        last_study_detail_id = #{lastStudyDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastStudyWordId != null">
+        last_study_word_id = #{lastStudyWordId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>
