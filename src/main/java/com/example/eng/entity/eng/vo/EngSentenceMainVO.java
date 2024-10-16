@@ -1,7 +1,7 @@
 package com.example.eng.entity.eng.vo;
 
 import com.example.eng.entity.eng.EngSentenceMain;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -10,7 +10,7 @@ import lombok.Data;
 * @author yangxueyong
 * @date 2024-10-12 16:51:09
 */
-@ApiModel(description="扩展信息")
+@Schema(description="扩展信息*")
 @Data()
 public class EngSentenceMainVO extends EngSentenceMain {
 

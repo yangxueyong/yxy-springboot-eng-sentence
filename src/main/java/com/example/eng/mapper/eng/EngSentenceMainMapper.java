@@ -1,7 +1,10 @@
 package com.example.eng.mapper.eng;
 
 import com.example.eng.entity.eng.EngSentenceMain;
+import com.example.eng.entity.eng.io.EngSentenceMainIO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * Interface
@@ -35,6 +38,8 @@ public interface EngSentenceMainMapper {
      * @param id
      */
     EngSentenceMain selectByPrimaryKey(String id);
+
+    List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io);
 
     /**
      * 修改数据(推荐使用)

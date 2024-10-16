@@ -1,7 +1,10 @@
 package com.example.eng.mapper.eng;
 
 import com.example.eng.entity.eng.EngSentenceDetail;
+import com.example.eng.entity.eng.io.EngSentenceDetailIO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * Interface
@@ -35,6 +38,8 @@ public interface EngSentenceDetailMapper {
      * @param id
      */
     EngSentenceDetail selectByPrimaryKey(String id);
+
+    List<EngSentenceDetail> selectByIO(EngSentenceDetailIO io);
 
     /**
      * 修改数据(推荐使用)

@@ -1,10 +1,14 @@
 package com.example.eng.service.impl;
 
+import com.example.eng.entity.eng.EngSentenceMain;
+import com.example.eng.entity.eng.io.EngSentenceMainIO;
 import com.example.eng.mapper.eng.EngSentenceMainMapper;
 import com.example.eng.service.EngSentenceMainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
 * EngSentenceMainImpl
@@ -17,4 +21,8 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     @Autowired
     private EngSentenceMainMapper engSentenceMainMapper;
 
+    @Override
+    public List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io) {
+        return engSentenceMainMapper.selectOrderBySort(io);
+    }
 }

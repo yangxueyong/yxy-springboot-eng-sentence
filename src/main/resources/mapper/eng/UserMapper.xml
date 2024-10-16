@@ -29,7 +29,7 @@
     delete from t_user
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.example.yxy.entity.eng.User">
+  <insert id="insert" parameterType="com.example.eng.entity.eng.User">
     insert into t_user (id, third_type, open_id, 
       phone_no, en_name, third_head_img_path,
                         last_study_main_id,last_study_detail_id,last_study_word_id,
@@ -41,7 +41,7 @@
             #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.yxy.entity.eng.User">
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.eng.entity.eng.User">
     update t_user
     <set>
       <if test="thirdType != null">

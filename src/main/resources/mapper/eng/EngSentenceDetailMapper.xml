@@ -1,141 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.eng.mapper.eng.EngSentenceDetailMapper">
-  <resultMap id="BaseResultMap" type="com.example.eng.entity.eng.EngSentenceDetail">
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="main_id" jdbcType="VARCHAR" property="mainId" />
-    <result column="zn_name" jdbcType="VARCHAR" property="znName" />
-    <result column="en_name" jdbcType="VARCHAR" property="enName" />
-    <result column="sort" jdbcType="VARCHAR" property="sort" />
-    <result column="local_audio_path" jdbcType="VARCHAR" property="localAudioPath" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, main_id, zn_name, en_name, sort, local_audio_path, status, create_time, update_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_eng_sentence_detail
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from t_eng_sentence_detail
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
-    insert into t_eng_sentence_detail (id, main_id, zn_name, 
-      en_name, sort, local_audio_path,
-      status, create_time, update_time
-      )
-    values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{znName,jdbcType=VARCHAR}, 
-      #{enName,jdbcType=VARCHAR}, #{sort,jdbcType=VARCHAR}, #{localAudioPath,jdbcType=VARCHAR},
-      #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
-    insert into t_eng_sentence_detail
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="mainId != null">
-        main_id,
-      </if>
-      <if test="znName != null">
-        zn_name,
-      </if>
-      <if test="enName != null">
-        en_name,
-      </if>
-      <if test="sort != null">
-        sort,
-      </if>
-      <if test="localAudioPath != null">
-        local_audio_path,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="mainId != null">
-        #{mainId,jdbcType=VARCHAR},
-      </if>
-      <if test="znName != null">
-        #{znName,jdbcType=VARCHAR},
-      </if>
-      <if test="enName != null">
-        #{enName,jdbcType=VARCHAR},
-      </if>
-      <if test="sort != null">
-        #{sort,jdbcType=VARCHAR},
-      </if>
-      <if test="localAudioPath != null">
-        #{localAudioPath,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
-    update t_eng_sentence_detail
-    <set>
-      <if test="mainId != null">
-        main_id = #{mainId,jdbcType=VARCHAR},
-      </if>
-      <if test="znName != null">
-        zn_name = #{znName,jdbcType=VARCHAR},
-      </if>
-      <if test="enName != null">
-        en_name = #{enName,jdbcType=VARCHAR},
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=VARCHAR},
-      </if>
-      <if test="localAudioPath != null">
-        local_audio_path = #{localAudioPath,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
-    update t_eng_sentence_detail
-    set main_id = #{mainId,jdbcType=VARCHAR},
-      zn_name = #{znName,jdbcType=VARCHAR},
-      en_name = #{enName,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=VARCHAR},
-      local_audio_path = #{localAudioPath,jdbcType=VARCHAR},
-      status = #{status,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
+    <resultMap id="BaseResultMap" type="com.example.eng.entity.eng.EngSentenceDetail">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="main_id" jdbcType="VARCHAR" property="mainId"/>
+        <result column="zn_name" jdbcType="VARCHAR" property="znName"/>
+        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="sort" jdbcType="VARCHAR" property="sort"/>
+        <result column="local_audio_path" jdbcType="VARCHAR" property="localAudioPath"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, main_id, zn_name, en_name, sort, local_audio_path, status, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_eng_sentence_detail
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIO" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_eng_sentence_detail
+        where
+        1=1
+        <choose>
+            <when test="mainId != null and mainId != ''">
+                and  main_id = #{mainId,jdbcType=VARCHAR}
+            </when>
+            <otherwise>
+                and  id = #{detailId,jdbcType=VARCHAR}
+            </otherwise>
+        </choose>
+        and status = 'available'
+        order by sort
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from t_eng_sentence_detail
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
+        insert into t_eng_sentence_detail (id, main_id, zn_name,
+                                           en_name, sort, local_audio_path,
+                                           status, create_time, update_time)
+        values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{znName,jdbcType=VARCHAR},
+                #{enName,jdbcType=VARCHAR}, #{sort,jdbcType=VARCHAR}, #{localAudioPath,jdbcType=VARCHAR},
+                #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
+        insert into t_eng_sentence_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="mainId != null">
+                main_id,
+            </if>
+            <if test="znName != null">
+                zn_name,
+            </if>
+            <if test="enName != null">
+                en_name,
+            </if>
+            <if test="sort != null">
+                sort,
+            </if>
+            <if test="localAudioPath != null">
+                local_audio_path,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="mainId != null">
+                #{mainId,jdbcType=VARCHAR},
+            </if>
+            <if test="znName != null">
+                #{znName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=VARCHAR},
+            </if>
+            <if test="localAudioPath != null">
+                #{localAudioPath,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
+        update t_eng_sentence_detail
+        <set>
+            <if test="mainId != null">
+                main_id = #{mainId,jdbcType=VARCHAR},
+            </if>
+            <if test="znName != null">
+                zn_name = #{znName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=VARCHAR},
+            </if>
+            <if test="localAudioPath != null">
+                local_audio_path = #{localAudioPath,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.eng.entity.eng.EngSentenceDetail">
+        update t_eng_sentence_detail
+        set main_id          = #{mainId,jdbcType=VARCHAR},
+            zn_name          = #{znName,jdbcType=VARCHAR},
+            en_name          = #{enName,jdbcType=VARCHAR},
+            sort             = #{sort,jdbcType=VARCHAR},
+            local_audio_path = #{localAudioPath,jdbcType=VARCHAR},
+            status           = #{status,jdbcType=VARCHAR},
+            create_time      = #{createTime,jdbcType=TIMESTAMP},
+            update_time      = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>
