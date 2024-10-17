@@ -46,6 +46,10 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
         return engSentenceDetailMapper.selectByIO(io);
     }
 
+    /**
+     * @param record
+     * @return int
+     */
     @Override
     public int updateByPrimaryKeySelective(EngSentenceDetail record) {
         return engSentenceDetailMapper.updateByPrimaryKeySelective(record);
@@ -82,6 +86,7 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
         updateEngSentenceDetail.setId(id);
         updateEngSentenceDetail.setLocalAudioPath(localAudioPath);
         updateEngSentenceDetail.setUpdateTime(DateUtil.date());
+        //更新数据库
         updateByPrimaryKeySelective(updateEngSentenceDetail);
         return engSentenceDetail;
     }

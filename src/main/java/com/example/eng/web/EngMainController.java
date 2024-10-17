@@ -2,11 +2,14 @@ package com.example.eng.web;
 
 import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
+import com.example.eng.entity.eng.EngSentenceWord;
 import com.example.eng.entity.eng.io.EngSentenceDetailIO;
 import com.example.eng.entity.eng.io.EngSentenceMainIO;
+import com.example.eng.entity.eng.io.EngSentenceWordIO;
 import com.example.eng.entity.res.R;
 import com.example.eng.service.EngSentenceDetailService;
 import com.example.eng.service.EngSentenceMainService;
+import com.example.eng.service.EngSentenceWordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class EngMainController {
 
     @Autowired
     private EngSentenceDetailService engSentenceDetailService;
+
+    @Autowired
+    private EngSentenceWordService engSentenceWordService;
 
 
     @PostMapping("/getEngMain")
@@ -47,4 +53,9 @@ public class EngMainController {
         return R.data(engSentenceDetailService.selectDetailByIO(io));
     }
 
+    @PostMapping("/getEngWordByDetail")
+    @Operation(summary = "获取句子中单词详情数据")
+    public R<List<EngSentenceWord>> getEngWordByDetail(@RequestBody @Validated EngSentenceWordIO io){
+        return R.data(engSentenceWordService.selectByIO(io));
+    }
 }
