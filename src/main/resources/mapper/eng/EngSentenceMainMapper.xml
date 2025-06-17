@@ -33,6 +33,33 @@
     order by sort
   </select>
 
+
+  <select id="selectNextBySort" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_eng_sentence_main
+    where 1=1
+    <if test="sort!= null and sort!= ''">
+        and sort &gt; #{sort}
+    </if>
+    and status='available'
+    order by sort
+    limit 1
+  </select>
+
+  <select id="selectUpBySort" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_eng_sentence_main
+    where 1=1
+    <if test="sort!= null and sort!= ''">
+        and sort &lt; #{sort}
+    </if>
+    and status='available'
+    order by sort desc
+    limit 1
+  </select>
+
   <select id="selectOrderByRandom" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

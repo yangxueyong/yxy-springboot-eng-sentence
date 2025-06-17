@@ -41,6 +41,10 @@ public interface EngSentenceMainMapper {
 
     List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io);
 
+    EngSentenceMain selectNextBySort(EngSentenceMainIO io);
+
+    EngSentenceMain selectUpBySort(EngSentenceMainIO io);
+
     EngSentenceMain selectOrderByRandom(EngSentenceMainIO io);
 
     /**

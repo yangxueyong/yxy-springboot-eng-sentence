@@ -2,6 +2,7 @@ package com.example.eng.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.example.eng.config.interceptor.UserContext;
@@ -11,6 +12,7 @@ import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.EngSentenceDetailIO;
 import com.example.eng.entity.eng.io.EngSentenceMainIO;
+import com.example.eng.entity.eng.io.EngSentenceMainNextIO;
 import com.example.eng.entity.eng.io.EngUserOperIO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
@@ -23,14 +25,12 @@ import com.example.eng.service.EngSentenceMainService;
 import com.example.eng.service.EngUserOperService;
 import com.example.eng.service.UserService;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -65,39 +65,53 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         return engSentenceMainMapper.selectOrderByRandom(io);
     }
 
+    @Override
+    public EngSentenceMain selectNextBySort(EngSentenceMainIO io) {
+        return engSentenceMainMapper.selectNextBySort(io);
+    }
+
+    @Override
+    public EngSentenceMain selectUpBySort(EngSentenceMainIO io) {
+        return engSentenceMainMapper.selectUpBySort(io);
+    }
+
     /**
      * 获取首页数据
      * @return {@link EngSentenceMainVO}
      */
     @Override
     public EngSentenceMainVO getIndexEngMain() {
-        User user = UserContext.getUser();
-        String lastStudyMainId = user.getLastStudyMainId();
-        EngSentenceMain main = null;
 
-        EngSentenceMainVO vo = new EngSentenceMainVO();
-
-        //如果有上次学习的主句，则从上次学习的主句开始学习
-        if(!StrUtil.isEmpty(lastStudyMainId)){
-            EngSentenceMainIO io = new EngSentenceMainIO();
-            io.setId(lastStudyMainId);
-            List<EngSentenceMain> engSentenceMains = selectOrderBySort(io);
-            if(!CollectionUtil.isEmpty(engSentenceMains)){
-                main = engSentenceMains.get(0);
-            }
-        }
+        //获取上次学习的主句
+        EngSentenceMain main = getLastEngSentenceMain();
 
         //如果没有上次学习的主句，则随机选择一个主句学习
         if(main == null){
             main = selectOrderByRandom(new EngSentenceMainIO());
 
-            //修改用户最近学习的主句
-            User userIO = new User();
-            userIO.setId(user.getId());
-            userIO.setLastStudyMainId(main.getId());
-            userService.updateByPrimaryKeySelective(userIO);
+            saveUserLastMain(main);
         }
 
+        EngSentenceMainVO vo = getEngSentenceMainVO(main);
+        return vo;
+    }
+
+    /**
+     * 保存用户最近看的句子
+     * @param main
+     */
+    private void saveUserLastMain(EngSentenceMain main) {
+        User user = UserContext.getUser();
+        //修改用户最近学习的主句
+        User userIO = new User();
+        userIO.setId(user.getId());
+        userIO.setLastStudyMainId(main.getId());
+        userService.updateByPrimaryKeySelective(userIO);
+    }
+
+    @NotNull
+    private EngSentenceMainVO getEngSentenceMainVO(EngSentenceMain main) {
+        EngSentenceMainVO vo = new EngSentenceMainVO();
         //赋值给返回值对象
         BeanUtil.copyProperties(main,vo);
         getMainOper(vo);
@@ -108,6 +122,68 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         vo.setDetails(detailVOS);
         return vo;
     }
+
+    @Nullable
+    private EngSentenceMain getLastEngSentenceMain() {
+        User user = UserContext.getUser();
+        String lastStudyMainId = user.getLastStudyMainId();
+
+        //如果有上次学习的主句，则从上次学习的主句开始学习
+        if(!StrUtil.isEmpty(lastStudyMainId)){
+            EngSentenceMainIO io = new EngSentenceMainIO();
+            io.setId(lastStudyMainId);
+            return getEngSentenceMain(io);
+        }
+        return null;
+    }
+
+    private EngSentenceMain getEngSentenceMain(EngSentenceMainIO io) {
+        List<EngSentenceMain> engSentenceMains = selectOrderBySort(io);
+        if(!CollectionUtil.isEmpty(engSentenceMains)){
+            return engSentenceMains.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public EngSentenceMainVO getIndexEngNextMain(EngSentenceMainNextIO ioo) {
+        String type = ioo.getType();
+        User user = UserContext.getUser();
+        String userType = user.getUserType();
+        Date memberDueDate = user.getMemberDueDate();
+        if(ObjUtil.equal(MyConstant.USER_TYPE_GENERAL, userType)
+                || (memberDueDate != null && memberDueDate.before(DateUtil.date()))){
+            throw new RuntimeException("没有其他内容了---");
+        }
+        EngSentenceMain mylastEngSentenceMain = getLastEngSentenceMain();
+
+        EngSentenceMainIO io = EngSentenceMainIO.builder()
+                .sort(mylastEngSentenceMain.getSort())
+                .build();
+
+        EngSentenceMain nextEngSentenceMain = null;
+        if(ObjUtil.equal(MyConstant.TYPE_NEXT, type)){
+            nextEngSentenceMain = selectNextBySort(io);
+        }else{
+            nextEngSentenceMain = selectUpBySort(io);
+        }
+
+        //没有下一页或者上一页
+        if(nextEngSentenceMain == null){
+            if(ObjUtil.equal(MyConstant.TYPE_NEXT, type)){
+                nextEngSentenceMain = selectNextBySort(new EngSentenceMainIO());
+            }else{
+                nextEngSentenceMain = selectUpBySort(new EngSentenceMainIO());
+            }
+        }
+
+        //保存用户最近看的句子
+        saveUserLastMain(nextEngSentenceMain);
+
+        EngSentenceMainVO vo = getEngSentenceMainVO(nextEngSentenceMain);
+        return vo;
+    }
+
 
 
 

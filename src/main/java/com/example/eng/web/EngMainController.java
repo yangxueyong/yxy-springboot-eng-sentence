@@ -5,10 +5,7 @@ import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngSentenceWord;
 import com.example.eng.entity.eng.EngUserOper;
-import com.example.eng.entity.eng.io.EngSentenceDetailIO;
-import com.example.eng.entity.eng.io.EngSentenceMainIO;
-import com.example.eng.entity.eng.io.EngSentenceWordIO;
-import com.example.eng.entity.eng.io.EngUserOperIO;
+import com.example.eng.entity.eng.io.*;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordVO;
 import com.example.eng.entity.res.R;
@@ -69,6 +66,19 @@ public class EngMainController {
     public R<List<EngSentenceWordVO>> getEngWordByDetail(@RequestBody @Validated EngSentenceWordIO io){
         return R.data(engSentenceWordService.selectByIO(io));
     }
+
+    @PostMapping("/getIndexEngNextMain")
+    @Operation(summary = "下一页数据")
+    public R<EngSentenceMainVO> getIndexEngNextMain(@RequestBody @Validated EngSentenceMainNextIO ioo){
+        return R.data(engSentenceMainService.getIndexEngNextMain(ioo));
+    }
+
+    @PostMapping("/getIndexEngUpMain")
+    @Operation(summary = "上一页数据")
+    public R<EngSentenceMainVO> getIndexEngUpMain(@RequestBody @Validated EngSentenceMainNextIO ioo){
+        return R.data(engSentenceMainService.getIndexEngNextMain(ioo));
+    }
+
 
 //    @PostMapping("/downloadAllDetail")
 //    @Operation(summary = "下载所有详情数据")

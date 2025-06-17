@@ -2,6 +2,7 @@ package com.example.eng.service;
 
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.io.EngSentenceMainIO;
+import com.example.eng.entity.eng.io.EngSentenceMainNextIO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
 
 import java.util.List;
@@ -18,4 +19,10 @@ public interface EngSentenceMainService {
     EngSentenceMain selectOrderByRandom(EngSentenceMainIO io);
 
     EngSentenceMainVO getIndexEngMain();
+
+    EngSentenceMainVO getIndexEngNextMain(EngSentenceMainNextIO ioo);
+
+    EngSentenceMain selectNextBySort(EngSentenceMainIO io);
+
+    EngSentenceMain selectUpBySort(EngSentenceMainIO io);
 }

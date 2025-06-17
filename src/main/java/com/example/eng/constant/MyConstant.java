@@ -14,4 +14,6 @@ public class MyConstant {
     public static final String DATA_TYPE_DETAIL = "detail";
 
     public static final String DATA_TYPE_WORD = "word";
+    public static final String USER_TYPE_GENERAL = "general";
+    public static final String TYPE_NEXT = "next";
 }

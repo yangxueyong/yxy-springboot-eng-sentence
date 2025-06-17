@@ -1,14 +1,10 @@
 package com.example.eng.entity.eng.io;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * 句型主表实体类
@@ -28,17 +24,11 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EngSentenceMainIO {
+public class EngSentenceMainNextIO {
     /**
-     * 主键
+     * 类型
      */
-    @Schema(name="id",description="主键")
-    private String id;
-
-    /**
-     * 排序
-     */
-    @Schema(name="sort",description="sort")
-    private String sort;
+    @Schema(name="type",description="类型")
+    private String type;
 
 }

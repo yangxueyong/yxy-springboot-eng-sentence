@@ -100,7 +100,7 @@ public class User {
      * 会员到期日
      */
     @Schema(name="会员到期日"/*,name="status*"*/)
-    private String memberDueDate;
+    private Date memberDueDate;
 
     /**
      * 创建时间
