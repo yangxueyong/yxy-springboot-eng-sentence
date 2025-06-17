@@ -1,6 +1,9 @@
 package com.example.eng.entity.eng;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -56,9 +59,17 @@ public class EngSentenceWord {
     /**
      * 本地英文音频路径
      */
+    @JsonIgnore
+    @JSONField(serialize = false)
     @Schema(description="本地英文音频路径",name="localAudioPath")
     @Length(max = 100, message = "本地英文音频路径名长度最长为100")
     private String localAudioPath;
+
+    /**
+     * web英文音频路径
+     */
+    @Schema(name="web英文音频路径")
+    private String webAudioPath;
 
     /**
      * available可用 unavailable不可用
@@ -80,4 +91,18 @@ public class EngSentenceWord {
     @Schema(description="修改时间",name="updateTime")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
+
+    public String getWebAudioPath() {
+        if(StrUtil.isEmptyIfStr(localAudioPath)){
+            return null;
+        }
+        int i = localAudioPath.lastIndexOf("/");
+        System.out.println(localAudioPath + "========> " + i);
+        if(i >= 0){
+            webAudioPath = "/engMain/files/word/" + localAudioPath.substring(i + 1);
+        }else{
+            webAudioPath = "/engMain/files/word/" + localAudioPath;
+        }
+        return webAudioPath;
+    }
 }

@@ -1,17 +1,42 @@
 package com.example.eng.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.example.eng.config.interceptor.UserContext;
+import com.example.eng.config.param.AudioParam;
+import com.example.eng.config.translate.BaiduConfig;
+import com.example.eng.config.translate.YoudaoConfig;
+import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.eng.EngSentenceWord;
+import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.EngSentenceWordIO;
+import com.example.eng.entity.eng.io.EngUserOperIO;
+import com.example.eng.entity.eng.vo.EngSentenceWordVO;
+import com.example.eng.entity.translate.YoudaoTranslate;
+import com.example.eng.entity.translate.io.YoudaoTranslateEn2VoiceIO;
+import com.example.eng.entity.user.User;
 import com.example.eng.mapper.eng.EngSentenceWordMapper;
 import com.example.eng.service.EngSentenceWordService;
-import com.example.eng.service.translate.BaiDuTransEntity;
-import com.example.eng.service.translate.BaiDuTransUtil;
+import com.example.eng.service.EngUserOperService;
+import com.example.eng.util.DownAudioUtil;
+import com.example.eng.util.translate.baidu.BaiDuTransEntity;
+import com.example.eng.util.translate.baidu.BaiDuTransUtil;
+import com.example.eng.util.translate.youdao.TranslateYouDaoUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
 * EngSentenceWordImpl
@@ -25,32 +50,134 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
     @Autowired
     private EngSentenceWordMapper engSentenceWordMapper;
 
-    @Override
-    public List<EngSentenceWord> selectByIO(EngSentenceWordIO io) {
-        List<EngSentenceWord> engSentenceWords = engSentenceWordMapper.selectByIO(io);
-        for (EngSentenceWord word : engSentenceWords) {
-            String enName = word.getEnName();
-            String znName = word.getZnName();
-            if (StrUtil.isEmptyIfStr(znName) && !StrUtil.isEmptyIfStr(enName)) {
-                try {
-                    BaiDuTransEntity translate = BaiDuTransUtil.translate(enName, "en", "zh");
-                    BaiDuTransEntity.TransResult transResult = translate.getTrans_result().get(0);
-                    word.setZnName(transResult.getDst());
+    @Autowired
+    private EngUserOperService engUserOperService;
+    @Autowired
+    private AudioParam audioParam;
 
-                    EngSentenceWord word2 = new EngSentenceWord();
-                    word2.setId(word.getId());
-                    word2.setZnName(transResult.getDst());
-                    updateByPrimaryKeySelective(word2);
-                }catch (Exception e){
-                    log.error("翻译报错->",e);
-                }
+    @Autowired
+    private BaiduConfig config;
+    @Autowired
+    private YoudaoConfig youdaoConfig;
+
+    @Override
+    public List<EngSentenceWordVO> selectByIO(EngSentenceWordIO io) {
+        List<EngSentenceWord> engSentenceWords = engSentenceWordMapper.selectByIO(io);
+        List<EngSentenceWordVO> vos = new ArrayList<>();
+        for (EngSentenceWord word : engSentenceWords) {
+            setWordVoice(word);
+            EngSentenceWordVO vo = new EngSentenceWordVO();
+            BeanUtils.copyProperties(word,vo);
+            vos.add(vo);
+        }
+
+        getWordOper(vos);
+        return vos;
+    }
+
+    /**
+     * 查看句子中有没有被隐藏或者标记过
+     * @param vos
+     */
+    private void getWordOper(List<EngSentenceWordVO> vos){
+        User user = UserContext.getUser();
+
+        List<String> dataIds = vos.stream()
+                .map(EngSentenceWordVO::getId)
+                .collect(Collectors.toList());
+
+        Map<String, EngSentenceWordVO> detailMap = vos.stream()
+                .collect(Collectors.toMap(EngSentenceWordVO::getId, v -> v, (p1, p2) -> p1));
+
+        EngUserOperIO io = new EngUserOperIO();
+        io.setUserId(user.getId());
+        io.setDataType(MyConstant.DATA_TYPE_WORD);
+        io.setDataIdList(dataIds);
+        io.setStatus(MyConstant.STATUS_AVAILABLE);
+        List<EngUserOper> engUserOpers = engUserOperService.selectByIO(io);
+        if(CollectionUtil.isEmpty(engUserOpers)){
+            return;
+        }
+        for (EngUserOper engUserOper : engUserOpers) {
+            String operType = engUserOper.getOperType();
+            String dataId = engUserOper.getDataId();
+            EngSentenceWordVO vo = detailMap.get(dataId);
+
+            if(ObjUtil.equal(MyConstant.OPER_TYPE_HIDE, operType)){
+                vo.setHide(MyConstant.OPER_TYPE_YES);
+            }else if(ObjUtil.equal(MyConstant.OPER_TYPE_FLAG, operType)){
+                vo.setFlag(MyConstant.OPER_TYPE_YES);
             }
         }
-        return engSentenceWords;
+    }
+
+    /**
+     * 设置单词的音频
+     * @param word
+     */
+    private void setWordVoice(EngSentenceWord word) {
+        String id = word.getId();
+        String enName = word.getEnName();
+        String znName = word.getZnName();
+        if (StrUtil.isEmptyIfStr(znName) && !StrUtil.isEmptyIfStr(enName)) {
+            try {
+                BaiDuTransEntity translate = BaiDuTransUtil.translate(config, enName);
+                BaiDuTransEntity.TransResult transResult = translate.getTrans_result().get(0);
+                word.setZnName(transResult.getDst());
+
+                EngSentenceWord word2 = new EngSentenceWord();
+                word2.setId(id);
+                word2.setZnName(transResult.getDst());
+                word2.setUpdateTime(DateUtil.date());
+                updateByPrimaryKeySelective(word2);
+            }catch (Exception e){
+                log.error("翻译报错->",e);
+            }
+        }
+
+        String localAudioPath = word.getLocalAudioPath();
+        //如果本地音频存在，则返回
+        if(!StrUtil.isEmptyIfStr(localAudioPath)
+                && FileUtil.exists(Path.of(localAudioPath),true)
+                && new File(localAudioPath).length() > 500){
+            return;
+        }
+
+        localAudioPath = audioParam.getWordLocalPath() + id + ".mp3";
+        try {
+            String usaUrl = StrUtil.format(audioParam.getUsaUrl(), enName);
+            DownAudioUtil.downAudioToLocal(usaUrl, localAudioPath);
+            if(new File(localAudioPath).length() < 500){
+                throw new RuntimeException("音频下载失败："+id);
+            }
+        }catch (Exception e){
+            log.error("下载USA音频报错->{}",e.getMessage());
+            YoudaoTranslate youdaoTranslate = TranslateYouDaoUtil.translateEn2Voice(youdaoConfig, YoudaoTranslateEn2VoiceIO.builder().query(enName).build());
+            //下载音频
+            DownAudioUtil.downAudioToLocal(youdaoTranslate.getSpeakUrl(), localAudioPath);
+        }
+        EngSentenceWord word2 = new EngSentenceWord();
+        word2.setId(id);
+        word2.setLocalAudioPath(localAudioPath);
+        word2.setUpdateTime(DateUtil.date());
+        updateByPrimaryKeySelective(word2);
     }
 
     @Override
     public int updateByPrimaryKeySelective(EngSentenceWord record) {
         return engSentenceWordMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public List<EngSentenceWord> selectAll() {
+        return engSentenceWordMapper.selectAll();
+    }
+
+    @Override
+    public void setAllWordVoice() {
+        List<EngSentenceWord> engSentenceWords = selectAll();
+        for (EngSentenceWord engSentenceWord : engSentenceWords) {
+            setWordVoice(engSentenceWord);
+        }
     }
 }

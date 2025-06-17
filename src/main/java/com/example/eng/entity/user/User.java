@@ -1,8 +1,11 @@
-package com.example.eng.entity.eng;
+package com.example.eng.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 //import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
@@ -15,12 +18,15 @@ import java.util.Date;
  */
 @Schema(name="com.example.yxy.entity.eng.User",description="用户信息表*")
 @Data()
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     /**
      * id
      */
     @Schema(name="id"/*,name="id*"*/)
-    private String id;
+    private Long id;
 
     /**
      * 三方类型 wx:微信 al:阿里
@@ -29,10 +35,20 @@ public class User {
     private String thirdType;
 
     /**
+     * 应用id
+     */
+    @Schema(name="应用id"/*,name="third_type*"*/)
+    private String appId;
+    /**
      * 用户名
      */
     @Schema(name="open_id"/*,name="open_id*"*/)
     private String openId;
+
+    /**
+     * sessionKey
+     */
+    private String sessionKey;
 
     /**
      * 电话
@@ -75,10 +91,22 @@ public class User {
     private String status;
 
     /**
+     * general普通 member会员
+     */
+    @Schema(name="general普通 member会员"/*,name="status*"*/)
+    private String userType;
+
+    /**
+     * 会员到期日
+     */
+    @Schema(name="会员到期日"/*,name="status*"*/)
+    private String memberDueDate;
+
+    /**
      * 创建时间
      */
     @Schema(name="创建时间"/*,name="create_time*"*/)
-    private String createTime;
+    private Date createTime;
 
     /**
      * 修改时间

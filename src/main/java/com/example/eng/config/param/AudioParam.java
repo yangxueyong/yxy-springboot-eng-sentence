@@ -24,4 +24,9 @@ public class AudioParam {
      * 本地保存的路径
      */
     private String localPath;
+
+    /**
+     * 本地保存的路径
+     */
+    private String wordLocalPath;
 }

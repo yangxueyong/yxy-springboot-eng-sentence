@@ -1,4 +1,4 @@
-package com.example.eng.service.translate;
+package com.example.eng.util.translate.baidu;
 
 import cn.hutool.core.util.StrUtil;
 

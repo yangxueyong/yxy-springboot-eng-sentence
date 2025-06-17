@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.eng.mapper.eng.UserMapper">
-  <resultMap id="BaseResultMap" type="com.example.eng.entity.eng.User">
-    <id column="id" jdbcType="VARCHAR" property="id" />
+  <resultMap id="BaseResultMap" type="com.example.eng.entity.user.User">
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="third_type" jdbcType="VARCHAR" property="thirdType" />
     <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
     <result column="phone_no" jdbcType="VARCHAR" property="phoneNo" />
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
     <result column="third_head_img_path" jdbcType="VARCHAR" property="thirdHeadImgPath" />
@@ -12,12 +14,14 @@
     <result column="last_study_detail_id" jdbcType="VARCHAR" property="lastStudyDetailId" />
     <result column="last_study_word_id" jdbcType="VARCHAR" property="lastStudyWordId" />
     <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="user_type" jdbcType="VARCHAR" property="userType" />
+    <result column="member_due_date" jdbcType="TIMESTAMP" property="memberDueDate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, third_type, open_id, phone_no, en_name, third_head_img_path, last_study_main_id,last_study_detail_id,last_study_word_id,
-    status, create_time, update_time
+    id, third_type, app_id,open_id,session_key, phone_no, en_name, third_head_img_path, last_study_main_id,last_study_detail_id,last_study_word_id,
+    status, create_time, update_time, user_type, member_due_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -29,19 +33,26 @@
     delete from t_user
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.example.eng.entity.eng.User">
-    insert into t_user (id, third_type, open_id, 
+  <insert id="insert" parameterType="com.example.eng.entity.user.User">
+    insert into t_user (third_type, open_id, session_key, app_id,
       phone_no, en_name, third_head_img_path,
                         last_study_main_id,last_study_detail_id,last_study_word_id,
                         status, create_time,
       update_time)
-    values (#{id,jdbcType=VARCHAR}, #{thirdType,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, 
-      #{phoneNo,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{thirdHeadImgPath,jdbcType=VARCHAR},
+    values (#{thirdType,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR},#{sessionKey,jdbcType=VARCHAR},
+            #{appId,jdbcType=VARCHAR},
+            #{phoneNo,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, #{thirdHeadImgPath,jdbcType=VARCHAR},
       #{lastStudyMainId,jdbcType=VARCHAR},#{lastStudyDetailId,jdbcType=VARCHAR},#{lastStudyWordId,jdbcType=VARCHAR},
             #{status,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.example.eng.entity.eng.User">
+  <select id="selectByOpenId" parameterType="com.example.eng.entity.user.wechat.io.WechatUserTokenIO" resultMap="BaseResultMap">
+    select * from t_user
+    where open_id = #{openId,jdbcType=VARCHAR}
+      and app_id = #{appId,jdbcType=VARCHAR}
+      and third_type = #{thirdType,jdbcType=VARCHAR}
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.eng.entity.user.User">
     update t_user
     <set>
       <if test="thirdType != null">
@@ -49,6 +60,12 @@
       </if>
       <if test="openId != null">
         open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null">
+        session_key = #{sessionKey,jdbcType=VARCHAR},
       </if>
       <if test="phoneNo != null">
         phone_no = #{phoneNo,jdbcType=VARCHAR},
@@ -78,7 +95,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 
 </mapper>

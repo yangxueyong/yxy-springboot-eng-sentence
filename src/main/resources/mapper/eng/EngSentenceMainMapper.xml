@@ -33,6 +33,14 @@
     order by sort
   </select>
 
+  <select id="selectOrderByRandom" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_eng_sentence_main
+    where status='available'
+    ORDER BY RAND() LIMIT 1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from t_eng_sentence_main
     where id = #{id,jdbcType=VARCHAR}

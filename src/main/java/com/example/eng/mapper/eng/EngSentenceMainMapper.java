@@ -41,6 +41,8 @@ public interface EngSentenceMainMapper {
 
     List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io);
 
+    EngSentenceMain selectOrderByRandom(EngSentenceMainIO io);
+
     /**
      * 修改数据(推荐使用)
      * @param record

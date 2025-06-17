@@ -1,7 +1,9 @@
 package com.example.eng.service;
 
 import com.example.eng.entity.eng.EngSentenceDetail;
+import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.io.EngSentenceDetailIO;
+import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
 
 import java.util.List;
 
@@ -14,7 +16,14 @@ import java.util.List;
 public interface EngSentenceDetailService {
     List<EngSentenceDetail> selectListByIO(EngSentenceDetailIO io);
 
+    List<EngSentenceDetail> selectAllDetailByIO(EngSentenceDetailIO io);
+    List<EngSentenceDetailVO> getEngSentenceDetailVOS(EngSentenceMain main);
+
     EngSentenceDetail selectDetailByIO(EngSentenceDetailIO io);
 
     int updateByPrimaryKeySelective(EngSentenceDetail record);
+
+    List<EngSentenceDetail> selectAll();
+
+    void downloadAllDetail();
 }

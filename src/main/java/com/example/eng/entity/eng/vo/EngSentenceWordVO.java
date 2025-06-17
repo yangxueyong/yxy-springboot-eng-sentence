@@ -14,4 +14,7 @@ import lombok.Data;
 @Data()
 public class EngSentenceWordVO extends EngSentenceWord {
 
+    private boolean hide;
+
+    private boolean flag;
 }

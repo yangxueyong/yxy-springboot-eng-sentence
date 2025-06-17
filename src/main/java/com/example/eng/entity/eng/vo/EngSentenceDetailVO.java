@@ -4,6 +4,8 @@ import com.example.eng.entity.eng.EngSentenceDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.util.List;
+
 /**
 * EngSentenceDetailVo
 *
@@ -14,4 +16,9 @@ import lombok.Data;
 @Data()
 public class EngSentenceDetailVO extends EngSentenceDetail {
 
+    private List<EngSentenceWordVO> words;
+
+    private boolean hide;
+
+    private boolean flag;
 }

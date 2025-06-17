@@ -40,6 +40,16 @@
         order by sort
     </select>
 
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_eng_sentence_detail
+        where
+        1=1
+        and status = 'available'
+        order by id
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete
         from t_eng_sentence_detail

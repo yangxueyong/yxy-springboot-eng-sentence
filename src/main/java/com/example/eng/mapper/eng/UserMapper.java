@@ -1,6 +1,7 @@
 package com.example.eng.mapper.eng;
 
-import com.example.eng.entity.eng.User;
+import com.example.eng.entity.user.User;
+import com.example.eng.entity.user.wechat.io.WechatUserTokenIO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -35,5 +36,7 @@ public interface UserMapper {
      * @param record
      */
     int updateByPrimaryKeySelective(User record);
+
+    User selectByOpenId(WechatUserTokenIO io);
 
 }

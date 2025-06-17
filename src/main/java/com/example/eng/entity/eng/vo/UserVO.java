@@ -1,7 +1,6 @@
 package com.example.eng.entity.eng.vo;
 
-import com.example.eng.entity.eng.User;
-import io.swagger.v3.oas.annotations.Operation;
+import com.example.eng.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

@@ -1,6 +1,9 @@
 package com.example.eng.entity.eng;
 
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -64,8 +67,16 @@ public class EngSentenceDetail {
      * 本地英文音频路径
      */
     @Schema(name="本地英文音频路径"/*,name="localAudioPath*"*/)
+    @JsonIgnore
+    @JSONField(serialize = false)
     //@Length(max = 100, message = "本地英文音频路径名长度最长为100*"*/)
     private String localAudioPath;
+
+    /**
+     * web英文音频路径
+     */
+    @Schema(name="web英文音频路径")
+    private String webAudioPath;
 
     /**
      * available可用 unavailable不可用
@@ -78,13 +89,27 @@ public class EngSentenceDetail {
      * 创建时间
      */
     @Schema(name="创建时间"/*,name="createTime*"*/)
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8*")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8*")
     private Date createTime;
 
     /**
      * 修改时间
      */
     @Schema(name="修改时间"/*,name="updateTime*"*/)
-    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8*")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8*")
     private Date updateTime;
+
+    public String getWebAudioPath() {
+        if(StrUtil.isEmptyIfStr(localAudioPath)){
+            return null;
+        }
+        int i = localAudioPath.lastIndexOf("/");
+        System.out.println(localAudioPath + "========> " + i);
+        if(i >= 0){
+            webAudioPath = "/engMain/files/detail/" + localAudioPath.substring(i + 1);
+        }else{
+            webAudioPath = "/engMain/files/detail/" + localAudioPath;
+        }
+        return webAudioPath;
+	}
 }

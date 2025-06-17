@@ -1,4 +1,4 @@
-package com.example.eng.service.translate;
+package com.example.eng.util.translate.baidu;
 
 import java.util.HashMap;
 import java.util.Map;

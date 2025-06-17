@@ -41,6 +41,8 @@ public interface EngSentenceWordMapper {
 
     List<EngSentenceWord> selectByIO(EngSentenceWordIO io);
 
+    List<EngSentenceWord> selectAll();
+
     /**
      * 修改数据(推荐使用)
      * @param record

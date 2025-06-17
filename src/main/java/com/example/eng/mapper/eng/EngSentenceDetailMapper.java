@@ -41,6 +41,8 @@ public interface EngSentenceDetailMapper {
 
     List<EngSentenceDetail> selectByIO(EngSentenceDetailIO io);
 
+    List<EngSentenceDetail> selectAll();
+
     /**
      * 修改数据(推荐使用)
      * @param record
