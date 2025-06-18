@@ -5,20 +5,18 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.example.eng.config.annotation.CustomVerifyUser;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngUserOper;
-import com.example.eng.entity.eng.io.EngSentenceDetailIO;
 import com.example.eng.entity.eng.io.EngSentenceMainIO;
 import com.example.eng.entity.eng.io.EngSentenceMainNextIO;
 import com.example.eng.entity.eng.io.EngUserOperIO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
 import com.example.eng.entity.user.User;
-import com.example.eng.entity.user.wechat.WechatUser;
-import com.example.eng.entity.user.wechat.io.WechatTokenIO;
 import com.example.eng.mapper.eng.EngSentenceMainMapper;
 import com.example.eng.service.EngSentenceDetailService;
 import com.example.eng.service.EngSentenceMainService;
@@ -28,10 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +53,7 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
 
     @Override
     public List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io) {
+
         return engSentenceMainMapper.selectOrderBySort(io);
     }
 
@@ -75,24 +72,33 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         return engSentenceMainMapper.selectUpBySort(io);
     }
 
+    @Override
+    @CustomVerifyUser(msg = "暂时无法操作哦----")
+    public void searchChangeEngMain(EngSentenceMainIO io) {
+        EngSentenceMain main = new EngSentenceMain();
+        main.setId(io.getId());
+        saveUserLastMain(main,io);
+    }
+
     /**
      * 获取首页数据
      * @return {@link EngSentenceMainVO}
      */
     @Override
-    public EngSentenceMainVO getIndexEngMain() {
+    public EngSentenceMainVO getIndexEngMain(EngSentenceMainIO io) {
 
         //获取上次学习的主句
-        EngSentenceMain main = getLastEngSentenceMain();
+        EngSentenceMain main = getLastEngSentenceMain(io);
 
         //如果没有上次学习的主句，则随机选择一个主句学习
         if(main == null){
             main = selectOrderByRandom(new EngSentenceMainIO());
 
-            saveUserLastMain(main);
+            saveUserLastMain(main, io);
         }
 
-        EngSentenceMainVO vo = getEngSentenceMainVO(main);
+        // 获取主句的详情句子
+        EngSentenceMainVO vo = getEngSentenceMainVO(main, io);
         return vo;
     }
 
@@ -100,17 +106,23 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
      * 保存用户最近看的句子
      * @param main
      */
-    private void saveUserLastMain(EngSentenceMain main) {
+    private void saveUserLastMain(EngSentenceMain main, EngSentenceMainIO io) {
         User user = UserContext.getUser();
         //修改用户最近学习的主句
         User userIO = new User();
         userIO.setId(user.getId());
-        userIO.setLastStudyMainId(main.getId());
+
+        //保存最近学习或最近练习的情况
+        if(ObjUtil.equal(MyConstant.TYPE_STUDY, io.getPageType())){
+            userIO.setLastStudyMainId(main.getId());
+        }else{
+            userIO.setLastPracticeMainId(main.getId());
+        }
         userService.updateByPrimaryKeySelective(userIO);
     }
 
     @NotNull
-    private EngSentenceMainVO getEngSentenceMainVO(EngSentenceMain main) {
+    private EngSentenceMainVO getEngSentenceMainVO(EngSentenceMain main, EngSentenceMainIO io2) {
         EngSentenceMainVO vo = new EngSentenceMainVO();
         //赋值给返回值对象
         BeanUtil.copyProperties(main,vo);
@@ -118,21 +130,34 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
 
         //获取句子详情
         List<EngSentenceDetailVO> detailVOS = detailService.getEngSentenceDetailVOS(main);
-        getDetailOper(detailVOS);
+        //获取句子操作
+        if(ObjUtil.equal(MyConstant.TYPE_STUDY, io2.getPageType())) {
+            getDetailOper(detailVOS);
+        }else{
+            //练习的时候 要将答案隐藏掉
+            detailVOS.forEach(d -> d.setHide(MyConstant.OPER_TYPE_YES));
+        }
         vo.setDetails(detailVOS);
         return vo;
     }
 
     @Nullable
-    private EngSentenceMain getLastEngSentenceMain() {
+    private EngSentenceMain getLastEngSentenceMain(EngSentenceMainIO io) {
         User user = UserContext.getUser();
-        String lastStudyMainId = user.getLastStudyMainId();
+        String type = io.getPageType();
+
+        String lastMainId = null;
+        if(ObjUtil.equal(type, MyConstant.TYPE_STUDY)) {
+            lastMainId = user.getLastStudyMainId();
+        }else{
+            lastMainId = user.getLastPracticeMainId();
+        }
 
         //如果有上次学习的主句，则从上次学习的主句开始学习
-        if(!StrUtil.isEmpty(lastStudyMainId)){
-            EngSentenceMainIO io = new EngSentenceMainIO();
-            io.setId(lastStudyMainId);
-            return getEngSentenceMain(io);
+        if(!StrUtil.isEmpty(lastMainId)){
+            EngSentenceMainIO ioo = new EngSentenceMainIO();
+            ioo.setId(lastMainId);
+            return getEngSentenceMain(ioo);
         }
         return null;
     }
@@ -146,16 +171,15 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     }
 
     @Override
+    @CustomVerifyUser
     public EngSentenceMainVO getIndexEngNextMain(EngSentenceMainNextIO ioo) {
         String type = ioo.getType();
-        User user = UserContext.getUser();
-        String userType = user.getUserType();
-        Date memberDueDate = user.getMemberDueDate();
-        if(ObjUtil.equal(MyConstant.USER_TYPE_GENERAL, userType)
-                || (memberDueDate != null && memberDueDate.before(DateUtil.date()))){
-            throw new RuntimeException("没有其他内容了---");
-        }
-        EngSentenceMain mylastEngSentenceMain = getLastEngSentenceMain();
+        EngSentenceMainIO io2 = EngSentenceMainIO.builder()
+                .pageType(ioo.getPageType())
+                .build();
+        //查询最近学习的情况
+        EngSentenceMain mylastEngSentenceMain = getLastEngSentenceMain(io2);
+
 
         EngSentenceMainIO io = EngSentenceMainIO.builder()
                 .sort(mylastEngSentenceMain.getSort())
@@ -178,17 +202,16 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         }
 
         //保存用户最近看的句子
-        saveUserLastMain(nextEngSentenceMain);
+        saveUserLastMain(nextEngSentenceMain, io2);
 
-        EngSentenceMainVO vo = getEngSentenceMainVO(nextEngSentenceMain);
+        EngSentenceMainVO vo = getEngSentenceMainVO(nextEngSentenceMain, io2);
         return vo;
     }
 
 
-
-
     /**
      * 查看句子中有没有被隐藏或者标记过
+     *
      * @param vos
      */
     private void getDetailOper(List<EngSentenceDetailVO> vos){

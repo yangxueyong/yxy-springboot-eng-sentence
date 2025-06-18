@@ -26,7 +26,14 @@
     from t_eng_sentence_main
     <where>
       <if test="id!= null and id!= ''">
-        id = #{id,jdbcType=VARCHAR}
+        and id = #{id,jdbcType=VARCHAR}
+      </if>
+      <if test="searchText!= null and searchText!= ''">
+        and
+        (
+          zn_name like concat('%', #{searchText,jdbcType=VARCHAR}, '%') or
+          en_name like concat('%', #{searchText,jdbcType=VARCHAR}, '%')
+        )
       </if>
       and status='available'
     </where>

@@ -26,9 +26,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EngSentenceMainNextIO {
     /**
-     * 类型
+     * 类型 上一页还是下一页
      */
     @Schema(name="type",description="类型")
     private String type;
+
+
+
+    /**
+     * 类型 学习还是练习
+     */
+    @Schema(name="pageType",description="pageType")
+    private String pageType;
+
 
 }

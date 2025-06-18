@@ -73,6 +73,13 @@ public class User {
      */
     @Schema(name="最近学习的mainId"/*,name="last_study_main_id*"*/)
     private String lastStudyMainId;
+
+    /**
+     * 最近练习的mainId
+     */
+    @Schema(name="最近练习的mainId"/*,name="lastPracticeMainId*"*/)
+    private String lastPracticeMainId;
+
     /**
      * 最近学习的detailId
      */

@@ -50,8 +50,8 @@ public class EngMainController {
 
     @PostMapping("/getIndexEngMain")
     @Operation(summary = "获取首页数据")
-    public R<EngSentenceMainVO> getIndexEngMain(){
-        return R.data(engSentenceMainService.getIndexEngMain());
+    public R<EngSentenceMainVO> getIndexEngMain(@RequestBody @Validated EngSentenceMainIO io){
+        return R.data(engSentenceMainService.getIndexEngMain(io));
     }
 
     @PostMapping("/operData")
@@ -98,6 +98,13 @@ public class EngMainController {
     @Operation(summary = "获取句子主表数据")
     public R<List<EngSentenceMain>> getEngMain(@RequestBody @Validated EngSentenceMainIO io){
         return R.data(engSentenceMainService.selectOrderBySort(io));
+    }
+
+    @PostMapping("/searchChangeEngMain")
+    @Operation(summary = "获取句子主表数据")
+    public R searchChangeEngMain(@RequestBody @Validated EngSentenceMainIO io){
+        engSentenceMainService.searchChangeEngMain(io);
+        return R.success("选择成功");
     }
 
 

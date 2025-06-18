@@ -18,11 +18,13 @@ public interface EngSentenceMainService {
 
     EngSentenceMain selectOrderByRandom(EngSentenceMainIO io);
 
-    EngSentenceMainVO getIndexEngMain();
+    EngSentenceMainVO getIndexEngMain(EngSentenceMainIO io);
 
     EngSentenceMainVO getIndexEngNextMain(EngSentenceMainNextIO ioo);
 
     EngSentenceMain selectNextBySort(EngSentenceMainIO io);
 
     EngSentenceMain selectUpBySort(EngSentenceMainIO io);
+
+    void searchChangeEngMain(EngSentenceMainIO io);
 }

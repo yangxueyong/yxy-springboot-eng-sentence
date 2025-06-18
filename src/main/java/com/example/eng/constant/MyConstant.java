@@ -16,4 +16,11 @@ public class MyConstant {
     public static final String DATA_TYPE_WORD = "word";
     public static final String USER_TYPE_GENERAL = "general";
     public static final String TYPE_NEXT = "next";
+
+    /**
+     * 最近学习 或 练习
+     */
+    public static final String TYPE_STUDY = "study";
+    public static final String TYPE_PRACTICE = "practice";
+
 }

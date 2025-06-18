@@ -22,7 +22,7 @@
   </select>
 
   <select id="selectByIO" resultMap="BaseResultMap">
-    select distinct w.*
+    select w.*
     from t_eng_sentence_word w
            inner join t_eng_sentence_detail_word_rel r on w.id =r.word_id
     where 1=1

@@ -1,14 +1,10 @@
 package com.example.eng.entity.eng.io;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 /**
  * 句型主表实体类
@@ -40,5 +36,17 @@ public class EngSentenceMainIO {
      */
     @Schema(name="sort",description="sort")
     private String sort;
+
+    /**
+     * 搜索的内容
+     */
+    @Schema(name="searchText",description="searchText")
+    private String searchText;
+
+    /**
+     * 类型 学习还是练习
+     */
+    @Schema(name="pageType",description="pageType")
+    private String pageType;
 
 }

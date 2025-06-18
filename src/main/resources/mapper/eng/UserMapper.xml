@@ -11,6 +11,7 @@
     <result column="en_name" jdbcType="VARCHAR" property="enName" />
     <result column="third_head_img_path" jdbcType="VARCHAR" property="thirdHeadImgPath" />
     <result column="last_study_main_id" jdbcType="VARCHAR" property="lastStudyMainId" />
+    <result column="last_practice_main_id" jdbcType="VARCHAR" property="lastPracticeMainId" />
     <result column="last_study_detail_id" jdbcType="VARCHAR" property="lastStudyDetailId" />
     <result column="last_study_word_id" jdbcType="VARCHAR" property="lastStudyWordId" />
     <result column="status" jdbcType="VARCHAR" property="status" />
@@ -20,7 +21,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, third_type, app_id,open_id,session_key, phone_no, en_name, third_head_img_path, last_study_main_id,last_study_detail_id,last_study_word_id,
+    id, third_type, app_id,open_id,session_key, phone_no, en_name, third_head_img_path,
+    last_study_main_id,last_practice_main_id,last_study_detail_id,last_study_word_id,
     status, create_time, update_time, user_type, member_due_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -78,6 +80,9 @@
       </if>
       <if test="lastStudyMainId != null">
         last_study_main_id = #{lastStudyMainId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastPracticeMainId != null">
+        last_practice_main_id = #{lastPracticeMainId,jdbcType=VARCHAR},
       </if>
       <if test="lastStudyDetailId != null">
         last_study_detail_id = #{lastStudyDetailId,jdbcType=VARCHAR},
