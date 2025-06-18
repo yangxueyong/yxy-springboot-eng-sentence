@@ -6,6 +6,7 @@ import com.example.eng.config.annotation.CustomVerifyUser;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.user.User;
+import com.example.eng.util.VerifyUserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -26,12 +27,6 @@ public class CustomVerifyUserAsp {
 
     @Before("@within(ann) || @annotation(ann)")
     public void before(JoinPoint joinPoint, CustomVerifyUser ann) {
-        User user = UserContext.getUser();
-        String userType = user.getUserType();
-        Date memberDueDate = user.getMemberDueDate();
-        if(ObjUtil.equal(MyConstant.USER_TYPE_GENERAL, userType)
-                || (memberDueDate != null && memberDueDate.before(DateUtil.date()))){
-            throw new RuntimeException("没有其他内容了---");
-        }
+        VerifyUserUtil.verifyUser();
     }
 }

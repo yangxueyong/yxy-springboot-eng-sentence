@@ -49,4 +49,10 @@ public class EngSentenceMainIO {
     @Schema(name="pageType",description="pageType")
     private String pageType;
 
+    /**
+     * 加载类型 随机
+     */
+    @Schema(name="loadType",description="loadType")
+    private String loadType;
+
 }

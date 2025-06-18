@@ -23,4 +23,8 @@ public class MyConstant {
     public static final String TYPE_STUDY = "study";
     public static final String TYPE_PRACTICE = "practice";
 
+    /**
+     * 加载方式
+     */
+    public static final String LOAD_TYPE_RANDOM = "random";
 }

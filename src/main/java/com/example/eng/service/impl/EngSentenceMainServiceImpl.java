@@ -22,6 +22,7 @@ import com.example.eng.service.EngSentenceDetailService;
 import com.example.eng.service.EngSentenceMainService;
 import com.example.eng.service.EngUserOperService;
 import com.example.eng.service.UserService;
+import com.example.eng.util.VerifyUserUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +88,17 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     @Override
     public EngSentenceMainVO getIndexEngMain(EngSentenceMainIO io) {
 
+        String loadType = io.getLoadType();
+
         //获取上次学习的主句
-        EngSentenceMain main = getLastEngSentenceMain(io);
+        EngSentenceMain main = null;
+
+        //是否为强制随机 不是强制随机 则加载上次学习的内容，如果是强制随机，需要判断用户权限
+        if(ObjUtil.equal(MyConstant.LOAD_TYPE_RANDOM, loadType)){
+            VerifyUserUtil.verifyUser();
+        }else{
+            main = getLastEngSentenceMain(io);
+        }
 
         //如果没有上次学习的主句，则随机选择一个主句学习
         if(main == null){
