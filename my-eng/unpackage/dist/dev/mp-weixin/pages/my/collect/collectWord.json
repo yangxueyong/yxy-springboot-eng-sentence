@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "收藏的单词",
+  "usingComponents": {
+    "a-trumpet": "../../../uni_modules/a-trumpet/components/a-trumpet/a-trumpet"
+  }
+}

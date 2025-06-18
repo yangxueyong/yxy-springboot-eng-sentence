@@ -1,0 +1,77 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "学学",
+	    		"enablePullDownRefresh" : true
+				// "navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/practice/practice",
+			"style" : 
+			{
+				"navigationBarTitleText" : "练习"
+			}
+		},
+		{
+			"path" : "pages/my/my",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的"
+			}
+		},
+		{
+			"path" : "pages/my/collect/collectSentence",
+			"style" : 
+			{
+				"navigationBarTitleText" : "收藏的句子",
+				"enablePullDownRefresh" : true
+			}
+		},
+		{
+			"path" : "pages/my/collect/collectWord",
+			"style" : 
+			{
+				"navigationBarTitleText" : "收藏的单词"
+			}
+		},
+		{
+			"path" : "components/search-bar/search-bar",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#9799a5",
+		"selectedColor": "#28B389",
+		"list": [
+			{
+				"text": "学学",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/images/tabBar/home.png",
+				"selectedIconPath": "static/images/tabBar/home-h.png"
+			},{
+				"text": "练练",
+				"pagePath": "pages/practice/practice",
+				"iconPath": "/static/images/tabBar/test.png",
+				"selectedIconPath": "static/images/tabBar/test-h.png"
+			},{
+				"text": "我的",
+				"pagePath": "pages/my/my",
+				"iconPath": "static/images/tabBar/user.png",
+				"selectedIconPath": "static/images/tabBar/user-h.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}

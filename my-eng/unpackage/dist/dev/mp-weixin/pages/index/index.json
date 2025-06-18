@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "学学",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "a-trumpet": "../../uni_modules/a-trumpet/components/a-trumpet/a-trumpet",
+    "search-bar": "../../components/search-bar/search-bar",
+    "uni-popup": "../../uni_modules/uni-popup/components/uni-popup/uni-popup"
+  }
+}

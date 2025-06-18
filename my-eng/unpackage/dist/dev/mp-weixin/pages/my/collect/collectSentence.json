@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "收藏的句子",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-icons": "../../../uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "a-trumpet": "../../../uni_modules/a-trumpet/components/a-trumpet/a-trumpet",
+    "uni-load-more": "../../../uni_modules/uni-load-more/components/uni-load-more/uni-load-more"
+  }
+}
