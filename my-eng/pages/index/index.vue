@@ -265,10 +265,14 @@
 		if(playMap != null){
 			playMap.forEach((value, id) => {
 			  value.stop();
+			  let itemm = null;
 			  if(type == "detail"){
-				  findItemById(id).isPlay = false;
+				 itemm = findItemById(id);
 			  }else{
-				  findWordById(id).isPlay = false;
+				 itemm = findWordById(id);
+			  }
+			  if(itemm != null){
+				itemm.isPlay = false;
 			  }
 			});
 		}

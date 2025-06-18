@@ -156,10 +156,14 @@ const _sfc_main = {
       if (playMap != null) {
         playMap.forEach((value, id) => {
           value.stop();
+          let itemm = null;
           if (type == "detail") {
-            findItemById(id).isPlay = false;
+            itemm = findItemById(id);
           } else {
-            findWordById(id).isPlay = false;
+            itemm = findWordById(id);
+          }
+          if (itemm != null) {
+            itemm.isPlay = false;
           }
         });
       }
@@ -170,20 +174,20 @@ const _sfc_main = {
       } else {
         audioUrl = common_utils_request.getWordVoicePath(e.webAudioPath);
       }
-      common_vendor.index.__f__("log", "at pages/index/index.vue:284", "音频地址->", audioUrl);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:288", "音频地址->", audioUrl);
       const innerAudioContext = common_vendor.index.createInnerAudioContext();
       innerAudioContext.autoplay = true;
       innerAudioContext.src = audioUrl;
       innerAudioContext.onPlay(() => {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:289", "开始播放");
+        common_vendor.index.__f__("log", "at pages/index/index.vue:293", "开始播放");
         common_vendor.index.hideLoading();
       });
       innerAudioContext.onError((res) => {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:293", res);
+        common_vendor.index.__f__("log", "at pages/index/index.vue:297", res);
         common_vendor.index.hideLoading();
       });
       innerAudioContext.onEnded((res) => {
-        common_vendor.index.__f__("log", "at pages/index/index.vue:299", "停止播放->", res);
+        common_vendor.index.__f__("log", "at pages/index/index.vue:303", "停止播放->", res);
         e.isPlay = false;
         common_vendor.index.hideLoading();
       });
