@@ -2,6 +2,8 @@ package com.example.eng.service;
 
 import com.example.eng.entity.eng.EngSentenceWord;
 import com.example.eng.entity.eng.io.EngSentenceWordIO;
+import com.example.eng.entity.eng.vo.EngCollectVO;
+import com.example.eng.entity.eng.vo.EngSentenceWordCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordVO;
 
 import java.util.List;
@@ -20,4 +22,8 @@ public interface EngSentenceWordService {
     List<EngSentenceWord> selectAll();
 
     void setAllWordVoice();
+
+    List<EngSentenceWordCollectVO> selectCollectWordByIO(EngSentenceWordIO io);
+
+    List<EngCollectVO> selectCollectByIO();
 }

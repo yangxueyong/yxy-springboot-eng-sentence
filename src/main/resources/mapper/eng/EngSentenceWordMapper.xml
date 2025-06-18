@@ -11,6 +11,10 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+  <resultMap id="ResultEngSentenceWordCollectVO" type="com.example.eng.entity.eng.vo.EngSentenceWordCollectVO" extends="BaseResultMap">
+    <result column="collect_id" jdbcType="BIGINT" property="collectId"/>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, zn_name, en_name, sort, local_audio_path, status, create_time, update_time
   </sql>
@@ -30,6 +34,22 @@
       and w.status ='available'
       and r.status ='available'
     order by r.sort
+  </select>
+
+  <select id="selectCollectWordByIO" resultMap="ResultEngSentenceWordCollectVO">
+    select
+           d.id,
+           d.zn_name,
+           d.en_name,
+           d.local_audio_path,
+           o.create_time,
+           o.id as collect_id
+    from t_eng_sentence_word d
+        inner join t_eng_user_oper o
+        on d.id = o.data_id and o.data_type ='word'
+    where o.user_id = #{userId}
+      and o.status ='available'
+    order by o.create_time desc
   </select>
 
   <select id="selectAll" resultMap="BaseResultMap">

@@ -2,6 +2,7 @@ package com.example.eng.mapper.eng;
 
 import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.io.EngSentenceDetailIO;
+import com.example.eng.entity.eng.vo.EngSentenceDetailCollectVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -40,6 +41,8 @@ public interface EngSentenceDetailMapper {
     EngSentenceDetail selectByPrimaryKey(String id);
 
     List<EngSentenceDetail> selectByIO(EngSentenceDetailIO io);
+
+    List<EngSentenceDetailCollectVO> selectCollectDetailByIO(EngSentenceDetailIO io);
 
     List<EngSentenceDetail> selectAll();
 

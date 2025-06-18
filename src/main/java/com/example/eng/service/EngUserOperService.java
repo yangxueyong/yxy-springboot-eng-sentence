@@ -1,7 +1,9 @@
 package com.example.eng.service;
 
+import com.example.eng.entity.base.BaseFlag;
 import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.EngUserOperIO;
+import com.example.eng.entity.eng.vo.EngSentenceWordVO;
 
 import java.util.List;
 
@@ -23,4 +25,8 @@ public interface EngUserOperService {
     int insertSelective(EngUserOper record);
 
     int deleteByIO(EngUserOperIO io);
+
+    public <T extends BaseFlag> void getOper(List<T> vos, String dataType);
+
+//    void getWordOper(List<EngSentenceWordVO> vos);
 }

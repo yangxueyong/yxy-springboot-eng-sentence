@@ -27,4 +27,5 @@ public class MyConstant {
      * 加载方式
      */
     public static final String LOAD_TYPE_RANDOM = "random";
+    public static final Object COLLECT_TYPE_SENTENCE = "sentence";
 }

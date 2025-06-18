@@ -6,6 +6,7 @@ import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngSentenceWord;
 import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.*;
+import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordVO;
 import com.example.eng.entity.res.R;
@@ -106,6 +107,21 @@ public class EngMainController {
         engSentenceMainService.searchChangeEngMain(io);
         return R.success("选择成功");
     }
+
+    @PostMapping("/getMyCollect")
+    @Operation(summary = "获取我的收藏")
+    public R getMyCollect(@RequestBody @Validated EngSentenceCollectIO io){
+        List<EngCollectVO> datas = engSentenceMainService.selectCollectByIO(io);
+        return R.data(datas);
+    }
+
+    @PostMapping("/delMyCollect")
+    @Operation(summary = "删除我的收藏")
+    public R delMyCollect(@RequestBody @Validated EngSentenceCollectDelIO io){
+        engSentenceMainService.delMyCollect(io);
+        return R.success("删除成功");
+    }
+
 
 
     @PostMapping("/getEngDetailList")

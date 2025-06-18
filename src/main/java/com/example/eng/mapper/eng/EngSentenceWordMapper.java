@@ -2,6 +2,7 @@ package com.example.eng.mapper.eng;
 
 import com.example.eng.entity.eng.EngSentenceWord;
 import com.example.eng.entity.eng.io.EngSentenceWordIO;
+import com.example.eng.entity.eng.vo.EngSentenceWordCollectVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -41,6 +42,7 @@ public interface EngSentenceWordMapper {
 
     List<EngSentenceWord> selectByIO(EngSentenceWordIO io);
 
+    List<EngSentenceWordCollectVO> selectCollectWordByIO(EngSentenceWordIO io);
     List<EngSentenceWord> selectAll();
 
     /**

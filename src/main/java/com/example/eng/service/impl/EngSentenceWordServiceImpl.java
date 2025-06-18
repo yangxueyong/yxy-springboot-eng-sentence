@@ -14,6 +14,8 @@ import com.example.eng.entity.eng.EngSentenceWord;
 import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.EngSentenceWordIO;
 import com.example.eng.entity.eng.io.EngUserOperIO;
+import com.example.eng.entity.eng.vo.EngCollectVO;
+import com.example.eng.entity.eng.vo.EngSentenceWordCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordVO;
 import com.example.eng.entity.translate.YoudaoTranslate;
 import com.example.eng.entity.translate.io.YoudaoTranslateEn2VoiceIO;
@@ -61,6 +63,41 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
     private YoudaoConfig youdaoConfig;
 
     @Override
+    public List<EngSentenceWordCollectVO> selectCollectWordByIO(EngSentenceWordIO io) {
+        return engSentenceWordMapper.selectCollectWordByIO(io);
+    }
+
+    @Override
+    public int updateByPrimaryKeySelective(EngSentenceWord record) {
+        return engSentenceWordMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public List<EngSentenceWord> selectAll() {
+        return engSentenceWordMapper.selectAll();
+    }
+
+    @Override
+    public List<EngCollectVO> selectCollectByIO() {
+        EngSentenceWordIO io = new EngSentenceWordIO();
+        io.setUserId(UserContext.getUser().getId());
+        List<EngSentenceWordCollectVO> engSentenceWordCollectVOS = selectCollectWordByIO(io);
+        List<EngCollectVO> vos = new ArrayList<>();
+        for (EngSentenceWordCollectVO word : engSentenceWordCollectVOS) {
+            setWordVoice(word);
+            EngCollectVO vo = new EngCollectVO();
+            vo.setId(String.valueOf(word.getCollectId()));
+            vo.setEnName(word.getEnName());
+            vo.setZnName(word.getZnName());
+            vo.setWebAudioPath(word.getWebAudioPath());
+            vo.setCreateTime(word.getCreateTime());
+            vos.add(vo);
+        }
+        engUserOperService.getOper(vos, MyConstant.DATA_TYPE_WORD);
+        return vos;
+    }
+
+    @Override
     public List<EngSentenceWordVO> selectByIO(EngSentenceWordIO io) {
         List<EngSentenceWord> engSentenceWords = engSentenceWordMapper.selectByIO(io);
         List<EngSentenceWordVO> vos = new ArrayList<>();
@@ -71,45 +108,11 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
             vos.add(vo);
         }
 
-        getWordOper(vos);
+        engUserOperService.getOper(vos, MyConstant.DATA_TYPE_WORD);
         return vos;
     }
 
-    /**
-     * 查看句子中有没有被隐藏或者标记过
-     * @param vos
-     */
-    private void getWordOper(List<EngSentenceWordVO> vos){
-        User user = UserContext.getUser();
 
-        List<String> dataIds = vos.stream()
-                .map(EngSentenceWordVO::getId)
-                .collect(Collectors.toList());
-
-        Map<String, EngSentenceWordVO> detailMap = vos.stream()
-                .collect(Collectors.toMap(EngSentenceWordVO::getId, v -> v, (p1, p2) -> p1));
-
-        EngUserOperIO io = new EngUserOperIO();
-        io.setUserId(user.getId());
-        io.setDataType(MyConstant.DATA_TYPE_WORD);
-        io.setDataIdList(dataIds);
-        io.setStatus(MyConstant.STATUS_AVAILABLE);
-        List<EngUserOper> engUserOpers = engUserOperService.selectByIO(io);
-        if(CollectionUtil.isEmpty(engUserOpers)){
-            return;
-        }
-        for (EngUserOper engUserOper : engUserOpers) {
-            String operType = engUserOper.getOperType();
-            String dataId = engUserOper.getDataId();
-            EngSentenceWordVO vo = detailMap.get(dataId);
-
-            if(ObjUtil.equal(MyConstant.OPER_TYPE_HIDE, operType)){
-                vo.setHide(MyConstant.OPER_TYPE_YES);
-            }else if(ObjUtil.equal(MyConstant.OPER_TYPE_FLAG, operType)){
-                vo.setFlag(MyConstant.OPER_TYPE_YES);
-            }
-        }
-    }
 
     /**
      * 设置单词的音频
@@ -163,15 +166,7 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
         updateByPrimaryKeySelective(word2);
     }
 
-    @Override
-    public int updateByPrimaryKeySelective(EngSentenceWord record) {
-        return engSentenceWordMapper.updateByPrimaryKeySelective(record);
-    }
 
-    @Override
-    public List<EngSentenceWord> selectAll() {
-        return engSentenceWordMapper.selectAll();
-    }
 
     @Override
     public void setAllWordVoice() {
@@ -180,4 +175,6 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
             setWordVoice(engSentenceWord);
         }
     }
+
+
 }

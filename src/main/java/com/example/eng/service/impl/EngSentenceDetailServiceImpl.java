@@ -8,16 +8,23 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
+import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.config.param.AudioParam;
 import com.example.eng.config.translate.YoudaoConfig;
+import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.io.EngSentenceDetailIO;
+import com.example.eng.entity.eng.io.EngSentenceWordIO;
+import com.example.eng.entity.eng.vo.EngCollectVO;
+import com.example.eng.entity.eng.vo.EngSentenceDetailCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
+import com.example.eng.entity.eng.vo.EngSentenceWordCollectVO;
 import com.example.eng.entity.translate.YoudaoTranslate;
 import com.example.eng.entity.translate.io.YoudaoTranslateEn2VoiceIO;
 import com.example.eng.mapper.eng.EngSentenceDetailMapper;
 import com.example.eng.service.EngSentenceDetailService;
+import com.example.eng.service.EngUserOperService;
 import com.example.eng.util.DownAudioUtil;
 import com.example.eng.util.translate.youdao.TranslateYouDaoUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -54,9 +61,52 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
     @Autowired
     private YoudaoConfig youdaoConfig;
 
+    @Autowired
+    private EngUserOperService engUserOperService;
+
     @Override
     public List<EngSentenceDetail> selectListByIO(EngSentenceDetailIO io) {
         return engSentenceDetailMapper.selectByIO(io);
+    }
+    @Override
+    public List<EngSentenceDetailCollectVO> selectCollectDetailByIO(EngSentenceDetailIO io) {
+        return engSentenceDetailMapper.selectCollectDetailByIO(io);
+    }
+    /**
+     * @param record
+     * @return int
+     */
+    @Override
+    public int updateByPrimaryKeySelective(EngSentenceDetail record) {
+        return engSentenceDetailMapper.updateByPrimaryKeySelective(record);
+    }
+
+
+    @Override
+    public List<EngSentenceDetail> selectAll() {
+        return engSentenceDetailMapper.selectAll();
+    }
+
+    @Override
+    public List<EngCollectVO> selectCollectByIO() {
+        EngSentenceDetailIO io = new EngSentenceDetailIO();
+        io.setUserId(UserContext.getUser().getId());
+        List<EngSentenceDetailCollectVO> detailCollectVOS = selectCollectDetailByIO(io);
+
+        List<EngCollectVO> vos = new ArrayList<>();
+        for (EngSentenceDetailCollectVO detail : detailCollectVOS) {
+            getAndDownDetail(detail);
+            EngCollectVO vo = new EngCollectVO();
+            vo.setId(String.valueOf(detail.getCollectId()));
+            vo.setEnName(detail.getEnName());
+            vo.setZnName(detail.getZnName());
+            vo.setWebAudioPath(detail.getWebAudioPath());
+            vo.setCreateTime(detail.getCreateTime());
+            vos.add(vo);
+        }
+
+        engUserOperService.getOper(vos, MyConstant.DATA_TYPE_DETAIL);
+        return vos;
     }
 
     @Override
@@ -87,19 +137,7 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
         return detailVOS;
     }
 
-    /**
-     * @param record
-     * @return int
-     */
-    @Override
-    public int updateByPrimaryKeySelective(EngSentenceDetail record) {
-        return engSentenceDetailMapper.updateByPrimaryKeySelective(record);
-    }
 
-    @Override
-    public List<EngSentenceDetail> selectAll() {
-        return engSentenceDetailMapper.selectAll();
-    }
 
     @Override
     public void downloadAllDetail() {
@@ -108,6 +146,7 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
             getAndDownDetail(engSentenceDetail);
         }
     }
+
 
     /**
      * 获取详情

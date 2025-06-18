@@ -2,34 +2,28 @@ package com.example.eng.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.example.eng.config.annotation.CustomVerifyUser;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.constant.MyConstant;
-import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngUserOper;
-import com.example.eng.entity.eng.io.EngSentenceMainIO;
-import com.example.eng.entity.eng.io.EngSentenceMainNextIO;
-import com.example.eng.entity.eng.io.EngUserOperIO;
+import com.example.eng.entity.eng.io.*;
+import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
 import com.example.eng.entity.user.User;
 import com.example.eng.mapper.eng.EngSentenceMainMapper;
-import com.example.eng.service.EngSentenceDetailService;
-import com.example.eng.service.EngSentenceMainService;
-import com.example.eng.service.EngUserOperService;
-import com.example.eng.service.UserService;
+import com.example.eng.service.*;
 import com.example.eng.util.VerifyUserUtil;
+import com.github.pagehelper.PageHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
 * EngSentenceMainImpl
@@ -41,6 +35,9 @@ import java.util.stream.Collectors;
 public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     @Autowired
     private EngSentenceMainMapper engSentenceMainMapper;
+
+    @Autowired
+    private EngSentenceWordService wordService;
 
     @Autowired
     private EngUserOperService engUserOperService;
@@ -64,6 +61,11 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     }
 
     @Override
+    public void delMyCollect(EngSentenceCollectDelIO io) {
+        engSentenceMainMapper.deleteByPrimaryKey(io.getId());
+    }
+
+    @Override
     public EngSentenceMain selectNextBySort(EngSentenceMainIO io) {
         return engSentenceMainMapper.selectNextBySort(io);
     }
@@ -80,6 +82,20 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         main.setId(io.getId());
         saveUserLastMain(main,io);
     }
+
+    @Override
+    public List<EngCollectVO> selectCollectByIO(EngSentenceCollectIO io) {
+        if(io.hasPrevious()){
+            PageHelper.startPage(io.getPageNum(),io.getPageSize());
+        }
+        if(ObjUtil.equal(MyConstant.DATA_TYPE_DETAIL, io.getCollectType())){
+            return detailService.selectCollectByIO();
+        }else{
+            return wordService.selectCollectByIO();
+        }
+    }
+
+
 
     /**
      * 获取首页数据
@@ -142,7 +158,7 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         List<EngSentenceDetailVO> detailVOS = detailService.getEngSentenceDetailVOS(main);
         //获取句子操作
         if(ObjUtil.equal(MyConstant.TYPE_STUDY, io2.getPageType())) {
-            getDetailOper(detailVOS);
+            engUserOperService.getOper(detailVOS,MyConstant.DATA_TYPE_DETAIL);
         }else{
             //练习的时候 要将答案隐藏掉
             detailVOS.forEach(d -> d.setHide(MyConstant.OPER_TYPE_YES));
@@ -219,42 +235,7 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     }
 
 
-    /**
-     * 查看句子中有没有被隐藏或者标记过
-     *
-     * @param vos
-     */
-    private void getDetailOper(List<EngSentenceDetailVO> vos){
-        User user = UserContext.getUser();
 
-        List<String> dataIds = vos.stream()
-                .map(EngSentenceDetailVO::getId)
-                .collect(Collectors.toList());
-
-        Map<String, EngSentenceDetailVO> detailMap = vos.stream()
-                .collect(Collectors.toMap(EngSentenceDetail::getId, v -> v, (p1, p2) -> p1));
-
-        EngUserOperIO io = new EngUserOperIO();
-        io.setUserId(user.getId());
-        io.setDataType(MyConstant.DATA_TYPE_DETAIL);
-        io.setDataIdList(dataIds);
-        io.setStatus(MyConstant.STATUS_AVAILABLE);
-        List<EngUserOper> engUserOpers = engUserOperService.selectByIO(io);
-        if(CollectionUtil.isEmpty(engUserOpers)){
-            return;
-        }
-        for (EngUserOper engUserOper : engUserOpers) {
-            String operType = engUserOper.getOperType();
-            String dataId = engUserOper.getDataId();
-            EngSentenceDetailVO vo = detailMap.get(dataId);
-
-            if(ObjUtil.equal(MyConstant.OPER_TYPE_HIDE, operType)){
-                vo.setHide(MyConstant.OPER_TYPE_YES);
-            }else if(ObjUtil.equal(MyConstant.OPER_TYPE_FLAG, operType)){
-                vo.setFlag(MyConstant.OPER_TYPE_YES);
-            }
-        }
-    }
 
     /**
      * 查看主句有没有被隐藏或者标记过

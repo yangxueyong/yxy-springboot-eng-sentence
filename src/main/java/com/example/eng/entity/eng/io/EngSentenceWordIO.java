@@ -16,4 +16,10 @@ public class EngSentenceWordIO {
 
     @Schema(name="id",description="详情id")
     private String detailId;
+
+    /**
+     * 用户id
+     */
+    @Schema(description="用户id"/*,name="mainId*"*/)
+    private Long userId;
 }
