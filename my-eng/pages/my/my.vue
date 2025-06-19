@@ -61,6 +61,12 @@ const userinfo = ref(uni.getStorageSync("myUser") || {"nickName":"未登录","av
 
 
 function userLogin(type, getPhoneRes){ 
+	uni.showLoading({
+		"title":"登录中..."
+	});
+	setTimeout(()=>{
+		uni.hideLoading();
+	},10*1000);
 	//获取用户的基本信息，昵称等
 	uni.login({
 	    provider: 'weixin',
@@ -100,7 +106,7 @@ function getUserOpenId(){
 		},
 		fail: function (err) {
 	        // 登录授权失败
-	        // err.code是错误码
+	        // err.code是错误码 
 	    }
 	})
 }
@@ -122,6 +128,7 @@ const getWechatMiniSessionKey =async(code)=>{
 	
 	
 	uni.setStorageSync("myUser", userinfo.value);
+	uni.hideLoading();
 	
 	// if(type == "getPhoneNumber"){
 	// 	let phone_encryptedData = getPhoneRes.detail.encryptedData //用于解密

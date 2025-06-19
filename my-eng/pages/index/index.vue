@@ -94,7 +94,7 @@
 	const flagPopup = ref(null);
 	const searchPopup = ref(null);
 	const currentItem = ref(null);
-	const playMap = new Map();
+	let playMap = new Map();
 	//当前单元所有的数据
 	const datas=ref([]); 
 	
@@ -114,7 +114,8 @@
 		mainData.value = res.data;
 		datas.value = res.data.details;
 		uni.stopPullDownRefresh();
-		uni.hideLoading()
+		uni.hideLoading();
+		playMap = new Map();
 	}
 	getEngMain(); 
 	
@@ -152,7 +153,8 @@
 		mainData.value = res.data;
 		datas.value = res.data.details;
 		uni.stopPullDownRefresh();
-		uni.hideLoading()
+		uni.hideLoading();
+		playMap = new Map();
 	} 
 	
 	const getIndexEngUpMain=async()=>{
@@ -164,7 +166,8 @@
 		mainData.value = res.data;
 		datas.value = res.data.details;
 		uni.stopPullDownRefresh();
-		uni.hideLoading()
+		uni.hideLoading();
+		playMap = new Map();
 	} 
 	
 	 
