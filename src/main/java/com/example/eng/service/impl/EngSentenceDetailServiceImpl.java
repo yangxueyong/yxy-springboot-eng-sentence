@@ -3,23 +3,17 @@ package com.example.eng.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSON;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.config.param.AudioParam;
-import com.example.eng.config.translate.YoudaoConfig;
+import com.example.eng.config.param.translate.YoudaoConfig;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.io.EngSentenceDetailIO;
-import com.example.eng.entity.eng.io.EngSentenceWordIO;
 import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
-import com.example.eng.entity.eng.vo.EngSentenceWordCollectVO;
 import com.example.eng.entity.translate.YoudaoTranslate;
 import com.example.eng.entity.translate.io.YoudaoTranslateEn2VoiceIO;
 import com.example.eng.mapper.eng.EngSentenceDetailMapper;
@@ -28,17 +22,10 @@ import com.example.eng.service.EngUserOperService;
 import com.example.eng.util.DownAudioUtil;
 import com.example.eng.util.translate.youdao.TranslateYouDaoUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Call;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,8 +156,9 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
 
         //如果本地音频存在，则返回
         if(!StrUtil.isEmptyIfStr(localAudioPath)
-                && FileUtil.exists(Path.of(localAudioPath),true)
-                && new File(localAudioPath).length() > 500){
+//                && FileUtil.exists(Path.of(localAudioPath),true)
+//                && new File(localAudioPath).length() > 500
+        ){
             return engSentenceDetail;
         }
         //如果本地音频不存在，则下载音频

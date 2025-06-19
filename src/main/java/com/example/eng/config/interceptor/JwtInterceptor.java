@@ -1,18 +1,21 @@
 package com.example.eng.config.interceptor;
  
 import cn.hutool.core.util.StrUtil;
-import com.example.eng.config.wechat.WechatConfig;
+import com.example.eng.config.param.wechat.WechatConfig;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.user.User;
 import com.example.eng.entity.user.wechat.io.WechatUserTokenIO;
 import com.example.eng.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
- 
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 @Component
 @Slf4j
@@ -53,6 +56,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 .thirdType(thirdType)
                 .openId(openId)
                 .build();
+        log.info("正在验证用户-> openId:{},appId:{},thirdType:{}",openId,appId,thirdType);
         User user = userService.selectByOpenId(io);
         if(user == null){
             throw new RuntimeException("登录信息无效，请重新登录");

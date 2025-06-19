@@ -3,23 +3,37 @@ package com.example.eng.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * 下载音频
  * @author yxy
  * @date 2024/10/16
  */
+@Slf4j
 public class DownAudioUtil {
     private static OkHttp3ClientHttpRequestFactory requestFactory = new OkHttp3ClientHttpRequestFactory();
     private static RestTemplate restTemplate = new RestTemplate(requestFactory);
+
+    public static void downAudioToLocalIfNotExist(String url, String fileName) {
+        File file = new File(fileName);
+        String absolutePath = file.getParentFile().getAbsolutePath();
+        if(!new File(absolutePath).exists()){
+             new File(absolutePath).mkdirs();
+        }
+        log.info("开始下载音频-url：{}", url);
+        log.info("开始下载音频-local：{}", absolutePath);
+        HttpResponse execute = HttpUtil.createGet(url)
+                .execute();
+
+        FileUtil.writeBytes(execute.bodyBytes(),file);
+    }
+
 
     /**
      * 下载音频到本地
@@ -35,14 +49,10 @@ public class DownAudioUtil {
     }
 
     public static void main(String[] args) {
-        String url = "https://openapi.youdao.com/ttsapi?q=how+are+you+today%3F&langType=en-USA&sign=C17F20AF54E50A495A0E77D1B0E12DD6&salt=1750126172470&voice=4&format=mp3&appKey=4250569f7b9f3b38&ttsVoiceStrict=false&osType=api";
-        String fileName = "/Users/yxy/tmp/eng/audio.mp3";
-        HttpResponse execute = HttpUtil.createGet(url)
-                .execute();
+        String url = "https://7072-prod-9gnou9ab31f4ae8d-1364979505.tcb.qcloud.la/eng/00003.mp3";
+        String fileName = "/Users/yxy/work/java/demo/yxy-springboot-eng-sentence/yxy-springboot-eng-sentence/tmp/eng/kk.mp3";
 
-        FileUtil.writeBytes(execute.bodyBytes(),fileName);
-
-//        downAudioToLocal(url, fileName);
+        downAudioToLocalIfNotExist(url, fileName);
     }
     /**
      * 写文件到指定路径

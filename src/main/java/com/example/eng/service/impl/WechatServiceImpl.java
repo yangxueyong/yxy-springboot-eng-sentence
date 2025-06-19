@@ -6,26 +6,18 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
-import com.example.eng.config.wechat.WechatConfig;
+import com.example.eng.config.param.wechat.WechatConfig;
 import com.example.eng.constant.MyConstant;
-import com.example.eng.entity.eng.EngSentenceMain;
-import com.example.eng.entity.eng.io.EngSentenceMainIO;
 import com.example.eng.entity.user.User;
 import com.example.eng.entity.user.wechat.WechatMiniAppSessionKey;
-import com.example.eng.entity.user.wechat.WechatToken;
-import com.example.eng.entity.user.wechat.WechatUser;
-import com.example.eng.entity.user.wechat.io.WechatMiniAppSessionIO;
 import com.example.eng.entity.user.wechat.io.WechatTokenIO;
-import com.example.eng.mapper.eng.EngSentenceMainMapper;
-import com.example.eng.service.EngSentenceMainService;
 import com.example.eng.service.UserService;
 import com.example.eng.service.WechatService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpClient;
-import java.util.List;
+//import java.net.http.HttpClient;
 import java.util.Map;
 
 /**

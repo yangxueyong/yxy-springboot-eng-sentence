@@ -1,25 +1,19 @@
 package com.example.eng.service.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.config.param.AudioParam;
-import com.example.eng.config.translate.BaiduConfig;
-import com.example.eng.config.translate.YoudaoConfig;
+import com.example.eng.config.param.translate.BaiduConfig;
+import com.example.eng.config.param.translate.YoudaoConfig;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.eng.EngSentenceWord;
-import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.EngSentenceWordIO;
-import com.example.eng.entity.eng.io.EngUserOperIO;
 import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordVO;
 import com.example.eng.entity.translate.YoudaoTranslate;
 import com.example.eng.entity.translate.io.YoudaoTranslateEn2VoiceIO;
-import com.example.eng.entity.user.User;
 import com.example.eng.mapper.eng.EngSentenceWordMapper;
 import com.example.eng.service.EngSentenceWordService;
 import com.example.eng.service.EngUserOperService;
@@ -33,12 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
 * EngSentenceWordImpl
@@ -141,8 +131,9 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
         String localAudioPath = word.getLocalAudioPath();
         //如果本地音频存在，则返回
         if(!StrUtil.isEmptyIfStr(localAudioPath)
-                && FileUtil.exists(Path.of(localAudioPath),true)
-                && new File(localAudioPath).length() > 500){
+//                && FileUtil.exists(Path.of(localAudioPath),true)
+//                && new File(localAudioPath).length() > 500
+        ){
             return;
         }
 

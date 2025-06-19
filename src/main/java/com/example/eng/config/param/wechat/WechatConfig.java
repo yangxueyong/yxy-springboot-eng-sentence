@@ -1,4 +1,4 @@
-package com.example.eng.config.wechat;
+package com.example.eng.config.param.wechat;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

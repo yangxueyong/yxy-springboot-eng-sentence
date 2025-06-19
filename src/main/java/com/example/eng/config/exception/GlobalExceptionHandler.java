@@ -20,7 +20,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<R> handleGenericException(Exception ex) {
         log.error(ex.getMessage(), ex);
         R r = null;
-        if(ex instanceof CustomException cx){
+        if(ex instanceof CustomException){
+            CustomException cx = (CustomException) ex;
             r = R.fail(cx);
         }else{
             r = R.fail(ex.getMessage());

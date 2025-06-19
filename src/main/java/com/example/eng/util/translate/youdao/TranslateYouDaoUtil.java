@@ -4,7 +4,7 @@ package com.example.eng.util.translate.youdao;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.example.eng.config.translate.YoudaoConfig;
+import com.example.eng.config.param.translate.YoudaoConfig;
 import com.example.eng.entity.translate.YoudaoTranslate;
 import com.example.eng.entity.translate.io.YoudaoTranslateEn2VoiceIO;
 

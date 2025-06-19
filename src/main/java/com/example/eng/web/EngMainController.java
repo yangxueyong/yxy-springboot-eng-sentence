@@ -1,6 +1,9 @@
 package com.example.eng.web;
 
 import com.example.eng.config.param.AudioParam;
+import com.example.eng.config.param.oss.OssConfig;
+import com.example.eng.entity.down.io.DownLoadFileIO;
+import com.example.eng.entity.down.vo.DownLoadFileVO;
 import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngSentenceWord;
@@ -48,6 +51,12 @@ public class EngMainController {
 
     @Autowired
     private AudioParam audioParam;
+
+    @Autowired
+    private OssConfig ossConfig;
+
+    @Autowired
+    private DownLoadService downLoadService;
 
     @PostMapping("/getIndexEngMain")
     @Operation(summary = "获取首页数据")
@@ -137,32 +146,50 @@ public class EngMainController {
     }
 
 
-    @GetMapping("/files/detail/{filename}")
+    @GetMapping("/files/detail/{filename:.+}")
     public ResponseEntity<InputStreamResource> getDetailVoice(@PathVariable String filename) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(audioParam.getLocalPath() + filename);
+//        FileInputStream fileInputStream = new FileInputStream(audioParam.getLocalPath() + filename);
+//
+//        InputStreamResource resource = new InputStreamResource(fileInputStream);
 
-        InputStreamResource resource = new InputStreamResource(fileInputStream);
+        DownLoadFileVO downLoadFileVO = downLoadService.downloadFile(DownLoadFileIO.builder()
+                .fileName(filename)
+                .filePath(audioParam.getLocalPath())
+                .fileWebUrl(ossConfig.getWxBackEngUrl())
+                .fileWebLocalPath(ossConfig.getWxBackEngLocalPath())
+                .build());
+        InputStreamResource resource = downLoadFileVO.getResource();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=" + filename);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .contentLength(fileInputStream.available())
+                .contentLength(downLoadFileVO.getFileInputStream().available())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
 
-    @GetMapping("/files/word/{filename}")
+    @GetMapping("/files/word/{filename:.+}")
     public ResponseEntity<InputStreamResource> getWordVoice(@PathVariable String filename) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(audioParam.getWordLocalPath() + filename);
+//        FileInputStream fileInputStream = new FileInputStream(audioParam.getWordLocalPath() + filename);
+//
+//        InputStreamResource resource = new InputStreamResource(fileInputStream);
 
-        InputStreamResource resource = new InputStreamResource(fileInputStream);
+        DownLoadFileVO downLoadFileVO = downLoadService.downloadFile(DownLoadFileIO.builder()
+                .fileName(filename)
+                .filePath(audioParam.getWordLocalPath())
+                .fileWebUrl(ossConfig.getWxBackEngWordUrl())
+                .fileWebLocalPath(ossConfig.getWxBackEngWordLocalPath())
+                .build());
+        InputStreamResource resource = downLoadFileVO.getResource();
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=" + filename);
 
         return ResponseEntity.ok()
                 .headers(headers)
-                .contentLength(fileInputStream.available())
+                .contentLength(downLoadFileVO.getFileInputStream().available())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }

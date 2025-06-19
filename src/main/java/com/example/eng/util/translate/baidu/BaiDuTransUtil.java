@@ -2,7 +2,7 @@ package com.example.eng.util.translate.baidu;
 
 
 import com.alibaba.fastjson2.JSON;
-import com.example.eng.config.translate.BaiduConfig;
+import com.example.eng.config.param.translate.BaiduConfig;
 
 public class BaiDuTransUtil {
 
