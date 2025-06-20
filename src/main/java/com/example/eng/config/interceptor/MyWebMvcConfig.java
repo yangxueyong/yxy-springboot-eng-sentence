@@ -1,24 +1,34 @@
-package com.example.eng.config.swagger;
-
+package com.example.eng.config.interceptor;
+ 
 import com.example.eng.config.handler.TraceInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * @author :XXX
- * @date :2021-02-07 17:52
- * @description :
- */
+
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurationSupport {
+@EnableWebMvc
+public class MyWebMvcConfig implements WebMvcConfigurer {
+ 
     @Override
-    protected void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 注册拦截器，要声明拦截器对象和要拦截的请求
+        //配置jwt的拦截器规则
+        registry.addInterceptor(jwtInterceptor())
+                //所有路径都被拦截
+                .addPathPatterns("/**")
+                .excludePathPatterns("/user/**");
 
-        registry.addInterceptor(new TraceInterceptor()).addPathPatterns("/**");
-
-        super.addInterceptors(registry);
+        registry.addInterceptor(new TraceInterceptor())
+                .addPathPatterns("/**");
+    }
+ 
+    @Bean
+    public JwtInterceptor jwtInterceptor() {
+        return new JwtInterceptor();
     }
 
     @Override
@@ -37,4 +47,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
     }
+ 
 }
+ 
