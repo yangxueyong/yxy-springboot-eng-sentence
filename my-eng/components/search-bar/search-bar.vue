@@ -62,7 +62,7 @@
 		uni.getSystemInfo({
 			success:(res)=>{
 				console.log("获取到的系统信息",res);
-				showLeftWidth.value = res.windowWidth - 50;
+				showLeftWidth.value = res.windowWidth - 100;
 			}
 		})
 	}
