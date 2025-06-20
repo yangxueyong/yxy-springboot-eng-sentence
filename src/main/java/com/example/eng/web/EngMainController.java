@@ -90,29 +90,14 @@ public class EngMainController {
         return R.data(engSentenceMainService.getIndexEngNextMain(ioo));
     }
 
-
-//    @PostMapping("/downloadAllDetail")
-//    @Operation(summary = "下载所有详情数据")
-//    public R downloadAllDetail(){
-//        engSentenceDetailService.downloadAllDetail();
-//        return R.success("下载成功");
-//    }
-//
-//    @PostMapping("/setAllWordVoice")
-//    @Operation(summary = "下载所有单词数据")
-//    public R setAllWordVoice(){
-//        engSentenceWordService.setAllWordVoice();
-//        return R.success("下载成功");
-//    }
-
     @PostMapping("/getEngMain")
-    @Operation(summary = "获取句子主表数据")
+    @Operation(summary = "搜索句子主表数据")
     public R<List<EngSentenceMain>> getEngMain(@RequestBody @Validated EngSentenceMainIO io){
         return R.data(engSentenceMainService.selectOrderBySort(io));
     }
 
     @PostMapping("/searchChangeEngMain")
-    @Operation(summary = "获取句子主表数据")
+    @Operation(summary = "选择某一条搜索出来的句子主表数据")
     public R searchChangeEngMain(@RequestBody @Validated EngSentenceMainIO io){
         engSentenceMainService.searchChangeEngMain(io);
         return R.success("选择成功");
@@ -131,21 +116,6 @@ public class EngMainController {
         engSentenceMainService.delMyCollect(io);
         return R.success("删除成功");
     }
-
-
-
-    @PostMapping("/getEngDetailList")
-    @Operation(summary = "获取句子详情数据")
-    public R<List<EngSentenceDetail>> getEngDetailList(@RequestBody @Validated EngSentenceDetailIO io){
-        return R.data(engSentenceDetailService.selectListByIO(io));
-    }
-
-    @PostMapping("/getEngDetail")
-    @Operation(summary = "获取句子详情数据")
-    public R<EngSentenceDetail> getEngDetail(@RequestBody @Validated EngSentenceDetailIO io){
-        return R.data(engSentenceDetailService.selectDetailByIO(io));
-    }
-
 
     @GetMapping("/files/detail/{filename:.+}/{detailId}")
     public ResponseEntity<InputStreamResource> getDetailVoice(@PathVariable String filename,
