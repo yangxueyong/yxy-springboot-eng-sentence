@@ -2,6 +2,7 @@ package com.example.eng.web;
 
 import com.example.eng.config.param.AudioParam;
 import com.example.eng.config.param.oss.OssConfig;
+import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.down.io.DownLoadFileIO;
 import com.example.eng.entity.down.vo.DownLoadFileVO;
 import com.example.eng.entity.eng.EngSentenceDetail;
@@ -146,17 +147,16 @@ public class EngMainController {
     }
 
 
-    @GetMapping("/files/detail/{filename:.+}")
-    public ResponseEntity<InputStreamResource> getDetailVoice(@PathVariable String filename) throws IOException {
-//        FileInputStream fileInputStream = new FileInputStream(audioParam.getLocalPath() + filename);
-//
-//        InputStreamResource resource = new InputStreamResource(fileInputStream);
-
+    @GetMapping("/files/detail/{filename:.+}/{detailId}")
+    public ResponseEntity<InputStreamResource> getDetailVoice(@PathVariable String filename,
+                                                              @PathVariable String detailId) throws IOException {
         DownLoadFileVO downLoadFileVO = downLoadService.downloadFile(DownLoadFileIO.builder()
                 .fileName(filename)
                 .filePath(audioParam.getLocalPath())
                 .fileWebUrl(ossConfig.getWxBackEngUrl())
                 .fileWebLocalPath(ossConfig.getWxBackEngLocalPath())
+                .dataType(MyConstant.DATA_TYPE_DETAIL)
+                .detailId(detailId)
                 .build());
         InputStreamResource resource = downLoadFileVO.getResource();
 
@@ -172,15 +172,14 @@ public class EngMainController {
 
     @GetMapping("/files/word/{filename:.+}")
     public ResponseEntity<InputStreamResource> getWordVoice(@PathVariable String filename) throws IOException {
-//        FileInputStream fileInputStream = new FileInputStream(audioParam.getWordLocalPath() + filename);
-//
-//        InputStreamResource resource = new InputStreamResource(fileInputStream);
-
         DownLoadFileVO downLoadFileVO = downLoadService.downloadFile(DownLoadFileIO.builder()
                 .fileName(filename)
                 .filePath(audioParam.getWordLocalPath())
                 .fileWebUrl(ossConfig.getWxBackEngWordUrl())
                 .fileWebLocalPath(ossConfig.getWxBackEngWordLocalPath())
+                .dataType(MyConstant.DATA_TYPE_WORD)
+//                .detailId(detailId)
+//                .wordId(wordId)
                 .build());
         InputStreamResource resource = downLoadFileVO.getResource();
 

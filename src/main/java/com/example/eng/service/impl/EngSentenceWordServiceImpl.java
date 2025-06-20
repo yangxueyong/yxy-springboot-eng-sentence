@@ -77,6 +77,7 @@ public class EngSentenceWordServiceImpl implements EngSentenceWordService {
             setWordVoice(word);
             EngCollectVO vo = new EngCollectVO();
             vo.setId(String.valueOf(word.getCollectId()));
+            vo.setWordId(word.getId());
             vo.setEnName(word.getEnName());
             vo.setZnName(word.getZnName());
             vo.setWebAudioPath(word.getWebAudioPath());

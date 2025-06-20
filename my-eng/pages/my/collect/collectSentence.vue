@@ -125,20 +125,16 @@
 		if(playMap != null){
 			playMap.forEach((value, id) => {
 			  value.stop();
-			  if(type == "detail"){
-				  findItemById(id).isPlay = false;
-			  }else{
-				  findWordById(id).isPlay = false;
-			  }
+			  findItemById(id).isPlay = false;
 			});
 		}
 		e.isPlay = true;
 		
-		let audioUrl = null; 
+		let audioUrl = null;
 		if(type == "detail"){
-			audioUrl = getDetailVoicePath(e.webAudioPath);
+			audioUrl = getDetailVoicePath(e);
 		}else{
-			audioUrl = getWordVoicePath(e.webAudioPath);
+			audioUrl = getWordVoicePath(e);
 		}
 		
 		console.log("音频地址->",audioUrl);
@@ -187,7 +183,7 @@
 				background: #f3f7f8; 
 				border-radius: 20rpx;
 				padding: 15rpx;  
-				
+				position: relative; 
 				.favoriteTimeMainCls{
 					font-size: 25rpx;
 					padding: 10rpx;

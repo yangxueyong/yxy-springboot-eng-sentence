@@ -52,6 +52,11 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
     private EngUserOperService engUserOperService;
 
     @Override
+    public EngSentenceDetail selectByPrimaryKey(String id) {
+        return engSentenceDetailMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public List<EngSentenceDetail> selectListByIO(EngSentenceDetailIO io) {
         return engSentenceDetailMapper.selectByIO(io);
     }
@@ -85,6 +90,7 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
             getAndDownDetail(detail);
             EngCollectVO vo = new EngCollectVO();
             vo.setId(String.valueOf(detail.getCollectId()));
+            vo.setDetailId(detail.getId());
             vo.setEnName(detail.getEnName());
             vo.setZnName(detail.getZnName());
             vo.setWebAudioPath(detail.getWebAudioPath());

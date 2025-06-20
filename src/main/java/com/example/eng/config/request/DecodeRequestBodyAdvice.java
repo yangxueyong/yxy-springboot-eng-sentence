@@ -67,19 +67,7 @@ public class DecodeRequestBodyAdvice implements RequestBodyAdvice {
         HttpHeaders headers = inputMessage.getHeaders();
         String bodyStr = IOUtils.toString(body1, "UTF-8");
         try {
-//            Class<?> parameterType = methodParameter.getParameterType();
-//            Class<Q> qClass = Q.class;
-//            if (methodParameter.getMethod().isAnnotationPresent(CustomValidation.class)) {
-//                if (parameterType == qClass) {
-//                    Class actualTypeArgument = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
-//                    Q q = parseResultV2(bodyStr, actualTypeArgument);
-//                    Object body = q.getBody();
-//                    validator(body);
-//                } else {
-//                    Object o = parseResultV3(bodyStr, parameterType);
-//                    validator(o);
-//                }
-//            }
+            log.info("入参->{}", bodyStr);
         } catch (Exception e) {
             log.error("beforeBodyRead报错 :【" + methodParameter.getMethod().getName() + "】 ：" + e.getMessage());
             throw e;

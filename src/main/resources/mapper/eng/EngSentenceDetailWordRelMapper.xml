@@ -21,6 +21,16 @@
     where id = #{id,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectByIO" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_eng_sentence_detail_word_rel
+    where detail_id = #{detailId,jdbcType=VARCHAR}
+    and word_id = #{wordId,jdbcType=VARCHAR}
+    and main_id = #{mainId,jdbcType=VARCHAR}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from t_eng_sentence_detail_word_rel
     where id = #{id,jdbcType=VARCHAR}

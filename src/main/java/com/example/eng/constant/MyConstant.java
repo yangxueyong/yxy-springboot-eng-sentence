@@ -27,5 +27,10 @@ public class MyConstant {
      * 加载方式
      */
     public static final String LOAD_TYPE_RANDOM = "random";
-    public static final Object COLLECT_TYPE_SENTENCE = "sentence";
+    public static final String COLLECT_TYPE_SENTENCE = "sentence";
+
+    /**
+     * "no_audio.mp3"
+     */
+    public static final String NO_AUDIO_MP3 ="no_audio.mp3";
 }

@@ -283,9 +283,9 @@
 		
 		let audioUrl = null;
 		if(type == "detail"){
-			audioUrl = getDetailVoicePath(e.webAudioPath);
+			audioUrl = getDetailVoicePath(e);
 		}else{
-			audioUrl = getWordVoicePath(e.webAudioPath);
+			audioUrl = getWordVoicePath(e);
 		}
 		
 		console.log("音频地址->",audioUrl);

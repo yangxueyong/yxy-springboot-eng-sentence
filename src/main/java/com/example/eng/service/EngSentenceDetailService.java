@@ -16,6 +16,8 @@ import java.util.List;
 * @date 2024-10-12 17:07:11
 */
 public interface EngSentenceDetailService {
+    EngSentenceDetail selectByPrimaryKey(String id);
+
     List<EngSentenceDetail> selectListByIO(EngSentenceDetailIO io);
 
     List<EngSentenceDetail> selectAllDetailByIO(EngSentenceDetailIO io);

@@ -1,5 +1,6 @@
 package com.example.eng.config.request;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,11 @@ public class DecodeResponseAdvice implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        try {
+            log.info("返参->{}", JSON.toJSONString(body));
+        }catch (Exception e){
+            log.warn("参数无法序列化->{}", e.getMessage());
+        }
         return body;
     }
 }

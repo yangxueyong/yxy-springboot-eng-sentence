@@ -27,6 +27,17 @@ public class EngCollectVO implements BaseFlag {
     private String id;
 
     /**
+     * 句子id
+     */
+    private String detailId;
+
+    /**
+     * 词语id
+     */
+    private String wordId;
+
+
+    /**
      * 中文描述
      */
     @Schema(description="中文描述",name="znName")

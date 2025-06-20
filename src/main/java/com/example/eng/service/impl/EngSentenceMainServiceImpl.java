@@ -111,7 +111,7 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
 
         //是否为强制随机 不是强制随机 则加载上次学习的内容，如果是强制随机，需要判断用户权限
         if(ObjUtil.equal(MyConstant.LOAD_TYPE_RANDOM, loadType)){
-            VerifyUserUtil.verifyUser();
+            VerifyUserUtil.verifyUserIsMember();
         }else{
             main = getLastEngSentenceMain(io);
         }

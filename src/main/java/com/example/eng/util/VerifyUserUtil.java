@@ -15,14 +15,30 @@ import java.util.Date;
  */
 public class VerifyUserUtil {
 
-    public static boolean verifyUser() {
+    /**
+     * 判断是否为会员用户
+     * @return boolean
+     */
+    public static boolean verifyUserIsMember() {
+        if(verifyUserIsGeneral()){
+            throw new RuntimeException("没有其他内容了---");
+        }
+        return true;
+    }
+
+    /**
+     * 判断用户是否为普通用户
+     * @return boolean
+     */
+    public static boolean verifyUserIsGeneral() {
         User user = UserContext.getUser();
         String userType = user.getUserType();
         Date memberDueDate = user.getMemberDueDate();
         if(ObjUtil.equal(MyConstant.USER_TYPE_GENERAL, userType)
-                || (memberDueDate != null && memberDueDate.before(DateUtil.date()))){
-            throw new RuntimeException("没有其他内容了---");
+                || memberDueDate == null
+                || memberDueDate.before(DateUtil.date())){
+            return true;
         }
-        return true;
+        return false;
     }
 }

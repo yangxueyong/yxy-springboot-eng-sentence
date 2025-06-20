@@ -1,7 +1,10 @@
 package com.example.eng.mapper.eng;
 
 import com.example.eng.entity.eng.EngSentenceDetailWordRel;
+import com.example.eng.entity.eng.io.EngSentenceDetailWordRelIO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
 * Interface
@@ -35,6 +38,8 @@ public interface EngSentenceDetailWordRelMapper {
      * @param id
      */
     EngSentenceDetailWordRel selectByPrimaryKey(String id);
+
+    List<EngSentenceDetailWordRel> selectByIO(EngSentenceDetailWordRelIO io);
 
     /**
      * 修改数据(推荐使用)
