@@ -5,7 +5,7 @@
 				<view class="example-body"> 
 					<uni-drawer ref="showLeft" mode="left" :width="showLeftWidth">
 						<view>
-							<uni-search-bar class="uni-mt-10" radius="5" placeholder="自动显示隐藏" clearButton="auto" cancelButton="none" @confirm="search" />
+							<uni-search-bar class="uni-mt-10" radius="5" placeholder="请输入你想搜索的内容" clearButton="auto" cancelButton="none" @confirm="search" />
 						</view>
 						<scroll-view scroll-y>
 						<view class="searchResData"> 
