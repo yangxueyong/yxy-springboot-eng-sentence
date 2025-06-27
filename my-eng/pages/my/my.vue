@@ -1,7 +1,7 @@
 <template>
 	<view class="box">
 		<!-- <button type="default" open-type="getPhoneNumber" @getphonenumber="decryptPhoneNumber">获取手机号</button> -->
-		<view class="userInfo" @click="userLogin()" v-if="userinfo">
+		<view class="userInfo" @click="openChooseHead()" v-if="userinfo">
 			<view class="avatar">
 				<image :src="userinfo.avatarUrl" mode="aspectFill"></image>
 			</view>
@@ -50,6 +50,11 @@
 				 </view>
 			 </view>
 		</view> 
+		<uni-popup ref="myHeadPopup" :is-mask-click="true">
+			<get-wx-user-info 
+			@chooseDone="onChooseDone" 
+			ref="myHeadBar"></get-wx-user-info>
+		</uni-popup> 
 	</view>
 </template>
 
@@ -57,10 +62,21 @@
 import {ref} from "vue";
 import {apiGetWechatMiniSessionKey} from "@/common/api/apis.js"
 
+const myHeadPopup = ref(null);
 const userinfo = ref(uni.getStorageSync("myUser") || {"nickName":"未登录","avatarUrl":"/static/images/user/noLogin.png"})
+let userHeadAndName = null;
 
+function onChooseDone(e){ 
+	userHeadAndName = e;
+	myHeadPopup.value.close();
+	userLogin();
+}
 
-function userLogin(type, getPhoneRes){ 
+function openChooseHead(){
+	myHeadPopup.value.open();
+}
+
+function userLogin(){  
 	uni.showLoading({
 		"title":"登录中..."
 	});
@@ -70,14 +86,16 @@ function userLogin(type, getPhoneRes){
 	//获取用户的基本信息，昵称等
 	uni.login({
 	    provider: 'weixin',
-	    success: function (loginRes) {
+	    success: function (loginRes) { 
 	        // 登录成功
 	        uni.getUserInfo({
 	            provider: 'weixin',
 	            success: function(info) {
-	                // 获取用户信息成功, info.authResult保存用户信息
-					// console.log("个人信息", info);
+	                // 获取用户信息成功, info.authResult保存用户信息 
 					userinfo.value = info.userInfo;
+					userinfo.value.avatarUrl = userHeadAndName.avatarUrl;
+					userinfo.value.nickName = userHeadAndName.userNickName;
+					console.log("个人信息", userinfo.value);
 					//存储个人信息到缓存
 					uni.setStorageSync("myUser", userinfo.value);
 					//获取用户的openId

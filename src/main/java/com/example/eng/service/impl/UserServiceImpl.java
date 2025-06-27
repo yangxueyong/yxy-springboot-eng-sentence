@@ -31,12 +31,20 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateByPrimaryKeySelective(record);
     }
 
+    @Override
+    public int updateByUnqSelective(User record) {
+        return userMapper.updateByUnqSelective(record);
+    }
+
     public int insertUser(User record) {
         int i = 0;
         try {
-            i = insert(record);
+            int i1 = updateByUnqSelective(record);
+            if(i1 <= 0) {
+                i = insert(record);
+            }
         }catch (Exception e){
-             log.error("insert user error->{}", e.getMessage());
+            log.error("insert user error->{}", e.getMessage());
         }
         return i;
     }

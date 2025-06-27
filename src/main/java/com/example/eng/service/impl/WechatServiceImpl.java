@@ -62,14 +62,15 @@ public class WechatServiceImpl implements WechatService {
      */
     @Override
     public void saveWechatMiniSessionKey(WechatTokenIO io,WechatMiniAppSessionKey key) {
-        userService.insertUser(User.builder()
-                        .appId(wechatConfig.getAppid())
-                        .thirdType(MyConstant.THIRDTYPE_WECHAT)
-                        .openId(key.getOpenid())
-                        .sessionKey(key.getSession_key())
-                        .enName(io.getWechatUser().getNickName())
-                        .thirdHeadImgPath(io.getWechatUser().getAvatarUrl())
-                        .createTime(DateUtil.date())
+        int i = userService.insertUser(User.builder()
+                .appId(wechatConfig.getAppid())
+                .thirdType(MyConstant.THIRDTYPE_WECHAT)
+                .openId(key.getOpenid())
+                .sessionKey(key.getSession_key())
+                .enName(io.getWechatUser().getNickName())
+                .thirdHeadImgPath(io.getWechatUser().getAvatarUrl())
+                .createTime(DateUtil.date())
+                .updateTime(DateUtil.date())
                 .build());
     }
 }

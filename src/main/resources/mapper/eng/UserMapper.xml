@@ -103,4 +103,55 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
+  <update id="updateByUnqSelective" parameterType="com.example.eng.entity.user.User">
+    update t_user
+    <set>
+      <if test="thirdType != null">
+        third_type = #{thirdType,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null">
+        open_id = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionKey != null">
+        session_key = #{sessionKey,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNo != null">
+        phone_no = #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        en_name = #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="thirdHeadImgPath != null">
+        third_head_img_path = #{thirdHeadImgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="lastStudyMainId != null">
+        last_study_main_id = #{lastStudyMainId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastPracticeMainId != null">
+        last_practice_main_id = #{lastPracticeMainId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastStudyDetailId != null">
+        last_study_detail_id = #{lastStudyDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastStudyWordId != null">
+        last_study_word_id = #{lastStudyWordId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where third_type = #{thirdType,jdbcType=VARCHAR}
+    and app_id = #{appId,jdbcType=VARCHAR}
+    and open_id = #{openId,jdbcType=VARCHAR}
+  </update>
+
 </mapper>

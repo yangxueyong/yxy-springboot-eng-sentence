@@ -37,6 +37,8 @@ public interface UserMapper {
      */
     int updateByPrimaryKeySelective(User record);
 
+    int updateByUnqSelective(User record);
+
     User selectByOpenId(WechatUserTokenIO io);
 
 }

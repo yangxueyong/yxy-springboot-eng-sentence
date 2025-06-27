@@ -14,6 +14,8 @@ public interface UserService {
 
     int updateByPrimaryKeySelective(User record);
 
+    int updateByUnqSelective(User record);
+
     int insertUser(User build);
 
     User selectByOpenId(WechatUserTokenIO io);
