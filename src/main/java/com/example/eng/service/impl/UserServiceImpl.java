@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserService {
     public int insertUser(User record) {
         int i = 0;
         try {
-            int i1 = updateByUnqSelective(record);
-            if(i1 <= 0) {
+            i = updateByUnqSelective(record);
+            if(i <= 0) {
                 i = insert(record);
             }
         }catch (Exception e){
