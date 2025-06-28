@@ -77,7 +77,7 @@
 
 <script setup>
 	import {ref} from "vue";
-	import {onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+	import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
 	import {getSystemWechatUserForward} from "@/common/utils/common.js";
 	import {apiGetEngMain,
 	apiOperData,
@@ -324,6 +324,15 @@
 	function findWordById(id) {
 	  return wordsDetails.value.find(item => id.includes(item.id));
 	}
+	
+	//分享给好友
+	onShareAppMessage((e)=>{
+		return {
+			title:"我的句型日常",
+			path:"/pages/index/index"
+		}
+	})
+	
 </script>
 
 <style lang="scss" scoped>

@@ -20,13 +20,9 @@
 	const emit = defineEmits(["chooseDone"]);
 	 
 	function onChooseAvatar(e){
-		// console.log("选择头像1->",e);
-		// console.log("选择头像2->",e.detail.avatarUrl);
 		avatarUrl.value = e.detail.avatarUrl;
 	}
 	function onChooseSubmit(){
-		// console.log("得到的用户昵称->",userNickName.value);
-		// console.log("得到的用户头像->",avatarUrl.value);
 		emit("chooseDone", {"avatarUrl":avatarUrl.value, "userNickName": userNickName.value});
 	}
  
