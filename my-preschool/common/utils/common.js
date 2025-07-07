@@ -1,3 +1,7 @@
+export function isEmpty(str) {
+  return str === null || str === undefined || str.trim() === '';
+}
+
 export function compareTimestamp(timestamp) {
   const currentTime = new Date().getTime();
   const timeDiff = currentTime - timestamp;

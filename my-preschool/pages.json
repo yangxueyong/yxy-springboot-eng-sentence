@@ -26,6 +26,13 @@
 			{
 				"navigationBarTitleText" : "练练记忆"
 			}
+		},
+		{
+			"path" : "pages/my/my",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我的"
+			}
 		}
 	],
 	"globalStyle": {
@@ -33,6 +40,23 @@
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#9799a5",
+		"selectedColor": "#28B389",
+		"list": [
+			{
+				"text": "玩玩",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/images/tabBar/home.png",
+				"selectedIconPath": "static/images/tabBar/home-h.png"
+			},{
+				"text": "我的",
+				"pagePath": "pages/my/my",
+				"iconPath": "static/images/tabBar/user.png",
+				"selectedIconPath": "static/images/tabBar/user-h.png"
+			}
+		]
 	},
 	"uniIdRouter": {}
 }

@@ -17,4 +17,8 @@ public class WechatConfig {
     private String getTokenUrl;
 
     private String getUserinfoUrl;
+
+    public String gameNumAppid;
+
+    public String getGameNumTokenUrl;
 }

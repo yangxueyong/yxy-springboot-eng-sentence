@@ -2,22 +2,30 @@ package com.example.eng.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
+import com.example.eng.config.interceptor.UserContext;
+import com.example.eng.config.param.web.MyImgConfig;
 import com.example.eng.config.param.wechat.WechatConfig;
 import com.example.eng.constant.MyConstant;
+import com.example.eng.entity.req.ReqBaseData;
 import com.example.eng.entity.user.User;
 import com.example.eng.entity.user.wechat.WechatMiniAppSessionKey;
 import com.example.eng.entity.user.wechat.io.WechatTokenIO;
 import com.example.eng.service.UserService;
 import com.example.eng.service.WechatService;
+import com.example.eng.util.MyImgUtil;
+import com.example.eng.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 //import java.net.http.HttpClient;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -36,12 +44,16 @@ public class WechatServiceImpl implements WechatService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MyImgConfig myImgConfig;
+
     public WechatMiniAppSessionKey getWechatMiniSessionKey(WechatTokenIO io) {
         //先获取token 再获取用户信息
         Map<Object, Object> codeMap = MapUtil.builder()
                 .put("code", io.getCode())
                 .build();
-        String getTokenUrl = StrUtil.format(wechatConfig.getGetTokenUrl(), codeMap);
+        String getTokenUrl = UserUtil.getTokenUrl(wechatConfig);
+        getTokenUrl = StrUtil.format(getTokenUrl, codeMap);
 
         HttpRequest httpRequest = HttpRequest.get(getTokenUrl);
         HttpResponse execute = httpRequest.execute();
@@ -62,15 +74,36 @@ public class WechatServiceImpl implements WechatService {
      */
     @Override
     public void saveWechatMiniSessionKey(WechatTokenIO io,WechatMiniAppSessionKey key) {
-        int i = userService.insertUser(User.builder()
-                .appId(wechatConfig.getAppid())
-                .thirdType(MyConstant.THIRDTYPE_WECHAT)
-                .openId(key.getOpenid())
+        String userOpenid = key.getOpenid();
+
+        String avatarUrl = io.getWechatUser().getAvatarUrl();
+
+        User user = User.builder()
+                .appId(UserUtil.getAppid(wechatConfig))
+                .thirdType(UserUtil.getThirdType())
+                .openId(userOpenid)
                 .sessionKey(key.getSession_key())
                 .enName(io.getWechatUser().getNickName())
-                .thirdHeadImgPath(io.getWechatUser().getAvatarUrl())
+                .thirdHeadImgPath(avatarUrl)
                 .createTime(DateUtil.date())
                 .updateTime(DateUtil.date())
-                .build());
+                .build();
+
+        String avatarBase64 = io.getWechatUser().getAvatarBase64();
+
+        String imgSrc = null;
+        try {
+            if(StrUtil.isNotBlank(avatarBase64)){
+                imgSrc = MyImgUtil.buildBase64ToImgSrc(myImgConfig, userOpenid, avatarBase64);
+            }else {
+                imgSrc = avatarUrl;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        user.setThirdHeadImgPath(imgSrc);
+        int i = userService.insertUser(user);
     }
+
+
 }

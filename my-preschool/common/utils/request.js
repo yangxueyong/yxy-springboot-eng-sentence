@@ -1,6 +1,7 @@
 import {getSystemWechatUser} from "@/common/utils/common.js"
  
-const BASE_URL = 'http://127.0.0.1:8080';
+const BASE_URL = 'http://127.0.0.1:8177'; 
+// const BASE_URL = 'https://www.yangxuexue.xyz';
 
  
 export function playAll_failVoice(){
@@ -57,7 +58,7 @@ export function request(config={}){
 	
 	url = BASE_URL+url
 	header['openId'] = user.openid;
-	header['thirdType'] = "wechat"; 
+	header['thirdType'] = "wechat_game_num"; 
 	header['X-WX-SERVICE'] = "springboot-ndhb"; 
 	
 	return new Promise((resolve,reject)=>{		

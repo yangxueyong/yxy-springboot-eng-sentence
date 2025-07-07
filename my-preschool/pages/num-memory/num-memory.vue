@@ -132,6 +132,7 @@
  import {getRandomItems,getRandomItem,getRandomItemValue,getRandomInRangeExcluding} from "@/common/utils/common.js"
  import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
  import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
+ import{apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
  
  let kk = ref(null);
  let myFireWorkComponent = ref(null);
@@ -194,66 +195,68 @@ let currentGameItem = null;
 let currentGameTypeItem = null;
 //当前的关卡信息
 const levelText = ref("");
-const changeGridList = ref([
-	{"id":"1","levelHideTime":"500","beginBlock":"2","beginNum":"2","levelSumNum":"5","typeKey":"general","itemCls":"v_item","fontSize":"100rpx","gameTime":"30","colNum":"3","numSum":"9","title":"3 ✖️ 3","note":"1-9的数字","rightText":""},
-  	{"id":"2","levelHideTime":"500","beginBlock":"3","beginNum":"1","levelSumNum":"7","typeKey":"general","itemCls":"v_item","fontSize":"80rpx","gameTime":"60","colNum":"4","numSum":"16","title":"4 ✖️ 4","note":"1-16的数字","rightText":""},
-  	{"id":"3","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"10","typeKey":"general","itemCls":"v_item","fontSize":"70rpx","gameTime":"100","colNum":"5","numSum":"25","title":"5 ✖️ 5","note":"1-25的数字","rightText":""},
-  	{"id":"4","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"15","typeKey":"general","itemCls":"v_item","fontSize":"60rpx","gameTime":"200","colNum":"6","numSum":"36","title":"6 ✖️ 6","note":"1-36的数字","rightText":""},
-  	{"id":"5","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"25","typeKey":"general","itemCls":"v_item","fontSize":"50rpx","gameTime":"300","colNum":"7","numSum":"49","title":"7 ✖️ 7","note":"1-49的数字","rightText":""},
-  	{"id":"6","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"30","typeKey":"general","itemCls":"v_item","fontSize":"30rpx","gameTime":"400","colNum":"8","numSum":"64","title":"8 ✖️ 8","note":"1-64的数字","rightText":""},
-  	{"id":"7","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"40","typeKey":"general","itemCls":"v_item","fontSize":"30rpx","gameTime":"500","colNum":"9","numSum":"81","title":"9 ✖️ 9","note":"1-81的数字","rightText":""},
-  	{"id":"8","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"50","typeKey":"general","itemCls":"v_item","fontSize":"30rpx","gameTime":"600","colNum":"10","numSum":"100","title":"10 ✖️ 10","note":"1-100的数字","rightText":""},
-	{"id":"9","levelHideTime":"500","beginBlock":"1","beginNum":"1","levelSumNum":"1","typeKey":"custom","itemCls":"v_item","fontSize":"30rpx","gameTime":"600","colNum":"10","numSum":"100","title":"自定义","note":"自定义时间和数字区间","rightText":""}
-]); 
+
+//关卡
+const changeGridList = ref([]); 
+
+const getChangeGridList =async(code)=>{ 
+	uni.showLoading({
+		title:"加载中.."
+	})
+	let res =await apiGetNumLevelList({ });  
+	console.log("------===->",res);
+	changeGridList.value = res.data; 
+	uni.hideLoading(); 
+}
+getChangeGridList();
+
+// 游戏类型
+const changeGameList = ref([]);
 
 
-const changeGameList = ref([
-	{"id":"a1","title":"记忆颜色","note":"点击颜色出现的地方","rightText":""},
-	{"id":"a2","title":"记忆数字","note":"点击数字出现的地方","rightText":""}, 
-	{"id":"a6","title":"记忆动物","note":"点击动物出现的地方","rightText":""},
-	{"id":"a7","title":"记忆影子","note":"点击影子对应动物出现的地方","rightText":""},
-	{"id":"a3","title":"找出颜色","note":"找出提示的颜色","rightText":""},
-	{"id":"a4","title":"找出数字","note":"找出提示的数字","rightText":""},
-	{"id":"a5","title":"找出动物","note":"找出提示的动物","rightText":""},
-	{"id":"a8","title":"找出动物的影子","note":"找出提示的动物影子","rightText":""}
-]);
+const getChangeGameList =async(code)=>{ 
+	uni.showLoading({
+		title:"加载中.."
+	})
+	let res =await apiGetGameTypeList({  });  
+	changeGameList.value = res.data; 
+	uni.hideLoading(); 
+}
+getChangeGameList();
 
 // 颜色
-const changeColorList = ref([
-	{"key":"yellow","value":"yellow",content:"黄色 yellow"},
-	{"key":"red","value":"red",content:"红色 red"},
-	{"key":"brown","value":"brown",content:"棕色 brown"},
-	{"key":"purple","value":"purple",content:"紫色 purple"},
-	{"key":"pink","value":"pink",content:"粉色 pink"},
-	{"key":"green","value":"green",content:"绿色 green"},
-	{"key":"blue","value":"blue",content:"蓝色 blue"},
-	{"key":"white","value":"white",content:"白色 white"},
-	{"key":"black","value":"black",content:"黑色 black"}
-]);
+const changeColorList = ref([]);
+
+const getChangeColorList =async(code)=>{ 
+	uni.showLoading({
+		title:"加载中.."
+	})
+	let res =await apiGetGameColorList({ });  
+	changeColorList.value = res.data; 
+	uni.hideLoading(); 
+}
+getChangeColorList();
 
 // 动物
-const changeAnimalList = ref([
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/longxia.png","shadowSrc":"https://www.yangxuexue.xyz/images/longxia (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/22-乌龟.png","shadowSrc":"https://www.yangxuexue.xyz/images/22-乌龟 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/狗狗出售.png","shadowSrc":"https://www.yangxuexue.xyz/images/狗狗出售 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通大象.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通大象 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通海豚.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通海豚 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通猴子.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通猴子 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通鸡.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通鸡 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通鹿.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通鹿 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通马.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通马 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通绵羊.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通绵羊 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通牛.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通牛 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通企鹅.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通企鹅 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通蛇.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通蛇 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/卡通鱼.png","shadowSrc":"https://www.yangxuexue.xyz/images/卡通鱼 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/可爱的卡通鸟.png","shadowSrc":"https://www.yangxuexue.xyz/images/可爱的卡通鸟 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/老虎.png","shadowSrc":"https://www.yangxuexue.xyz/images/老虎 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/螃蟹.png","shadowSrc":"https://www.yangxuexue.xyz/images/螃蟹 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/狮子.png","shadowSrc":"https://www.yangxuexue.xyz/images/狮子 (1).png"},
-	{"key":"a","imgSrc":"https://www.yangxuexue.xyz/images/鼠.png","shadowSrc":"https://www.yangxuexue.xyz/images/鼠 (1).png"}
-]);
+const changeAnimalList = ref([]);
+const getChangeAnimalList =async(code)=>{ 
+	uni.showLoading({
+		title:"加载中.."
+	})
+	let res =await apiGetGameAnimalList({ });  
+	changeAnimalList.value = res.data; 
+	uni.hideLoading(); 
+}
+getChangeAnimalList();
 
+const saveGameScore =async(game_level_id, game_type_id, consume_time)=>{ 
+	
+	console.log("game_level_id",game_level_id);
+	console.log("game_type_id",game_type_id);
+	console.log("consume_time",consume_time);
+	
+	let res =await apiSaveGameScore({ "gameLevelId":game_level_id, "gameTypeId":game_type_id, "consumeTime":consume_time });  
+}
 
 // 删除我的矩阵
 function rmoveMyGridNum(param){
@@ -488,7 +491,7 @@ function calcGridItemWidth(){
 	gridHeight.value = itemHeight;
 }
 //加载完成时重新发起
- onMounted(() => {   
+ function firstInit(){   
 	setTimeout(()=>{
 		let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
 		if(myGameNumList != null && myGameNumList.length > 0){
@@ -496,8 +499,10 @@ function calcGridItemWidth(){
 		}
 		console.log("--->",changeGridList);
 		init();
-	},500) 
- }); 
+	},1500) 
+ }; 
+ 
+ firstInit();
  
  function init(){ 
 	 changeGridMap.value = new Map(changeGridList.value.map(item => [item.id, item]));
@@ -606,11 +611,18 @@ let timer = null;
 function success(){    
 	if(currentLevel >= currentGameItem.levelSumNum){
 		myStartFirework();
+		//花费的时间
 		let expendTime = myTimeCountDown.value.getExpendTime();
 		// resultText.value = "恭喜你，花了" + expendTime + "，挑战成功";
 		resultText.value = "恭喜你，挑战成功";
 		//todo 可以播放音效
 		playAll_successVoice();
+		console.log("打印一下->expendTime->",expendTime);
+		console.log("打印一下->currentGameItem>",currentGameItem);
+		console.log("打印一下->currentGameTypeItem>",currentGameTypeItem);
+		
+		//保存成绩
+		saveGameScore(currentGameItem.id, currentGameTypeItem.id, expendTime);
 		//停止计时
 		myTimeCountDown.value.stop();
 		yesClickFlag = false;

@@ -48,8 +48,10 @@ public class JwtInterceptor implements HandlerInterceptor {
         if (StrUtil.isBlank(openId)) {
             throw new RuntimeException("无token，请重新登录");
         }
-        if(MyConstant.THIRDTYPE_WECHAT.equals(thirdType)){
+        if(MyConstant.THIRDTYPE_WECHAT.equalsIgnoreCase(thirdType)){
             appId = wechatConfig.getAppid();
+        }else if(MyConstant.THIRDTYPE_WECHAT_GAME_NUM.equalsIgnoreCase(thirdType)){
+            appId = wechatConfig.getGameNumAppid();
         }
         WechatUserTokenIO io = WechatUserTokenIO.builder()
                 .appId(appId)

@@ -4,6 +4,8 @@ public class MyConstant {
     public final static String TRACE_ID = "traceId";
     public final static String ENG = "ENG";
     public static final String THIRDTYPE_WECHAT = "wechat";
+    public static final String THIRDTYPE_WECHAT_GAME_NUM = "wechat_game_num";
+
     public static final String STATUS_AVAILABLE = "available";
     public static final String OPER_TYPE_HIDE = "hide";
     public static final String OPER_TYPE_FLAG = "flag";
@@ -33,4 +35,12 @@ public class MyConstant {
      * "no_audio.mp3"
      */
     public static final String NO_AUDIO_MP3 ="no_audio.mp3";
+
+    /**
+     * 请求相关
+     * "reqBase"
+     */
+    public static final String CACHE_KEY_REQ_BASE ="reqBase";
+
+    public static final String HTTP ="http";
 }

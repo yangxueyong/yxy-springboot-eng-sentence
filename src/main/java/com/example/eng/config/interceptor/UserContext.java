@@ -17,7 +17,35 @@ public class UserContext {
     // 创建一个 ThreadLocal 实例来存储 User 对象
     private static final ThreadLocal<Map<String, Object>> userThreadLocal = new TransmittableThreadLocal<>();
 
-    public static void setUser(User user){
+    /**
+     * 放置数据
+     * @param key
+     * @param value
+     */
+    public synchronized static void setObj(String key, Object value){
+        Map<String, Object> stringObjectMap = userThreadLocal.get();
+        if (stringObjectMap == null) {
+            stringObjectMap = new HashMap<>();
+            userThreadLocal.set(stringObjectMap);
+        }
+        stringObjectMap.put(key, value);
+    }
+
+
+    /**
+     * 获取数据
+     * @param key
+     * @return {@link T}
+     */
+    public static <T> T getObj(String key) {
+        Map<String, Object> stringObjectMap = userThreadLocal.get();
+        if(CollectionUtils.isEmpty(stringObjectMap) || !stringObjectMap.containsKey(key)){
+            return null;
+        }
+        return (T) stringObjectMap.get(key);
+    }
+
+    public synchronized static void setUser(User user){
         Map<String, Object> stringObjectMap = userThreadLocal.get();
         if (stringObjectMap == null) {
             stringObjectMap = new HashMap<>();

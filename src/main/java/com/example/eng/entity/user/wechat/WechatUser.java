@@ -26,7 +26,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WechatUser {
+
+    /**
+     * 头像的鹅http链接
+     */
     private String avatarUrl;
+
+    /**
+     * 头像的base64编码
+     */
+    private String avatarBase64;
     private String city;
     private int gender;
     private String language;
