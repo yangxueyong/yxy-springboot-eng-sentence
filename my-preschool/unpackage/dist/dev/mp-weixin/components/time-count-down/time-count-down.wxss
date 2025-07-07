@@ -1,0 +1,9 @@
+
+.countdownCls.data-v-1332da4b {
+  font-family: monospace; /* 等宽字体，避免数字跳动 */
+  font-size: 24px;
+  color: #fff;
+  background-color: #4cd964;
+  padding: 10rpx;
+  border-radius: 20rpx;
+}

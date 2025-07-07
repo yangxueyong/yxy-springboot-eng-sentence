@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "数华",
+  "usingComponents": {
+    "time-count-down": "../../components/time-count-down/time-count-down",
+    "l-drag": "../../uni_modules/lime-drag/components/l-drag/l-drag",
+    "uni-list": "../../uni_modules/uni-list/components/uni-list/uni-list",
+    "uni-popup": "../../uni_modules/uni-popup/components/uni-popup/uni-popup",
+    "custom-set-num": "../../components/custom-set-num/custom-set-num",
+    "uni-list-item": "../../uni_modules/uni-list/components/uni-list-item/uni-list-item"
+  }
+}

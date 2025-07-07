@@ -1,0 +1,1 @@
+{"version":3,"file":"know-num.js","sources":["pages/know-num/know-num.vue?type=page"],"sourcesContent":["import MiniProgramPage from '/Users/yxy/work/前端/uniapp/my-preschool/pages/know-num/know-num.vue'\nwx.createPage(MiniProgramPage)"],"names":["MiniProgramPage"],"mappings":";;;;;;;;;;;;;;;;;;;;AACA,GAAG,WAAWA,SAAe;"}

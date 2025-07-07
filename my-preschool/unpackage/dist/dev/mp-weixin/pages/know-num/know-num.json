@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "认识数字",
+  "usingComponents": {
+    "my-firework": "../../components/my-firework/my-firework"
+  }
+}
