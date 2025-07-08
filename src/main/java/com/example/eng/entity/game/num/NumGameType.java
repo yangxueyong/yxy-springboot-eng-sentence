@@ -21,6 +21,10 @@ public class NumGameType {
     @Schema(name = "sort", description = "排序字段")
     private String sort;
 
+    @TableField("type")
+    @Schema(name = "type", description = "类型")
+    private String type;
+
     @TableField("title")
     @Schema(name = "title", description = "标题")
     private String title;

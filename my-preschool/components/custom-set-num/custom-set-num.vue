@@ -22,51 +22,41 @@
 
 <script setup>
 	import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+	import { showHint } from "@/common/utils/common.js";
 	const emit = defineEmits(['customNumFinish']);  
 	const iptBeginValue = ref(null);
 	const iptEndValue = ref(null);
 	const iptSecondValue = ref(null);
 	
 	function onNumFinish(){
-		if(iptBeginValue.value <= 0){
-			uni.showModal({
-				title: "温馨提示",
-				content: "开始的数字不能小于0",
-				showCancel: false
-			});
+		
+		console.log("iptBeginValue.value",iptBeginValue.value);
+		console.log("iptEndValue.value",iptEndValue.value);
+		console.log("iptSecondValue.value",iptSecondValue.value);
+		
+		let beginVal = parseInt(iptBeginValue.value);
+		let endVal = parseInt(iptEndValue.value);
+		let secondVal = parseInt(iptSecondValue.value);
+		
+		if(beginVal <= 0){
+			showHint("开始的数字不能小于0");
 			return;
 		}
-		if(iptEndValue.value <= 0){
-			uni.showModal({
-				title: "温馨提示",
-				content: "结束的数字不能小于0",
-				showCancel: false
-			});
+		if(endVal <= 0){
+			showHint("结束的数字不能小于0");
 			return;
 		}
-		if(iptEndValue.value <= iptBeginValue.value){
-			uni.showModal({
-				title: "温馨提示",
-				content: "结束的数字不能小于或等于开始的数字",
-				showCancel: false
-			});
+		if(endVal <= beginVal){
+			showHint("结束的数字不能小于或等于开始的数字");
 			return;
 		}
-		let cha = iptEndValue.value - iptBeginValue.value ;
+		let cha = endVal - beginVal ;
 		if(cha < 4 || cha > 100){
-			uni.showModal({ 
-				title: "温馨提示",
-				content: "数字相差不能少于4个或者大于100个",
-				showCancel: false
-			});
+			showHint("数字相差不能少于4个或者大于100个");
 			return;
 		}
-		if(iptSecondValue.value < 5 || iptSecondValue.value > 7200){
-			uni.showModal({
-				title: "温馨提示",
-				content: "游戏时间不能小于5秒或者大于7200秒",
-				showCancel: false
-			});
+		if(secondVal < 5 || secondVal > 7200){
+			showHint("游戏时间不能小于5秒或者大于7200秒");
 			return;
 		}
 		 
@@ -89,18 +79,17 @@
 	   
 	   var myCustom = {
 		   id : new Date().getTime(),
-		   beginNum : iptBeginValue.value,
-		   endNum : iptEndValue.value,
+		   beginNum : beginVal,
+		   endNum : endVal,
 		   typeKey:"myCustom",
 		   "itemCls":"v_item",
 		   "fontSize":fontSize,
-		   "gameTime":iptSecondValue.value,
+		   "gameTime":secondVal,
 		   "colNum":width,
-		   "numSum":iptEndValue.value,
+		   "numSum":endVal,
 		   "title":"自定义 " + width+" ✖️ " + height,
-		   "note":iptBeginValue.value + "-"+ iptEndValue.value +"的数字"
-	   }
-		console.log("完成-->");
+		   "note":beginVal + "-"+ endVal +"的数字"
+	   } 
 		emit("customNumFinish",myCustom);
 	}
 	

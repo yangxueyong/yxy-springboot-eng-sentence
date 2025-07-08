@@ -49,51 +49,66 @@
 		}
 	}
 	function onNumFinish(){
+		let widthVal = iptWidthValue.value;
+		let beginVal = iptBeginNumValue.value;
+		let beginBlockVal = iptBeginBlockValue.value;
+		let levelSumVal = iptLevelSumValue.value;
+		let secondVal= iptSecondValue.value;
+		
 		if(showNum.value){
-			if(!iptBeginNumValue.value){
+			if(!beginVal){
 				showHint("请输入请输入首关的数字");
 				return;
 			}
-			if(iptBeginNumValue.value <= 0){
+		}
+		if(!beginBlockVal){
+			showHint("请输入首关出现的块数");
+			return;
+		}
+		if(!levelSumVal){
+			showHint("请输入总关卡");
+			return;
+		}
+		if(!widthVal){
+			showHint("请输入棋盘大小");
+			return;
+		}
+		
+		beginVal = parseInt(beginVal);
+		beginBlockVal = parseInt(beginBlockVal);
+		levelSumVal = parseInt(levelSumVal);
+		widthVal = parseInt(widthVal);
+		
+		if(showNum.value){
+			if(beginVal <= 0){
 				showHint("首关的数字不能小于0");
 				return;
 			}
 		}
-		if(!iptBeginBlockValue.value){
-			showHint("请输入首关出现的块数");
-			return;
-		}
-		if(iptBeginBlockValue.value <= 0){
+		
+		if(beginBlockVal <= 0){
 			showHint("首关出现的块数不能小于0");
 			return;
-		}
+		} 
 		
-		if(!iptLevelSumValue.value){
-			showHint("请输入总关卡");
-			return;
-		}
-		if(iptLevelSumValue.value <= 0){
+		if(levelSumVal <= 0){
 			showHint("总关卡不能小于0");
 			return;
-		}
+		} 
 		
-		if(!iptWidthValue.value){
-			showHint("请输入棋盘大小");
-			return;
-		}
-		if(iptWidthValue.value < 2){
+		if(widthVal < 2){
 			showHint("棋盘不能小于2");
 			return;
 		}
 		
-		console.log("iptLevelSumValue.value->",iptLevelSumValue.value);
-		console.log("iptBeginBlockValue.value->",iptBeginBlockValue.value);
+		console.log("levelSumVal->",levelSumVal);
+		console.log("beginBlockVal->",beginBlockVal);
 		
 		//最后一关会出现的块的个数 这个个数不能大于棋盘的块数
-		let lastLevelBlockNum = parseInt(iptLevelSumValue.value) + parseInt(iptBeginBlockValue.value) - 1;
-		let sumBlockNum = iptWidthValue.value * iptWidthValue.value;
+		let lastLevelBlockNum = parseInt(levelSumVal) + parseInt(beginBlockVal) - 1;
+		let sumBlockNum = widthVal * widthVal;
 		if(lastLevelBlockNum > sumBlockNum){
-			showHint("棋盘大小为" + iptWidthValue.value  + "✖️" + iptWidthValue.value + ",无法装下最后一关的块数" + lastLevelBlockNum + "，请重新调整");
+			showHint("棋盘大小为" + widthVal  + "✖️" + widthVal + ",无法装下最后一关的块数" + lastLevelBlockNum + "，请重新调整");
 			return;
 		} 
 		 
@@ -115,23 +130,23 @@
 	   
 	   let note = "";
 	   if(showNum.value){
-		   note = "首关的数字:" + iptBeginNumValue.value + ",";
+		   note = "首关的数字:" + beginVal + ",";
 	   }
-	   note += "首关的块数:" + iptBeginBlockValue.value + ",总关卡:"+ iptLevelSumValue.value +",棋盘大小:" + iptWidthValue.value;
+	   note += "首关的块数:" + beginBlockVal + ",总关卡:"+ levelSumVal +",棋盘大小:" + widthVal;
 	   
 	   var myCustom = {
 		   id : new Date().getTime(),
 		   "levelHideTime" : "500",
-		   "beginBlock" : iptBeginBlockValue.value,
-		   beginNum : iptBeginNumValue.value,
-		   levelSumNum : iptLevelSumValue.value,
+		   "beginBlock" : beginBlockVal,
+		   beginNum : beginVal,
+		   levelSumNum : levelSumVal,
 		   typeKey:"myCustom",
 		   "itemCls":"v_item",
 		   "fontSize":fontSize,
-		   "gameTime":iptSecondValue.value,
-		   "colNum":iptWidthValue.value,
+		   "gameTime":secondVal,
+		   "colNum":widthVal,
 		   "numSum":sumBlockNum,
-		   "title":"自定义 " + iptWidthValue.value+" ✖️ " + iptWidthValue.value,
+		   "title":"自定义 " + widthVal+" ✖️ " + widthVal,
 		   "note": note
 	   }
 		console.log("完成-->");

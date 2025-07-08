@@ -3,6 +3,7 @@ package com.example.eng.service.impl.game.num;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.game.num.NumGameLevel;
+import com.example.eng.entity.game.num.io.QueryNumGameLevelIO;
 import com.example.eng.mapper.eng.UserMapper;
 import com.example.eng.mapper.game.num.NumGameLevelMapper;
 import com.example.eng.service.UserService;
@@ -18,9 +19,10 @@ public class NumGameLevelServiceImpl extends ServiceImpl<NumGameLevelMapper, Num
      * 获取所有级别
      * @return {@link List}<{@link NumGameLevel}>
      */
-    public List<NumGameLevel> numLevelList(){
+    public List<NumGameLevel> numLevelList(QueryNumGameLevelIO io){
         List<NumGameLevel> levelList = lambdaQuery()
                 .eq(NumGameLevel::getStatus, MyConstant.STATUS_AVAILABLE)
+                .eq(NumGameLevel::getType, io.getType())
                 .orderByAsc(NumGameLevel::getSort)
                 .list();
         return levelList;

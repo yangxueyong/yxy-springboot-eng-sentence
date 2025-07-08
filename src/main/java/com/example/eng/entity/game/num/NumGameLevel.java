@@ -21,6 +21,9 @@ public class NumGameLevel {
     @TableField(value = "sort")
     private String sort;
 
+    @TableField("type")
+    @Schema(name = "type", description = "类型")
+    private String type;
     @Schema(name = "levelHideTime", description = "每一关的记忆时间")
     @TableField(value = "levelHideTime")
     private Long levelHideTime;

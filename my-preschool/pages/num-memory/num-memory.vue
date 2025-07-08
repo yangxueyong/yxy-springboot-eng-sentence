@@ -216,9 +216,9 @@ const getChangeGridList =async(code)=>{
 	uni.showLoading({
 		title:"加载中.."
 	})
-	let res =await apiGetNumLevelList({ });  
-	console.log("------===->",res);
+	let res =await apiGetNumLevelList({ "type":"memory" });  
 	changeGridList.value = res.data; 
+	console.log("得到的数据===>", res.data);
 	uni.hideLoading(); 
 	firstInit();
 }
@@ -232,7 +232,7 @@ const getChangeGameList =async(code)=>{
 	uni.showLoading({
 		title:"加载中.."
 	})
-	let res =await apiGetGameTypeList({  });  
+	let res =await apiGetGameTypeList({ "type":"memory" });  
 	changeGameList.value = res.data; 
 	uni.hideLoading(); 
 	firstInit();
@@ -643,10 +643,6 @@ function success(){
 		resultText.value = "恭喜你，挑战成功";
 		//todo 可以播放音效
 		playAll_successVoice();
-		console.log("打印一下->expendTime->",expendTime);
-		console.log("打印一下->currentGameItem>",currentGameItem);
-		console.log("打印一下->currentGameTypeItem>",currentGameTypeItem);
-		
 		//保存成绩
 		saveGameScore(currentGameItem.id, currentGameTypeItem.id, expendTime);
 		//停止计时
@@ -829,32 +825,29 @@ function myEndFirework(){
 		}
 	}
 	.changeNumCls{
-		margin: 50rpx; 
+		margin-right: 50rpx; 
+		margin-top: 50rpx;
 		display: flex;
-		// justify-content: space-between; /* 左右分开对齐 */
-		align-items: center; /* 如果需要垂直居中可以加上这一行 */ 
-		text-align: center; 
-		display: flex; 
-		justify-content: center; 
+		justify-content: flex-end;  
 		
 		.changeNumRightCls{
-			margin-left: auto;
-			text-align: center; 
-			right: 0rpx; 
+			display: flex;
+			align-items: center; /* 子元素垂直居中 */ 
 			
-			.changeNumTextCls{
+			.changeNumTextCls{ 
 				 margin: 10rpx 10rpx; 
-				 display: inline-block; 
-				 text-align: center;
-				 padding: 20rpx;
+				 display: flex; 
+				 padding: 10rpx;
+				 height: 40rpx;
 				 border-radius: 20rpx; 
 				 font-size: $text-font-size-1;
+				 align-items: center; /* 如果需要垂直居中可以加上这一行 */
+				 text-align: center;  
+				 justify-content: center; 
 				 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
 				               0 6px 20px rgba(0, 0, 0, 0.1);
 			}
-		}
-		
-		
+		}  
 	}
 	.v1{
 		margin: 20rpx 50rpx;

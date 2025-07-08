@@ -1,7 +1,19 @@
 <template>
+	<template>
+	  <view class="containerCls" v-if="showCanvas"> 
+	    <canvas 
+	      canvas-id="fireworksCanvas" 
+	      id="fireworksCanvas" 
+	      class="canvas"
+	      :style="{width: canvasWidth + 'px', height: canvasHeight + 'px'}"
+	    ></canvas>
+	  </view>
+	</template>
+	
 	<view class="box">
 		<view class="changeNumCls"> 
 			<view class="changeNumRightCls">
+				<view class="changeNumTextCls" @click="showGameScoreRank" v-if="btnShowGameScoreRank">排行榜</view>
 				<view class="changeNumTextCls" @click="refreshChangeNum">重来</view>
 				<view class="changeNumTextCls" @click="funChangeGameType">{{changeGameTypeText}}</view>
 				<view class="changeNumTextCls" @click="funChangeNum">{{changeNumText}}</view>
@@ -85,7 +97,9 @@
 
 <script setup> 
 import {ref, onMounted,nextTick} from "vue"; 
- import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
+import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
+import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
+import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
  
 // 存储我选择的游戏数字
 let storeKey = "myChangeItem";
@@ -93,7 +107,8 @@ let storeKey = "myChangeItem";
 let storeGameTypeKey = "myChangeGameType";
 // 我自定义的游戏数字
 let storeMyGameNumKey = "myGameNum";
-
+//排行帮
+let btnShowGameScoreRank = ref(false);
 // 数字选择提示层
 const numPopup = ref(null);
 // 游戏方式提示层
@@ -130,23 +145,41 @@ const myTimeDown = ref(false);
 const customMumPopup = ref(null);
 //目前已经拖拽了成功了多少个
 let lastDragSuccessNum = 0;
-const changeGridList = ref([
-	{"id":"1","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"100rpx","gameTime":"15","colNum":"3","numSum":"9","title":"3 ✖️ 3","note":"1-9的数字","rightText":""},
-  	{"id":"2","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"80rpx","gameTime":"60","colNum":"4","numSum":"16","title":"4 ✖️ 4","note":"1-16的数字","rightText":""},
-  	{"id":"3","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"70rpx","gameTime":"100","colNum":"5","numSum":"25","title":"5 ✖️ 5","note":"1-25的数字","rightText":""},
-  	{"id":"4","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"60rpx","gameTime":"300","colNum":"6","numSum":"36","title":"6 ✖️ 6","note":"1-36的数字","rightText":""},
-  	{"id":"5","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"50rpx","gameTime":"500","colNum":"7","numSum":"49","title":"7 ✖️ 7","note":"1-49的数字","rightText":""},
-  	{"id":"6","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"30rpx","gameTime":"800","colNum":"8","numSum":"64","title":"8 ✖️ 8","note":"1-64的数字","rightText":""},
-  	{"id":"7","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"30rpx","gameTime":"1000","colNum":"9","numSum":"81","title":"9 ✖️ 9","note":"1-81的数字","rightText":""},
-  	{"id":"8","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"30rpx","gameTime":"1800","colNum":"10","numSum":"100","title":"10 ✖️ 10","note":"1-100的数字","rightText":""},
-	{"id":"9","beginNum":"1","typeKey":"custom","itemCls":"v_item","fontSize":"30rpx","gameTime":"600","colNum":"10","numSum":"100","title":"自定义","note":"自定义时间和数字区间","rightText":""}
-]); 
+const changeGridList = ref([]); 
 
 
-const changeGameList = ref([
-	{"id":"a1","title":"拖拽排序","note":"拖拽小方块，按照从小到大的顺序排列","rightText":""},
-	{"id":"a2","title":"顺序点击","note":"按照从小到大的顺序点击小方块","rightText":""}
-]);
+const getChangeGridList =async()=>{ 
+	uni.showLoading({
+		title:"加载中.."
+	})
+	let res =await apiGetNumLevelList({ "type":"simple" });   
+	console.log("得到的level-->", res.data);
+	changeGridList.value = res.data; 
+	uni.hideLoading(); 
+	firstInit();
+}
+getChangeGridList();
+
+const changeGameList = ref([]);
+
+const getChangeGameList =async()=>{ 
+	uni.showLoading({
+		title:"加载中.."
+	})
+	let res =await apiGetGameTypeList({ "type":"simple" });  
+	console.log("得到的type-->", res.data);
+	changeGameList.value = res.data; 
+	uni.hideLoading(); 
+	firstInit();
+}
+getChangeGameList();
+
+//打开排行榜
+function showGameScoreRank(){
+	uni.navigateTo({
+		url:"/pages/game-score-rank/game-score-rank?gameLevelId=" + currentGameItem.id + "&gameTypeId=" + currentGameTypeItem.id + "&name=" + currentGameTypeItem.title + " - " + currentGameItem.title
+	})
+}
 
 //删除我的矩阵
 function rmoveMyGridNum(param){
@@ -175,6 +208,9 @@ function onFunCustomNumFinish(e){
 	uni.setStorageSync(storeKey, e.id);
 	init();
 }
+// 当前正在玩的关卡
+let currentGameItem = null;
+let currentGameTypeItem = null;
 //更改选择的矩阵时
 function changeGridType(id){ 
 	clickNumList = ref([]);
@@ -190,7 +226,10 @@ function changeGridType(id){
 	
 	if(typeKey == "custom"){
 		customMumPopup.value.open();
+		btnShowGameScoreRank.value = false;
 		return;
+	}else{
+		btnShowGameScoreRank.value = true;
 	}
 	
 	uni.setStorageSync(storeKey, id);
@@ -198,8 +237,8 @@ function changeGridType(id){
 	if(item == null){
 		return;
 	}
-	let currentGameItem = changeGameTypeMap.value.get(currentGameType);
-	if(currentGameItem == null){
+	currentGameTypeItem = changeGameTypeMap.value.get(currentGameType);
+	if(currentGameTypeItem == null){
 		return;
 	}
 	
@@ -214,7 +253,7 @@ function changeGridType(id){
 	changeNumText.value = item.title;
 	countdownNum.value = item.gameTime;
 	let beginNum = item.beginNum;
-	changeGameTypeText.value = currentGameItem.title;
+	changeGameTypeText.value = currentGameTypeItem.title;
 	let fontSize = item.fontSize;
 	console.log("得到的时间->",item.gameTime)
 	calcGridItemWidth();
@@ -223,13 +262,17 @@ function changeGridType(id){
 		let listItem = {"content":i,"itemCls":"v_item","fontSize":fontSize}; 
 		list.value.push(listItem);
 	}
+	
 	//随机排序
 	randomList(list);
 	
-	//开始计时
-	myTimeCountDown.value.start(countdownNum.value);
+	if(currentGameItem == null || currentGameItem.id != item.id){ 
+		//开始计时
+		myTimeCountDown.value.start(countdownNum.value);
+	}
+	currentGameItem = item;
 	
-	if(currentGameType == "a1"){
+	if(currentGameType == "b1"){
 		//允许拖动
 		gridDisabled.value = false;
 	}else{
@@ -271,15 +314,22 @@ function calcGridItemWidth(){
 	gridHeight.value = itemHeight;
 }
 //加载完成时重新发起
- onMounted(() => {   
-	setTimeout(()=>{
-		let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
-		if(myGameNumList != null && myGameNumList.length > 0){
-			changeGridList.value = [ ...myGameNumList, ...changeGridList.value];
-		}
-		init();
-	},500) 
- }); 
+ function firstInit(){   
+	 if(changeGridList.value == null || changeGameList.value == null){
+		 return;
+	 }
+	 
+	 if(changeGridList.value.length <= 0 || changeGameList.value.length <= 0){
+	 	 return;
+	 }
+	// setTimeout(()=>{
+	let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
+	if(myGameNumList != null && myGameNumList.length > 0){
+		changeGridList.value = [ ...myGameNumList, ...changeGridList.value];
+	}
+	init();
+	// },500) 
+}
  
  function init(){ 
 	 changeGridMap.value = new Map(changeGridList.value.map(item => [item.id, item]));
@@ -299,7 +349,7 @@ function calcGridItemWidth(){
 	 console.log("时间到了");
 	 myTimeDown.value = true;
 	 gridDisabled.value = true;
-	 if(currentGameType == "a1"){
+	 if(currentGameType == "b1"){
 		 calcDragSuccess(true);
 	 }else{
 		 calcClickSuccess();
@@ -361,7 +411,7 @@ function change(v){
 
 let clickNumList = ref([]);
 function onNumClick(content){ 
-	if(currentGameType != "a2"){
+	if(currentGameType != "b2"){
 		return;
 	}
 	if(myTimeDown.value){
@@ -400,15 +450,28 @@ function onNumClick(content){
 	console.log("你手贱吗->",clickNumList.value); 
 }
 
+
+const saveGameScore =async(game_level_id, game_type_id, consume_time)=>{ 
+	
+	console.log("game_level_id",game_level_id);
+	console.log("game_type_id",game_type_id);
+	console.log("consume_time",consume_time);
+	
+	let res =await apiSaveGameScore({ "gameLevelId":game_level_id, "gameTypeId":game_type_id, "consumeTime":consume_time });  
+}
+
 //挑战成功
 function success(){ 
 	// uni.showToast({
 	// 	title:"恭喜你！！！挑战成功"
 	// });
+	myStartFirework();
 	let expendTime = myTimeCountDown.value.getExpendTime();
-	resultText.value = "恭喜你，花了" + expendTime + "，挑战成功";
+	resultText.value = "恭喜你，挑战成功";
 	//todo 可以播放音效
 	playAll_successVoice();
+	//保存成绩
+	saveGameScore(currentGameItem.id, currentGameTypeItem.id, expendTime);
 	//停止计时
 	myTimeCountDown.value.stop();
 	//不允许拖动
@@ -453,11 +516,30 @@ function refreshChangeNum(){
 	
 }
  
+function myStartFirework(){
+	startFirework();
+	setTimeout(()=>{
+		myEndFirework();
+	}, 5000);
+}
+function myEndFirework(){
+	endFirework();
+}
 
 // console.log("list--->", list)
 </script>
 
 <style lang="scss" scoped> 
+	.containerCls {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  pointer-events: none; /* 允许点击穿透 */
+	  z-index: 9999; 
+	  // background-color: red;
+	}
 	.countdownTextMainCls{
 		margin-top: 100rpx;
 		display: flex;
@@ -475,32 +557,31 @@ function refreshChangeNum(){
 		}
 	}
 	.changeNumCls{
-		margin: 50rpx; 
+		margin-right: 50rpx; 
+		margin-top: 50rpx;
 		display: flex;
-		// justify-content: space-between; /* 左右分开对齐 */
-		align-items: center; /* 如果需要垂直居中可以加上这一行 */ 
-		text-align: center; 
-		display: flex; 
-		justify-content: center; 
+		justify-content: flex-end;  
 		
 		.changeNumRightCls{
-			margin-left: auto;
-			text-align: center; 
-			right: 0rpx; 
+			display: flex;
+			align-items: center; /* 子元素垂直居中 */ 
 			
-			.changeNumTextCls{
+			.changeNumTextCls{ 
 				 margin: 10rpx 10rpx; 
-				 display: inline-block; 
-				 text-align: center;
-				 padding: 20rpx;
+				 display: flex; 
+				 padding: 10rpx;
+				 height: 40rpx;
 				 border-radius: 20rpx; 
+				 font-size: $text-font-size-1;
+				 align-items: center; /* 如果需要垂直居中可以加上这一行 */
+				 text-align: center;  
+				 justify-content: center; 
 				 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
 				               0 6px 20px rgba(0, 0, 0, 0.1);
 			}
-		}
-		
-		
+		}  
 	}
+	
 	.v1{
 		margin: 50rpx 50rpx;
 		border: 1px solid #18a058;  
@@ -584,7 +665,7 @@ function refreshChangeNum(){
 			display: inline-block; 
 			text-align: center;
 			margin: auto 100rpx;
-			font-size: 35rpx;
+			font-size: $text-font-size-1;
 			// background-color: #18a058;
 		}
 	}

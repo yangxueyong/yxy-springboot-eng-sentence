@@ -1,5 +1,7 @@
 package com.example.eng.web;
 
+import com.example.eng.entity.game.num.io.QueryNumGameLevelIO;
+import com.example.eng.entity.game.num.io.QueryNumGameTypeIO;
 import com.example.eng.entity.game.score.GameScore;
 import com.example.eng.entity.game.num.NumGameAnimal;
 import com.example.eng.entity.game.num.NumGameColor;
@@ -48,14 +50,14 @@ public class GameNumController {
 
     @RequestMapping("/numLevelList")
     @Operation(summary = "获取所有level列表")
-    public R<List<NumGameLevel>> numLevelList(){
-        return R.data(iNumGameLevelService.numLevelList());
+    public R<List<NumGameLevel>> numLevelList(@RequestBody @Validated QueryNumGameLevelIO io){
+        return R.data(iNumGameLevelService.numLevelList(io));
     }
 
     @RequestMapping("/gameTypeList")
     @Operation(summary = "获取所有游戏类型列表")
-    public R<List<NumGameType>> gameTypeList(){
-        return R.data(iNumGameTypeService.gameTypeList());
+    public R<List<NumGameType>> gameTypeList(@RequestBody @Validated QueryNumGameTypeIO io){
+        return R.data(iNumGameTypeService.gameTypeList(io));
     }
 
 
