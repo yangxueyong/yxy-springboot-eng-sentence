@@ -57,4 +57,14 @@ export function apiSaveGameScore(data={}){
 }
 
 
+export function apiQueryGameScoreRankList(data={}){
+	console.log("查询到的数据->",data);
+	return request({
+		url:"/game/queryGameScoreRankList",
+		data,
+		method:"post"
+	})
+}
+
+
 

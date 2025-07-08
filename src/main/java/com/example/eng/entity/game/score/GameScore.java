@@ -1,4 +1,4 @@
-package com.example.eng.entity.game;
+package com.example.eng.entity.game.score;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

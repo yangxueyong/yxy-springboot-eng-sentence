@@ -17,7 +17,8 @@ const emit = defineEmits(['countDownFinish']); // 倒计时结束事件
 let remainingSeconds = ref(props.seconds);
 let beginTime = 0;
 let timer = null;
-let msTimer = null;
+const isPaused = ref(false); // 暂停状态
+// let msTimer = null;
 
 // 计算格式化时间（HH:mm:ss）
 const formattedTime = ref("00:00:00");
@@ -45,19 +46,21 @@ function start(mySeconds) {
   if (timer) {
 	  clearInterval(timer);
   }
-  if (msTimer) {
-  	  clearInterval(msTimer);
-  }
+  // if (msTimer) {
+  // 	  clearInterval(msTimer);
+  // }
   
   //倒计时
   timer = setInterval(() => {
-    if (remainingSeconds.value <= 0) {
-      clearInterval(timer); 
-      emit('countDownFinish');
-    } else {
-      remainingSeconds.value = remainingSeconds.value - 1;
-    }
-	formatTime("calcDown",remainingSeconds);
+	if (!isPaused.value) { // 只有未暂停时执行
+		if (remainingSeconds.value <= 0) {
+		  clearInterval(timer); 
+		  emit('countDownFinish');
+		} else {
+		  remainingSeconds.value = remainingSeconds.value - 1;
+		}
+		formatTime("calcDown",remainingSeconds);
+	}
   }, 1000);
   
   // //毫秒
@@ -78,7 +81,17 @@ function getExpendTime(){
 // 停止倒计时
 const stop = () => {
   if (timer) clearInterval(timer);
-  if (msTimer) clearInterval(msTimer);
+  // if (msTimer) clearInterval(msTimer);
+};
+
+// 停止倒计时
+const pauseInterval = () => {
+  isPaused.value = true;
+};
+
+// 恢复定时器
+const resumeInterval = () => {
+  isPaused.value = false;
 };
 
 // 重置倒计时
@@ -97,13 +110,13 @@ onBeforeUnmount(() => {
 });
 
 // 暴露方法，方便父组件调用
-defineExpose({ start, stop, reset, getExpendTime });
+defineExpose({ start, stop, reset, getExpendTime, pauseInterval, resumeInterval });
 </script>
 
 <style scoped>
 .countdownCls {
   font-family: monospace; /* 等宽字体，避免数字跳动 */
-  font-size: 24px;
+  font-size: $text-font-size-2;
   color: #fff;
   background-color: #4cd964;
   padding: 10rpx;

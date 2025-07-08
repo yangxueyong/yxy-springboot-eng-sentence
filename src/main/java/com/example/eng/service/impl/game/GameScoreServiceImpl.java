@@ -1,25 +1,27 @@
 package com.example.eng.service.impl.game;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.eng.config.interceptor.UserContext;
-import com.example.eng.config.param.web.MyImgConfig;
 import com.example.eng.constant.MyConstant;
-import com.example.eng.entity.game.GameScore;
-import com.example.eng.entity.game.num.NumGameAnimal;
+import com.example.eng.entity.game.score.GameScore;
 import com.example.eng.entity.game.num.NumGameLevel;
-import com.example.eng.entity.game.num.NumGameType;
+import com.example.eng.entity.game.score.io.QueryGameScoreRankIO;
+import com.example.eng.entity.game.score.vo.QueryGameScoreRankVO;
 import com.example.eng.mapper.game.GameScoreMapper;
-import com.example.eng.mapper.game.num.NumGameAnimalMapper;
 import com.example.eng.service.game.IGameScoreService;
-import com.example.eng.service.game.num.INumGameAnimalService;
 import com.example.eng.service.game.num.INumGameLevelService;
-import com.example.eng.util.MyImgUtil;
+import com.example.eng.util.MyDateUtil;
+import com.example.eng.util.UserUtil;
+import com.github.pagehelper.PageHelper;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,11 +32,18 @@ import java.util.List;
 @Service
 public class GameScoreServiceImpl extends ServiceImpl<GameScoreMapper, GameScore> implements IGameScoreService {
 
+
     @Autowired
     private INumGameLevelService iNumGameLevelService;
 
+    /**
+     * 保存成绩
+     * @param gameScore
+     * @return boolean
+     */
     @Override
     public boolean saveGameScore(GameScore gameScore) {
+        //校验游戏级别是否有效
         List<NumGameLevel> levelList = iNumGameLevelService.lambdaQuery()
                 .eq(NumGameLevel::getId, gameScore.getGameLevelId())
                 .eq(NumGameLevel::getStatus, MyConstant.STATUS_AVAILABLE)
@@ -42,7 +51,7 @@ public class GameScoreServiceImpl extends ServiceImpl<GameScoreMapper, GameScore
         if(CollectionUtil.isEmpty(levelList)){
             return false;
         }
-
+        //检验用户有没有成绩
         String userId = String.valueOf(UserContext.getUser().getId());
         List<GameScore> scoreList = this.lambdaQuery()
                 .eq(GameScore::getGameLevelId, gameScore.getGameLevelId())
@@ -68,6 +77,31 @@ public class GameScoreServiceImpl extends ServiceImpl<GameScoreMapper, GameScore
         }
         return false;
     }
+
+    /**
+     * 获取成绩排行
+     * @param io
+     * @return {@link List}<{@link QueryGameScoreRankVO}>
+     */
+    @Override
+    public List<QueryGameScoreRankVO> queryGameScoreRank(QueryGameScoreRankIO io) {
+        io.setThirdType(UserUtil.getThirdType());
+        //只查询前20条数据
+        PageHelper.startPage(1, 20);
+        List<QueryGameScoreRankVO> list = this.baseMapper.queryGameScoreRank(io);
+        if(CollectionUtil.isEmpty(list)){
+            return null;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            QueryGameScoreRankVO vo = list.get(i);
+            vo.setRank(String.valueOf(i + 1));
+            Long consumeTime = vo.getConsumeTime();
+            vo.setConsumeTimeStr(MyDateUtil.formatMillis(consumeTime));
+        }
+        return list;
+    }
+
+
 
 
 }

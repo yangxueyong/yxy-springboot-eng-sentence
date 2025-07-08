@@ -7,6 +7,7 @@ public class MyConstant {
     public static final String THIRDTYPE_WECHAT_GAME_NUM = "wechat_game_num";
 
     public static final String STATUS_AVAILABLE = "available";
+    public static final String STATUS_UNAVAILABLE = "unavailable";
     public static final String OPER_TYPE_HIDE = "hide";
     public static final String OPER_TYPE_FLAG = "flag";
 

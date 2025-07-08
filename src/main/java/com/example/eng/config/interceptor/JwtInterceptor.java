@@ -63,7 +63,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         if(user == null){
             throw new RuntimeException("登录信息无效，请重新登录");
         }
-        if(MyConstant.STATUS_AVAILABLE.equalsIgnoreCase(user.getStatus())){
+        if(MyConstant.STATUS_UNAVAILABLE.equalsIgnoreCase(user.getStatus())){
             throw new RuntimeException("用户异常，请联系管理员");
         }
         UserContext.setUser(user);

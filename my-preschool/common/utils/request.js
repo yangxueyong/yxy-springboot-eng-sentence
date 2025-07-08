@@ -1,6 +1,6 @@
 import {getSystemWechatUser} from "@/common/utils/common.js"
  
-const BASE_URL = 'http://127.0.0.1:8177'; 
+const BASE_URL = 'http://172.20.10.10:8177'; 
 // const BASE_URL = 'https://www.yangxuexue.xyz';
 
  
@@ -57,9 +57,11 @@ export function request(config={}){
 	let user = getSystemWechatUser();  
 	
 	url = BASE_URL+url
-	header['openId'] = user.openid;
+	// header['openId'] = user.openid;
+	header['openId'] = "oXsREvmMUP3OoKWvGF5P90rXnc9E";
 	header['thirdType'] = "wechat_game_num"; 
 	header['X-WX-SERVICE'] = "springboot-ndhb"; 
+	header['Access-Control-Allow-Origin'] = "*";
 	
 	return new Promise((resolve,reject)=>{		
 		uni.request({

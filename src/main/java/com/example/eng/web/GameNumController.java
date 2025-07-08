@@ -1,13 +1,13 @@
 package com.example.eng.web;
 
-import com.example.eng.entity.eng.io.EngSentenceCollectIO;
-import com.example.eng.entity.game.GameScore;
+import com.example.eng.entity.game.score.GameScore;
 import com.example.eng.entity.game.num.NumGameAnimal;
 import com.example.eng.entity.game.num.NumGameColor;
 import com.example.eng.entity.game.num.NumGameLevel;
 import com.example.eng.entity.game.num.NumGameType;
+import com.example.eng.entity.game.score.io.QueryGameScoreRankIO;
+import com.example.eng.entity.game.score.vo.QueryGameScoreRankVO;
 import com.example.eng.entity.res.R;
-import com.example.eng.entity.user.wechat.WechatMiniAppSessionKey;
 import com.example.eng.service.game.IGameScoreService;
 import com.example.eng.service.game.num.INumGameAnimalService;
 import com.example.eng.service.game.num.INumGameColorService;
@@ -77,6 +77,13 @@ public class GameNumController {
     public R saveGameScore(@RequestBody @Validated GameScore gameScore){
         boolean b = iGameScoreService.saveGameScore(gameScore);
         return R.success("保存成功");
+    }
+
+    @RequestMapping("/queryGameScoreRankList")
+    @Operation(summary = "获取游戏成绩排名")
+    public R queryGameScoreRankList(@RequestBody @Validated QueryGameScoreRankIO io){
+        List<QueryGameScoreRankVO> list = iGameScoreService.queryGameScoreRank(io);
+        return R.data(list);
     }
 
 

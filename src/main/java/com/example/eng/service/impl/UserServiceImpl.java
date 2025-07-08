@@ -1,5 +1,6 @@
 package com.example.eng.service.impl;
 
+import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.user.User;
 import com.example.eng.entity.user.wechat.io.WechatUserTokenIO;
 import com.example.eng.mapper.eng.UserMapper;
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
         try {
             i = updateByUnqSelective(record);
             if(i <= 0) {
+                record.setStatus(MyConstant.STATUS_AVAILABLE);
                 i = insert(record);
             }
         }catch (Exception e){

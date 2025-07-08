@@ -80,8 +80,8 @@ drop table if exists t_game_score;
 CREATE TABLE t_game_score (
 id bigint NOT NULL AUTO_INCREMENT primary key COMMENT '主键',
 user_id varchar(100) COMMENT '用户类型',
-game_level_id varchar(1000) NULL COMMENT '级别id',
-game_type_id varchar(1000) NULL COMMENT '类型id' ,
+game_level_id varchar(50) NULL COMMENT '级别id',
+game_type_id varchar(50) NULL COMMENT '类型id' ,
 consume_time bigint null COMMENT '消耗时间 单位毫秒',
 status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
 create_time datetime default now(),
@@ -91,6 +91,7 @@ update_time datetime
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci
 COMMENT='游戏_成绩';
+create unique index unq_t_game_score_1 on t_game_score (user_id,game_level_id,game_type_id);
 
 
 INSERT INTO t_num_game_level
