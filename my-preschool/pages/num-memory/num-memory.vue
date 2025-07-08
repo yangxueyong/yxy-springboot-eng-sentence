@@ -132,7 +132,7 @@
  import {ref, onMounted,nextTick,onUnmounted} from "vue"; 
  import {getRandomItems,getRandomItem,getRandomItemValue,getRandomInRangeExcluding} from "@/common/utils/common.js"
  import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
- import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
+ import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight,initCtx} from "@/common/utils/firework.js";
  import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
  import { onShow, onHide } from '@dcloudio/uni-app';
  import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
@@ -539,7 +539,9 @@ function calcGridItemWidth(){
 	init(); 
  }; 
  
-
+onMounted(()=>{
+	initCtx(); 
+});
  
  function init(){ 
 	 changeGridMap.value = new Map(changeGridList.value.map(item => [item.id, item]));

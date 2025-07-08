@@ -3,14 +3,14 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "小朋友识数字"
 			}
 		},
 		{
 			"path" : "pages/num-Huarongdao/num-Huarongdao",
 			"style" : 
 			{
-				"navigationBarTitleText" : "数华"
+				"navigationBarTitleText" : "基础数字训练"
 			}
 		},
 		{
@@ -24,7 +24,7 @@
 			"path" : "pages/num-memory/num-memory",
 			"style" : 
 			{
-				"navigationBarTitleText" : "练练记忆"
+				"navigationBarTitleText" : "综合训练"
 			}
 		},
 		{

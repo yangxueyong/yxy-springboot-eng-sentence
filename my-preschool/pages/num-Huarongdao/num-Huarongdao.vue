@@ -99,7 +99,7 @@
 import {ref, onMounted,nextTick} from "vue"; 
 import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
 import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
-import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
+import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight,initCtx} from "@/common/utils/firework.js";
 import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
 import {getSystemWechatUserForward} from "@/common/utils/common.js";
 
@@ -325,6 +325,7 @@ function calcGridItemWidth(){
 }
 //加载完成时重新发起
  function firstInit(){   
+	 // initCtx();
 	 if(changeGridList.value == null || changeGameList.value == null){
 		 return;
 	 }
@@ -340,6 +341,9 @@ function calcGridItemWidth(){
 	init();
 	// },500) 
 }
+onMounted(()=>{
+	initCtx(); 
+});
  
  function init(){ 
 	 changeGridMap.value = new Map(changeGridList.value.map(item => [item.id, item]));
@@ -517,6 +521,7 @@ function refreshChangeNum(){
 		content: '确定重新开始吗？',
 		success: function (res) {
 			if (res.confirm) {
+				currentGameItem = null;
 				init();
 			} else if (res.cancel) {
 				console.log('用户点击取消');

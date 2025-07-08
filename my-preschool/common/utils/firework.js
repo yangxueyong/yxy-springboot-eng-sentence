@@ -10,7 +10,7 @@ const duration = 5000 // 1个小时
 let ctx = null;
 // 初始化粒子
 const initParticles = () => {
-  const count = 100 // 适当减少粒子数量以提高性能
+  const count = 80 // 适当减少粒子数量以提高性能
   particles.value = []
   
   for (let i = 0; i < count; i++) {
@@ -155,3 +155,10 @@ export const startFirework =() => {
 export const endFirework = () => { 
   stopAnimation()
 }
+
+
+export const initCtx = () => { 
+  // stopAnimation()
+  ctx = uni.createCanvasContext('fireworksCanvas', this);
+}
+
