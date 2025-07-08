@@ -530,6 +530,14 @@ function myEndFirework(){
 </script>
 
 <style lang="scss" scoped> 
+	.box{
+		// position: relative;  /* 关键：设置父容器为相对定位 */
+		width: 100vw;       /* 根据需要设置尺寸 */
+		height: 100vh;
+		background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+		overflow: hidden; /* 添加这行防止margin塌陷 */
+		// background-color: #18a058;
+	}
 	.containerCls {
 	  position: fixed;
 	  top: 0;
@@ -541,7 +549,7 @@ function myEndFirework(){
 	  // background-color: red;
 	}
 	.countdownTextMainCls{
-		margin-top: 100rpx;
+		// padding-top: 100rpx;
 		display: flex;
 		// justify-content: space-between; /* 左右分开对齐 */
 		align-items: center; /* 如果需要垂直居中可以加上这一行 */ 
@@ -559,6 +567,7 @@ function myEndFirework(){
 	.changeNumCls{
 		margin-right: 50rpx; 
 		margin-top: 50rpx;
+		margin-bottom: 50rpx;
 		display: flex;
 		justify-content: flex-end;  
 		

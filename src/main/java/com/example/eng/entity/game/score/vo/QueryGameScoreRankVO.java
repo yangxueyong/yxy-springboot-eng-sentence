@@ -20,11 +20,20 @@ public class QueryGameScoreRankVO {
     @Schema(name = "typeTitle", description = "类型名称")
     private String typeTitle;
 
+    @Schema(name = "gameType", description = "游戏类型")
+    private String gameType;
+
     @Schema(name = "levelTitle", description = "级别名称")
     private String levelTitle;
 
+    @Schema(name = "levelType", description = "级别类型")
+    private String levelType;
+
     @Schema(name = "userName", description = "用户名称")
     private String userName;
+
+    @Schema(name = "gameName", description = "游戏名称")
+    private String gameName;
 
     @Schema(name = "userThirdHeadImgPath", description = "用户头像")
     private String userThirdHeadImgPath;

@@ -1,25 +1,25 @@
 
 drop table if exists t_num_game_level;
 CREATE TABLE t_num_game_level (
-  id varchar(100) NOT NULL COMMENT '主键',
-  sort varchar(100) null  COMMENT '排序',
-  type varchar(100) NULL COMMENT '类型 simple:简单 memory:记忆',
-  levelHideTime BIGINT NULL COMMENT '每一关的记忆时间',
-  beginBlock BIGINT NULL COMMENT '第一关需要完成多少块',
-  beginNum BIGINT NULL COMMENT '对于数字关卡，第一关以什么数字开始',
-  levelSumNum BIGINT NULL COMMENT '总的关卡数量',
-  typeKey varchar(100) NULL COMMENT '类型 general表示普通，custom表示自定义',
-  itemCls varchar(100) DEFAULT 'v_item' NULL COMMENT '元素的样式',
-  fontSize varchar(100) DEFAULT '30rpx' NULL COMMENT '字体的大小',
-  gameTime BIGINT NULL COMMENT '游戏时长',
-  colNum BIGINT NULL COMMENT '棋盘的列数',
-  numSum BIGINT NULL COMMENT '棋盘的方块数量',
-  title varchar(100) NULL COMMENT '标题',
-  note varchar(1000) NULL COMMENT '备注',
-  rightText varchar(100) NULL COMMENT '右侧文字',
-  create_time datetime default now(),
-  update_time datetime ,
-  CONSTRAINT t_num_game_level_pk PRIMARY KEY (id)
+                                  id varchar(100) NOT NULL COMMENT '主键',
+                                  sort varchar(100) null  COMMENT '排序',
+                                  type varchar(100) NULL COMMENT '类型 simple:简单 memory:记忆',
+                                  levelHideTime BIGINT NULL COMMENT '每一关的记忆时间',
+                                  beginBlock BIGINT NULL COMMENT '第一关需要完成多少块',
+                                  beginNum BIGINT NULL COMMENT '对于数字关卡，第一关以什么数字开始',
+                                  levelSumNum BIGINT NULL COMMENT '总的关卡数量',
+                                  typeKey varchar(100) NULL COMMENT '类型 general表示普通，custom表示自定义',
+                                  itemCls varchar(100) DEFAULT 'v_item' NULL COMMENT '元素的样式',
+                                  fontSize varchar(100) DEFAULT '30rpx' NULL COMMENT '字体的大小',
+                                  gameTime BIGINT NULL COMMENT '游戏时长',
+                                  colNum BIGINT NULL COMMENT '棋盘的列数',
+                                  numSum BIGINT NULL COMMENT '棋盘的方块数量',
+                                  title varchar(100) NULL COMMENT '标题',
+                                  note varchar(1000) NULL COMMENT '备注',
+                                  rightText varchar(100) NULL COMMENT '右侧文字',
+                                  create_time datetime default now(),
+                                  update_time datetime ,
+                                  CONSTRAINT t_num_game_level_pk PRIMARY KEY (id)
 )
     ENGINE=InnoDB
 DEFAULT CHARSET=utf8
@@ -29,14 +29,14 @@ COMMENT='数字游戏关卡';
 
 drop table if exists t_num_game_type;
 CREATE TABLE t_num_game_type (
- id varchar(100) NOT NULL primary key COMMENT '主键',
- sort varchar(100) not null COMMENT '排序',
- type varchar(100) NULL COMMENT '类型 simple:简单 memory:记忆',
-`title` varchar(100) COMMENT '标题',
- note varchar(1000) NULL COMMENT '描述',
- rightText varchar(1000) NULL COMMENT '右侧文字' ,
- create_time datetime default now(),
- update_time datetime
+                                 id varchar(100) NOT NULL primary key COMMENT '主键',
+                                 sort varchar(100) not null COMMENT '排序',
+                                 type varchar(100) NULL COMMENT '类型 simple:简单 memory:记忆',
+    `title` varchar(100) COMMENT '标题',
+                                 note varchar(1000) NULL COMMENT '描述',
+                                 rightText varchar(1000) NULL COMMENT '右侧文字' ,
+                                 create_time datetime default now(),
+                                 update_time datetime
 )
     ENGINE=InnoDB
 DEFAULT CHARSET=utf8
@@ -48,13 +48,13 @@ COMMENT='数字游戏_类型';
 
 drop table if exists t_num_game_color;
 CREATE TABLE t_num_game_color (
-id varchar(100) NOT NULL primary key COMMENT '主键',
-`key` varchar(100) COMMENT '键',
-value varchar(100) NULL COMMENT '值',
-content varchar(1000) NULL COMMENT '文本' ,
-status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
-create_time datetime default now(),
-update_time datetime
+                                  id varchar(100) NOT NULL primary key COMMENT '主键',
+    `key` varchar(100) COMMENT '键',
+                                  value varchar(100) NULL COMMENT '值',
+                                  content varchar(1000) NULL COMMENT '文本' ,
+                                  status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
+                                  create_time datetime default now(),
+                                  update_time datetime
 )
     ENGINE=InnoDB
 DEFAULT CHARSET=utf8
@@ -65,29 +65,29 @@ COMMENT='数字游戏_颜色卡';
 
 drop table if exists t_num_game_animal;
 CREATE TABLE t_num_game_animal (
-id varchar(100) NOT NULL primary key COMMENT '主键',
-`key` varchar(100) COMMENT '键',
-imgSrc varchar(1000) NULL COMMENT '原图',
-shadowSrc varchar(1000) NULL COMMENT '影子图' ,
-status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
-create_time datetime default now(),
-update_time datetime
+                                   id varchar(100) NOT NULL primary key COMMENT '主键',
+    `key` varchar(100) COMMENT '键',
+                                   imgSrc varchar(1000) NULL COMMENT '原图',
+                                   shadowSrc varchar(1000) NULL COMMENT '影子图' ,
+                                   status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
+                                   create_time datetime default now(),
+                                   update_time datetime
 )
-ENGINE=InnoDB
+    ENGINE=InnoDB
 DEFAULT CHARSET=utf8
 COLLATE=utf8_general_ci
 COMMENT='数字游戏_动物';
 
 drop table if exists t_game_score;
 CREATE TABLE t_game_score (
-id bigint NOT NULL AUTO_INCREMENT primary key COMMENT '主键',
-user_id varchar(100) COMMENT '用户类型',
-game_level_id varchar(50) NULL COMMENT '级别id',
-game_type_id varchar(50) NULL COMMENT '类型id' ,
-consume_time bigint null COMMENT '消耗时间 单位毫秒',
-status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
-create_time datetime default now(),
-update_time datetime
+                              id bigint NOT NULL AUTO_INCREMENT primary key COMMENT '主键',
+                              user_id varchar(100) COMMENT '用户类型',
+                              game_level_id varchar(50) NULL COMMENT '级别id',
+                              game_type_id varchar(50) NULL COMMENT '类型id' ,
+                              consume_time bigint null COMMENT '消耗时间 单位毫秒',
+                              status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用',
+                              create_time datetime default now(),
+                              update_time datetime
 )
     ENGINE=InnoDB
 DEFAULT CHARSET=utf8
@@ -99,7 +99,7 @@ create unique index unq_t_game_score_1 on t_game_score (user_id,game_level_id,ga
 INSERT INTO t_num_game_level
 (id,sort,type, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time)
 VALUES
-('1', '01','memory', 500, 2, 2, 5, 'general', 'v_item', '100rpx', 30, 3, 9, '3 ✖️ 3', '1-9的数字', '', NOW(), NULL),
+    ('1', '01','memory', 500, 2, 2, 5, 'general', 'v_item', '100rpx', 30, 3, 9, '3 ✖️ 3', '1-9的数字', '', NOW(), NULL),
 ('2', '02','memory', 500, 3, 1, 7, 'general', 'v_item', '80rpx', 60, 4, 16, '4 ✖️ 4', '1-16的数字', '', NOW(), NULL),
 ('3', '03','memory', 500, 1, 1, 10, 'general', 'v_item', '70rpx', 100, 5, 25, '5 ✖️ 5', '1-25的数字', '', NOW(), NULL),
 ('4', '04','memory', 500, 1, 1, 15, 'general', 'v_item', '60rpx', 200, 6, 36, '6 ✖️ 6', '1-36的数字', '', NOW(), NULL),
@@ -109,20 +109,11 @@ VALUES
 ('8', '08','memory', 500, 1, 1, 50, 'general', 'v_item', '30rpx', 600, 10, 100, '10 ✖️ 10', '1-100的数字', '', NOW(), NULL),
 ('9', '09','memory', 500, 1, 1, 1, 'custom', 'v_item', '30rpx', 600, 10, 100, '自定义', '自定义时间和数字区间', '', NOW(), NULL);
 
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc1', '01', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '100rpx', 15, 3, 9, '3 ✖️ 3', '1-9的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc2', '02', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '80rpx', 60, 4, 16, '4 ✖️ 4', '1-16的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc3', '03', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '70rpx', 100, 5, 25, '5 ✖️ 5', '1-25的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc4', '04', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '60rpx', 300, 6, 36, '6 ✖️ 6', '1-36的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc5', '05', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '50rpx', 500, 7, 49, '7 ✖️ 7', '1-49的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc6', '06', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '30rpx', 800, 8, 64, '8 ✖️ 8', '1-64的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc7', '07', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '30rpx', 1000, 9, 81, '9 ✖️ 9', '1-81的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc8', '08', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '30rpx', 1800, 10, 100, '10 ✖️ 10', '1-100的数字', '', '2025-07-08 14:32:34', NULL, 'available');
-INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc9', '09', 'simple', NULL, NULL, 1, NULL, 'custom', 'v_item', '30rpx', 600, 10, 100, '自定义', '自定义时间和数字区间', '', '2025-07-08 14:32:34', NULL, 'available');
 
 INSERT INTO t_num_game_type
 (id, sort, type,title, note, rightText, create_time, update_time)
 VALUES
-('a1', '01', 'memory', '记忆颜色', '点击颜色出现的地方', '', NOW(), NULL),
+    ('a1', '01', 'memory', '记忆颜色', '点击颜色出现的地方', '', NOW(), NULL),
 ('a2', '02', 'memory', '记忆数字', '点击数字出现的地方', '', NOW(), NULL),
 ('a6', '03', 'memory', '记忆动物', '点击动物出现的地方', '', NOW(), NULL),
 ('a7', '04', 'memory', '记忆影子', '点击影子对应动物出现的地方', '', NOW(), NULL),
@@ -138,7 +129,7 @@ VALUES
 INSERT INTO t_num_game_color
 (id, `key`, value, content, create_time, update_time)
 VALUES
-(UUID(), 'yellow', 'yellow', '黄色 yellow', NOW(), NULL),
+    (UUID(), 'yellow', 'yellow', '黄色 yellow', NOW(), NULL),
 (UUID(), 'red', 'red', '红色 red', NOW(), NULL),
 (UUID(), 'brown', 'brown', '棕色 brown', NOW(), NULL),
 (UUID(), 'purple', 'purple', '紫色 purple', NOW(), NULL),
@@ -175,4 +166,14 @@ VALUES
 -- 新增状态字段
 ALTER TABLE t_num_game_level ADD status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用';
 ALTER TABLE t_num_game_type ADD status varchar(100) DEFAULT 'available'  COMMENT 'available可用，unavailable不可用';
+
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc1', '01', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '100rpx', 15, 3, 9, '3 ✖️ 3', '1-9的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc2', '02', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '80rpx', 60, 4, 16, '4 ✖️ 4', '1-16的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc3', '03', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '70rpx', 100, 5, 25, '5 ✖️ 5', '1-25的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc4', '04', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '60rpx', 300, 6, 36, '6 ✖️ 6', '1-36的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc5', '05', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '50rpx', 500, 7, 49, '7 ✖️ 7', '1-49的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc6', '06', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '30rpx', 800, 8, 64, '8 ✖️ 8', '1-64的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc7', '07', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '30rpx', 1000, 9, 81, '9 ✖️ 9', '1-81的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc8', '08', 'simple', NULL, NULL, 1, NULL, 'general', 'v_item', '30rpx', 1800, 10, 100, '10 ✖️ 10', '1-100的数字', '', '2025-07-08 14:32:34', NULL, 'available');
+INSERT INTO t_num_game_level (id, sort, `type`, levelHideTime, beginBlock, beginNum, levelSumNum, typeKey, itemCls, fontSize, gameTime, colNum, numSum, title, note, rightText, create_time, update_time, status) VALUES('cc9', '09', 'simple', NULL, NULL, 1, NULL, 'custom', 'v_item', '30rpx', 600, 10, 100, '自定义', '自定义时间和数字区间', '', '2025-07-08 14:32:34', NULL, 'available');
 

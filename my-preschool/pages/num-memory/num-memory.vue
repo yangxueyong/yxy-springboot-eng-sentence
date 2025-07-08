@@ -102,8 +102,8 @@
 			@customNumFinish="onFunCustomNumFinish" ></custom-set-memory>
 		</uni-popup>
 		<uni-popup ref="gameTypePopup" :is-mask-click="true"  >
-			<view class="numPopup">
-				<view class="container">
+			<scroll-view class="numPopup" scroll-y="true"> 
+				<!-- <scroll-view class="container" scroll-y="true"> -->
 					<uni-section title="请选择游戏类型" type="line">
 						<uni-list v-for="item in changeGameList" :key="item.id">
 							<view @click="changeGameType(item)" >
@@ -115,8 +115,8 @@
 							 </view>
 						</uni-list>
 					</uni-section>
-				</view>
-			</view>
+				<!-- </scroll-view> -->
+			</scroll-view>
 		</uni-popup>
 	  </view>
 		
@@ -234,6 +234,7 @@ const getChangeGameList =async(code)=>{
 	})
 	let res =await apiGetGameTypeList({ "type":"memory" });  
 	changeGameList.value = res.data; 
+	console.log("获取到的游戏类型->",res.data);
 	uni.hideLoading(); 
 	firstInit();
 }
@@ -723,6 +724,8 @@ function myEndFirework(){
 		// position: relative;  /* 关键：设置父容器为相对定位 */
 		width: 100vw;       /* 根据需要设置尺寸 */
 		height: 100vh;
+		background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+		overflow: hidden; /* 添加这行防止margin塌陷 */
 		// background-color: #18a058;
 	}
 	
@@ -735,6 +738,11 @@ function myEndFirework(){
 	  pointer-events: none; /* 允许点击穿透 */
 	  z-index: 9999; 
 	  // background-color: red;
+	}
+	.container{
+		width: 100vw;
+		height: 100vh;
+		background-color: red;
 	}
 	
 	.findImgCls{
@@ -778,7 +786,8 @@ function myEndFirework(){
 		height: 100%;
 	}
 	.countdownTextMainCls{
-		margin-top: 100rpx;
+		// margin-top: 100rpx;
+		// padding-top: 100rpx;
 		display: flex;
 		// justify-content: space-between; /* 左右分开对齐 */
 		align-items: center; /* 如果需要垂直居中可以加上这一行 */ 
@@ -827,6 +836,7 @@ function myEndFirework(){
 	.changeNumCls{
 		margin-right: 50rpx; 
 		margin-top: 50rpx;
+		margin-bottom: 50rpx;
 		display: flex;
 		justify-content: flex-end;  
 		

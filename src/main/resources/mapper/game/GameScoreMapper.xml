@@ -4,7 +4,9 @@
   <select id="queryGameScoreRank" resultType="com.example.eng.entity.game.score.vo.QueryGameScoreRankVO">
     select
       t.title as typeTitle,
+      t.type as gameType,
       l.title as levelTitle,
+      l.type as levelType,
       u.en_name as userName,
       u.third_head_img_path as userThirdHeadImgPath,
       u.third_type as thirdType,
@@ -19,6 +21,9 @@
       and l.status ='available'
       and t.status ='available'
       and s.consume_time is not null
+      <if test="userId!=null">
+        and s.user_id =#{userId}
+      </if>
       <if test="thirdType!=null">
         and u.third_type=#{thirdType}
       </if>

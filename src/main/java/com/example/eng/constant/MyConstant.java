@@ -44,4 +44,9 @@ public class MyConstant {
     public static final String CACHE_KEY_REQ_BASE ="reqBase";
 
     public static final String HTTP ="http";
+
+    /**
+     *  是否查我的成绩
+     */
+    public static final String QUERY_ME_1 = "1";
 }

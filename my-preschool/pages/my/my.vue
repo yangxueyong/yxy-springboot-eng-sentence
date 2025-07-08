@@ -12,43 +12,19 @@
 		</view>
 		
 		<view class="section">
-			 <navigator url="/pages/my/collect/collectSentence?collectType=detail&name=我收藏的句子">
+			 <navigator url="/pages/game-score-rank/game-score-rank?queryMe=1&name=我的游戏得分">
 				 <view class="myCls">
 					 <view class="myLeft">
 						 <uni-icons size="30" type="flag-filled" ></uni-icons> 
 					 </view>
 					 <view class="textCls">
-						我收藏的句子					 
+						我的游戏得分					 
 					 </view>
 					 <view class="myRight">
 						<uni-icons size="30" type="forward" ></uni-icons> 					 
 					 </view>
 				 </view>
-			 </navigator>
-			 <navigator url="/pages/my/collect/collectSentence?collectType=word&name=我收藏的单词">
-				 <view class="myCls">
-					 <view class="myLeft">
-						 <uni-icons size="30" type="flag-filled" ></uni-icons> 
-					 </view>
-					 <view class="textCls">
-						我收藏的单词					 
-					 </view>
-					 <view class="myRight">
-						<uni-icons size="30" type="forward" ></uni-icons> 					 
-					 </view>
-				 </view>
-			 </navigator>
-			 <view class="myCls">
-				 <view class="myLeft">
-					 <uni-icons size="30" type="flag-filled" ></uni-icons> 
-				 </view>
-				 <view class="textCls">
-					我已学习的课程					 
-				 </view>
-				 <view class="myRight">
-					<uni-icons size="30" type="forward" ></uni-icons> 					 
-				 </view>
-			 </view>
+			 </navigator> 
 		</view> 
 		<uni-popup ref="myHeadPopup" :is-mask-click="true">
 			<get-wx-user-info 
@@ -171,6 +147,14 @@ function decryptPhoneNumber(res){
 </script>
 
 <style lang="scss" scoped>
+	.box{
+		// position: relative;  /* 关键：设置父容器为相对定位 */
+		width: 100vw;       /* 根据需要设置尺寸 */
+		height: 100vh;
+		background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+		overflow: hidden; /* 添加这行防止margin塌陷 */
+		// background-color: #18a058;
+	}
 	.userInfo{
 		display: flex;
 		align-items: center;

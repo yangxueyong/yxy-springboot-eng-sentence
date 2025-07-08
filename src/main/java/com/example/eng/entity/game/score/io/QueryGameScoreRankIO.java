@@ -30,4 +30,10 @@ public class QueryGameScoreRankIO {
     @Schema(name = "third_type", description = "三方类型")
     private String thirdType;
 
+    @Schema(name = "query_me", description = "是不是查我的成绩")
+    private String queryMe;
+
+    @Schema(name = "user_id", description = "用户id")
+    private String userId;
+
 }

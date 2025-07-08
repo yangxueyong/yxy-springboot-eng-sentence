@@ -3,6 +3,7 @@ package com.example.eng.service.impl.game;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.eng.config.interceptor.UserContext;
@@ -12,6 +13,7 @@ import com.example.eng.entity.game.num.NumGameLevel;
 import com.example.eng.entity.game.score.io.QueryGameScoreRankIO;
 import com.example.eng.entity.game.score.vo.QueryGameScoreRankVO;
 import com.example.eng.mapper.game.GameScoreMapper;
+import com.example.eng.myenum.GameTypeEnum;
 import com.example.eng.service.game.IGameScoreService;
 import com.example.eng.service.game.num.INumGameLevelService;
 import com.example.eng.util.MyDateUtil;
@@ -86,6 +88,9 @@ public class GameScoreServiceImpl extends ServiceImpl<GameScoreMapper, GameScore
     @Override
     public List<QueryGameScoreRankVO> queryGameScoreRank(QueryGameScoreRankIO io) {
         io.setThirdType(UserUtil.getThirdType());
+        if(ObjUtil.equals(MyConstant.QUERY_ME_1 ,io.getQueryMe())){
+            io.setUserId(String.valueOf(UserContext.getUser().getId()));
+        }
         //只查询前20条数据
         PageHelper.startPage(1, 20);
         List<QueryGameScoreRankVO> list = this.baseMapper.queryGameScoreRank(io);
@@ -96,10 +101,23 @@ public class GameScoreServiceImpl extends ServiceImpl<GameScoreMapper, GameScore
             QueryGameScoreRankVO vo = list.get(i);
             vo.setRank(String.valueOf(i + 1));
             Long consumeTime = vo.getConsumeTime();
+            String typeTitle = vo.getTypeTitle();
+            String levelType = vo.getLevelType();
+            String levelTitle = vo.getLevelTitle();
             vo.setConsumeTimeStr(MyDateUtil.formatMillis(consumeTime));
+
+            //设置游戏名称
+            GameTypeEnum byCode = GameTypeEnum.getByCode(levelType);
+            String gameName = "";
+            if(byCode != null){
+                gameName = byCode.getZhName() + " - ";
+            }
+            vo.setGameName(gameName + typeTitle + " - " + levelTitle);
         }
         return list;
     }
+
+
 
 
 
