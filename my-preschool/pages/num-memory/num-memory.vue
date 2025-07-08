@@ -136,7 +136,9 @@
  import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
  import { onShow, onHide } from '@dcloudio/uni-app';
  import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+ import {getSystemWechatUserForward} from "@/common/utils/common.js";
  
+ getSystemWechatUserForward();
  let kk = ref(null);
  let myFireWorkComponent = ref(null);
 // 存储我选择的游戏数字

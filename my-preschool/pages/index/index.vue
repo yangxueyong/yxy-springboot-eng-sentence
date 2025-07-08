@@ -15,6 +15,7 @@
 
 <script setup>
 	import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+	import {getSystemWechatUserForward} from "@/common/utils/common.js";
 	//分享给好友
 	onShareAppMessage((e)=>{
 		return {
@@ -22,6 +23,8 @@
 			path:"/pages/index/index"
 		}
 	})
+	
+	getSystemWechatUserForward();
 </script>
 
 <style lang="scss" scoped>

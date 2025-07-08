@@ -11,7 +11,7 @@
 			</view>
 		</view>
 		
-		<view class="section">
+		<view class="section" v-if="userinfo.avatarBase64">
 			 <navigator url="/pages/game-score-rank/game-score-rank?queryMe=1&name=我的游戏得分">
 				 <view class="myCls">
 					 <view class="myLeft">

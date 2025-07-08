@@ -101,7 +101,9 @@ import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_succe
 import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
 import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
 import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
-  
+import {getSystemWechatUserForward} from "@/common/utils/common.js";
+
+getSystemWechatUserForward();
 // 存储我选择的游戏数字
 let storeKey = "myChangeItem";
 // 存储我选择的游戏方式
