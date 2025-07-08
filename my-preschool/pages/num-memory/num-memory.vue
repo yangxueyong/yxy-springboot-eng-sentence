@@ -135,6 +135,7 @@
  import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
  import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
  import { onShow, onHide } from '@dcloudio/uni-app';
+ import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
  
  let kk = ref(null);
  let myFireWorkComponent = ref(null);
@@ -201,7 +202,14 @@ const levelText = ref("");
 
 //关卡
 const changeGridList = ref([]); 
-
+//分享给好友
+onShareAppMessage((e)=>{
+	return {
+		title:"小朋友认数字来啦~",
+		path:"/pages/num-memory/num-memory"
+	}
+})
+	
 //当前页面被隐藏
 onHide(() => {
 	myTimeCountDown.value.pauseInterval(); 

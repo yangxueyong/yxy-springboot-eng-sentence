@@ -14,6 +14,14 @@
 </template>
 
 <script setup>
+	import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+	//分享给好友
+	onShareAppMessage((e)=>{
+		return {
+			title:"小朋友认数字来啦~",
+			path:"/pages/index/index"
+		}
+	})
 </script>
 
 <style lang="scss" scoped>

@@ -100,7 +100,8 @@ import {ref, onMounted,nextTick} from "vue";
 import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
 import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
 import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight} from "@/common/utils/firework.js";
- 
+import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+  
 // 存储我选择的游戏数字
 let storeKey = "myChangeItem";
 // 存储我选择的游戏方式
@@ -147,6 +148,13 @@ const customMumPopup = ref(null);
 let lastDragSuccessNum = 0;
 const changeGridList = ref([]); 
 
+//分享给好友
+onShareAppMessage((e)=>{
+	return {
+		title:"小朋友认数字来啦~",
+		path:"/pages/num-Huarongdao/num-Huarongdao"
+	}
+})
 
 const getChangeGridList =async()=>{ 
 	uni.showLoading({
