@@ -57,8 +57,7 @@ export function request(config={}){
 	let user = getSystemWechatUser();  
 	
 	url = BASE_URL+url
-	// header['openId'] = user.openid;
-	header['openId'] = "oXsREvmMUP3OoKWvGF5P90rXnc9E";
+	header['openId'] = user.openid;
 	header['thirdType'] = "wechat_game_num"; 
 	header['X-WX-SERVICE'] = "springboot-ndhb"; 
 	header['Access-Control-Allow-Origin'] = "*";
