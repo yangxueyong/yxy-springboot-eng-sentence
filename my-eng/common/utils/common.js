@@ -1,3 +1,7 @@
+export function isEmpty(str) {
+  return str === null || str === undefined || str.trim() === '';
+}
+
 export function compareTimestamp(timestamp) {
   const currentTime = new Date().getTime();
   const timeDiff = currentTime - timestamp;
@@ -15,6 +19,13 @@ export function compareTimestamp(timestamp) {
   } else {
     return null;
   }
+}
+export function showHint(content){
+	uni.showModal({
+		title: "温馨提示",
+		content: content,
+		showCancel: false
+	});
 }
 
 // 获取缓存中的用户信息

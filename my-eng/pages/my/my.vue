@@ -3,7 +3,7 @@
 		<!-- <button type="default" open-type="getPhoneNumber" @getphonenumber="decryptPhoneNumber">获取手机号</button> -->
 		<view class="userInfo" @click="openChooseHead()" v-if="userinfo">
 			<view class="avatar">
-				<image :src="userinfo.avatarUrl" mode="aspectFill"></image>
+				<image :src="userinfo.avatarBase64 || userinfo.avatarUrl" mode="aspectFill"></image>
 			</view>
 			<view class="ip">{{userinfo.nickName}}</view>
 			<view class="address">
@@ -95,6 +95,7 @@ function userLogin(){
 					userinfo.value = info.userInfo;
 					userinfo.value.avatarUrl = userHeadAndName.avatarUrl;
 					userinfo.value.nickName = userHeadAndName.userNickName;
+					userinfo.value.avatarBase64 = userHeadAndName.avatarBase64;
 					console.log("个人信息", userinfo.value);
 					//存储个人信息到缓存
 					uni.setStorageSync("myUser", userinfo.value);

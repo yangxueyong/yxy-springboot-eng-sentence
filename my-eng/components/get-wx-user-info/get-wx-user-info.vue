@@ -15,6 +15,8 @@
 
 <script setup> 
 	import {ref} from "vue";
+	import {isEmpty,showHint} from "@/common/utils/common.js";
+	
 	const avatarUrl = ref('');
 	const userNickName = ref('');
 	const emit = defineEmits(["chooseDone"]);
@@ -23,7 +25,23 @@
 		avatarUrl.value = e.detail.avatarUrl;
 	}
 	function onChooseSubmit(){
-		emit("chooseDone", {"avatarUrl":avatarUrl.value, "userNickName": userNickName.value});
+		if(isEmpty(avatarUrl.value)){
+			showHint("请先设置头像！");
+			return;
+		}
+		if(isEmpty(userNickName.value)){
+			showHint("请先设置昵称！");
+			return;
+		}
+		
+		const fs = uni.getFileSystemManager();
+		console.log(fs)
+		let base64Str = fs.readFileSync(avatarUrl.value, 'base64');
+		let imgBase64 = `data:image/png;base64,${base64Str}`;
+		console.log("imgBase64->", imgBase64);
+		
+		emit("chooseDone", {"avatarUrl":avatarUrl.value, "userNickName": userNickName.value, "avatarBase64": imgBase64});
+		// emit("chooseDone", {"avatarUrl":avatarUrl.value, "userNickName": userNickName.value});
 	}
  
 </script>
