@@ -236,8 +236,11 @@ function changeGridType(id){
 	
 	if(typeKey == "custom"){
 		customMumPopup.value.open();
-		btnShowGameScoreRank.value = false;
 		return;
+	}
+	
+	if(typeKey == "myCustom"){
+		btnShowGameScoreRank.value = false;
 	}else{
 		btnShowGameScoreRank.value = true;
 	}
