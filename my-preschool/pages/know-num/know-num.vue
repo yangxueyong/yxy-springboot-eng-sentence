@@ -619,7 +619,7 @@ const handleItemClick = (index) => {
       setTimeout(() => {
         firstItem.hidden = true
         secondItem.hidden = true
-        // activeIndexes.value = []
+        activeIndexes.value = []
         score.value = boardItems.value.filter(item => item.hidden === true).length;
 		// boardItems.value
         isProcessing.value = false
