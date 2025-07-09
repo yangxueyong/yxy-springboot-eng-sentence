@@ -30,8 +30,8 @@
 		</picker> -->
 		
 		<view class="game-info">
-		  <text>时间: {{timeLeft}}s</text>
-		  <text>消除了: {{score}}</text>
+		  <text>剩余: {{timeLeft}}秒</text>
+		  <text>消除了: {{score}}/{{sumNum}}个</text>
 		</view>
 		
 		<view class="game-board-wrapper" :style="{width: boardWidth + 'px'}">
@@ -310,6 +310,7 @@ const currentLevel = ref({})
 const boardItems = ref([])
 const activeIndexes = ref([])
 const score = ref(0)
+const sumNum = ref(0)
 const timeLeft = ref(0)
 const gameTimer = ref(null)
 const itemSize = ref(50) // 最小项目大小
@@ -546,6 +547,8 @@ const generateBoard = () => {
   
   // 随机打乱
   pairs = pairs.sort(() => Math.random() - 0.5)
+  // 更新总个数
+  sumNum.value = pairs.length;
   
   // 创建游戏项
   boardItems.value = pairs.map(value => ({
