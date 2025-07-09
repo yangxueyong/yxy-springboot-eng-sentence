@@ -230,24 +230,29 @@ function funChangeGameLevel(){
 	levelPopup.value.open();
 }
 
-function onChangeGameLevel(item){
-	let typeKey = item.typeKey;
-	console.log("你选择了->", item);
-	if(typeKey == "custom"){
-		customMumPopup.value.open(); 
-		levelPopup.value.close();
-		return;
-	}
-	
-	if(typeKey == "myCustom"){
+// 是否展示排行
+function showRank(){
+	if(currentLevel.value.typeKey == "myCustom"){
 		btnShowGameScoreRank.value = false;
 	}else{
 		btnShowGameScoreRank.value = true;
 	}
+}
+
+function onChangeGameLevel(item){
+	let typeKey = item.typeKey;
+	console.log("你选择了->", item);
+	if(typeKey == "custom"){
+		customMumSet.value.setnumv(currentGameType.value.id);
+		customMumPopup.value.open(); 
+		levelPopup.value.close();
+		return;
+	} 
 	
 	currentLevel.value = item;
 	uni.setStorageSync(storeChangeRemoveGameLevelKey, item);
-	levelPopup.value.close();
+	showRank();
+	levelPopup.value.close(); 
 }
 
 // 删除我的矩阵
@@ -450,6 +455,7 @@ const resetGameState = () => {
 
 // 初始化游戏
 const initGame = async () => {
+  showRank();
   // selectData();
   resetGameState();
   
@@ -477,9 +483,10 @@ const generateBoard = () => {
   switch (currentGameType.value.id) {
     case 'kk1': // 数字消消乐
       const numSum = Math.min(parseInt(currentLevel.value.numSum), evenTotalItems)
+	  const beginNum = parseInt(currentLevel.value.beginNum) || 1;
       const numPairs = Math.floor(numSum / 2)
       for (let i = 1; i <= numPairs; i++) {
-        pairs.push(i, i)
+        pairs.push(i + (beginNum - 1), i + (beginNum - 1))
       }
       break;
       
