@@ -612,14 +612,14 @@ const handleItemClick = (index) => {
       // 立即隐藏元素，但保留视觉效果
       firstItem.matched = true
       secondItem.matched = true
-	  
+	  activeIndexes.value = [];
       // 播放音效
 	  playItem_successVoice();
 	  
       setTimeout(() => {
         firstItem.hidden = true
         secondItem.hidden = true
-        activeIndexes.value = []
+        
         score.value = boardItems.value.filter(item => item.hidden === true).length;
 		// boardItems.value
         isProcessing.value = false
