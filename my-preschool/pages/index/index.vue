@@ -10,6 +10,11 @@
         综合训练
       </view>
     </navigator> 
+	<navigator url="/pages/know-num/know-num">
+	  <view class="pageCls">
+	    消一消小方块
+	  </view>
+	</navigator> 
   </view>
 </template>
 

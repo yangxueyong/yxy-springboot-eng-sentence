@@ -22,7 +22,7 @@
 
 <script setup>
 	import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-	import { showHint } from "@/common/utils/common.js";
+	import { showHint, calculateLayout } from "@/common/utils/common.js";
 	const emit = defineEmits(['customNumFinish']);  
 	const iptBeginValue = ref(null);
 	const iptEndValue = ref(null);
@@ -93,39 +93,7 @@
 		emit("customNumFinish",myCustom);
 	}
 	
-	function calculateLayout(num) {
-	  if (num <= 0) return [0, 0];
-	  
-	  // 计算最接近的平方根作为初始宽度
-	  let width = Math.ceil(Math.sqrt(num));
-	  let height = width;
-	  
-	  // 尝试优化布局，使宽度和高度尽可能接近
-	  while (width * height >= num) {
-	    // 如果减少高度后仍然能容纳所有数字
-	    if ((width - 1) * height >= num) {
-	      width--;
-	    } 
-	    // 如果减少宽度后不能容纳，尝试减少高度
-	    else if (width * (height - 1) >= num) {
-	      height--;
-	    } else {
-	      break;
-	    }
-	  }
-	  
-	  // 确保最终布局能容纳所有数字
-	  while (width * height < num) {
-	    if (width <= height) {
-	      width++;
-	    } else {
-	      height++;
-	    }
-	  }
-	  
-	  // 返回宽度和高度，确保宽度 >= 高度（更接近正方形）
-	  return width >= height ? {width, height} : {height, width};
-	} 
+	 
 </script>
 
 <style  lang="scss" scoped>
