@@ -282,6 +282,87 @@ function updateComparison() {
   highlightedResult.value;
 }
 		
+/**
+ * 计算最佳网格布局
+ * @param {number} total - 要显示的元素块总数
+ * @returns {Object} 包含 width(每行个数) 和 height(行数) 的对象
+ */
+export function calculateLayoutForScreen(total) { 
+  // 获取屏幕宽度（兼容H5和小程序）
+  let screenWidth = 0;
+  
+  // #ifdef H5
+  screenWidth = document.documentElement.clientWidth || document.body.clientWidth;
+  // #endif
+  
+  // #ifdef MP-WEIXIN
+  try {
+    const res = uni.getSystemInfoSync();
+    screenWidth = res.screenWidth || res.windowWidth;
+  } catch (e) {
+    console.error('获取屏幕宽度失败:', e);
+    screenWidth = 375; // 默认值
+  }
+  // #endif
+  
+  // 将rpx转换为px（小程序中1rpx=0.5px，H5中需要根据屏幕比例计算）
+  const rpxToPx = (rpx) => {
+    // #ifdef H5
+    return (rpx / 750) * screenWidth;
+    // #endif
+    // #ifdef MP-WEIXIN
+    return rpx * 0.5;
+    // #endif
+  };
+  
+  const minItemWidth = 50; // 最小元素宽度(px)
+  const itemGap = rpxToPx(5); // 元素间距(px)
+  const screenPadding = rpxToPx(20); // 屏幕预留空间(px)
+  
+  // 可用宽度
+  const availableWidth = screenWidth - screenPadding;
+  
+  // 计算每行可能的最大元素数量
+  let maxItemsPerRow = Math.floor((availableWidth + itemGap) / (minItemWidth + itemGap));
+  maxItemsPerRow = Math.max(1, Math.min(maxItemsPerRow, total)); // 确保至少1个，不超过总数
+  
+  // 寻找最接近正方形的布局
+  let bestWidth = maxItemsPerRow;
+  let bestHeight = Math.ceil(total / bestWidth);
+  
+  // 尝试找到更接近正方形的布局
+  for (let width = maxItemsPerRow; width >= 1; width--) {
+    const height = Math.ceil(total / width);
+    
+    // 如果当前布局比之前的最佳布局更接近正方形
+    if (Math.abs(width - height) < Math.abs(bestWidth - bestHeight)) {
+      bestWidth = width;
+      bestHeight = height;
+    }
+    
+    // 如果已经是完美正方形，直接返回
+    if (width === height) {
+      break;
+    }
+  }
+  
+  // 确保元素宽度不会太小
+  const actualItemWidth = (availableWidth - (bestWidth - 1) * itemGap) / bestWidth;
+  if (actualItemWidth < minItemWidth) {
+    // 如果计算出的宽度小于最小值，减少每行数量
+    bestWidth = Math.floor((availableWidth + itemGap) / (minItemWidth + itemGap));
+    bestWidth = Math.max(1, Math.min(bestWidth, total));
+    bestHeight = Math.ceil(total / bestWidth);
+  }
+  
+  return {
+    width: bestWidth,
+    height: bestHeight
+  };
+}
+
+// 导出方法
+// export default calculateGridLayout;
 
 // 计算宽和高
 export function calculateLayout(num) {

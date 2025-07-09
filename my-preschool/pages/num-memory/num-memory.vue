@@ -1,5 +1,5 @@
 <template>
-<view class="box">
+<scroll-view class="box" scroll-y="true">
 	<template>
 	  <view class="containerCls" v-if="showCanvas"> 
 	    <canvas 
@@ -125,12 +125,12 @@
 			<my-firework ref="myFireWorkComponent"></my-firework>
 		  </template>
 	  </view> -->
- </view> 
+ </scroll-view> 
 </template>
 
 <script setup> 
  import {ref, onMounted,nextTick,onUnmounted} from "vue"; 
- import {getRandomItems,getRandomItem,getRandomItemValue,getRandomInRangeExcluding} from "@/common/utils/common.js"
+ import {getRandomItems,getRandomItem,getRandomItemValue,getRandomInRangeExcluding,calculateLayoutForScreen} from "@/common/utils/common.js"
  import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
  import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight,initCtx} from "@/common/utils/firework.js";
  import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
@@ -366,7 +366,7 @@ function changeGridType(id){
 	if(gameTypePopup != null && gameTypePopup.value != null){
 		gameTypePopup.value.close();
 	}
-	gridColumn.value = item.colNum;
+	gridColumn.value = calculateLayoutForScreen(item.numSum).width;
 	let numSum = item.numSum ;
 	changeNumText.value = item.title;
 	countdownNum.value = item.gameTime;

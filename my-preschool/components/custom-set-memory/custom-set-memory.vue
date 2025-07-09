@@ -14,8 +14,8 @@
 				<input class="uni-input" type="number" v-model="iptLevelSumValue" maxlength="2" placeholder="请输入总关卡,最大为99关" />
 			</view>
 			<view class="uni-form-item uni-column">
-				<view class="title">棋盘大小</view>
-				<input class="uni-input" type="number" v-model="iptWidthValue" maxlength="2" placeholder="请输入棋盘大小,输入2表示生产2行2列的棋盘" />
+				<view class="title">棋盘方格总个数</view>
+				<input class="uni-input" type="number" v-model="iptSumBlockValue" maxlength="3" placeholder="请输入棋盘方格总个数，不超过100" />
 			</view>
 			<view class="uni-form-item uni-column">
 				<view class="title">游戏时间，单位为秒</view>
@@ -37,7 +37,7 @@
 	const iptBeginNumValue = ref("1");
 	const iptBeginBlockValue = ref("1");
 	const iptLevelSumValue = ref("2");
-	const iptWidthValue = ref("2");
+	const iptSumBlockValue = ref("2");
 	const iptSecondValue = ref("60");
 	
 	const showNum = ref(null);
@@ -49,7 +49,7 @@
 		}
 	}
 	function onNumFinish(){
-		let widthVal = iptWidthValue.value;
+		let sumBlockValue = iptSumBlockValue.value;
 		let beginVal = iptBeginNumValue.value;
 		let beginBlockVal = iptBeginBlockValue.value;
 		let levelSumVal = iptLevelSumValue.value;
@@ -69,7 +69,7 @@
 			showHint("请输入总关卡");
 			return;
 		}
-		if(!widthVal){
+		if(!sumBlockValue){
 			showHint("请输入棋盘大小");
 			return;
 		}
@@ -77,7 +77,7 @@
 		beginVal = parseInt(beginVal);
 		beginBlockVal = parseInt(beginBlockVal);
 		levelSumVal = parseInt(levelSumVal);
-		widthVal = parseInt(widthVal);
+		sumBlockValue = parseInt(sumBlockValue);
 		
 		if(showNum.value){
 			if(beginVal <= 0){
@@ -96,8 +96,8 @@
 			return;
 		} 
 		
-		if(widthVal < 2){
-			showHint("棋盘不能小于2");
+		if(sumBlockValue < 4 && sumBlockValue > 100){
+			showHint("棋盘方格总数不能小于4或大于100个");
 			return;
 		}
 		
@@ -106,9 +106,9 @@
 		
 		//最后一关会出现的块的个数 这个个数不能大于棋盘的块数
 		let lastLevelBlockNum = parseInt(levelSumVal) + parseInt(beginBlockVal) - 1;
-		let sumBlockNum = widthVal * widthVal;
+		let sumBlockNum = sumBlockValue ;
 		if(lastLevelBlockNum > sumBlockNum){
-			showHint("棋盘大小为" + widthVal  + "✖️" + widthVal + ",无法装下最后一关的块数" + lastLevelBlockNum + "，请重新调整");
+			showHint("棋盘大小为" + sumBlockNum + ",无法装下最后一关的块数" + lastLevelBlockNum + "，请重新调整");
 			return;
 		} 
 		 
@@ -132,7 +132,7 @@
 	   if(showNum.value){
 		   note = "首关的数字:" + beginVal + ",";
 	   }
-	   note += "首关的块数:" + beginBlockVal + ",总关卡:"+ levelSumVal +",棋盘大小:" + widthVal;
+	   note += "首关的块数:" + beginBlockVal + ",总关卡:"+ levelSumVal +",棋盘大小:" + sumBlockValue;
 	   
 	   var myCustom = {
 		   id : new Date().getTime(),
@@ -144,9 +144,9 @@
 		   "itemCls":"v_item",
 		   "fontSize":fontSize,
 		   "gameTime":secondVal,
-		   "colNum":widthVal,
+		   "colNum":5,
 		   "numSum":sumBlockNum,
-		   "title":"自定义 " + widthVal+" ✖️ " + widthVal,
+		   "title":"自定义 " + sumBlockValue,
 		   "note": note
 	   }
 		console.log("完成-->");
