@@ -35,7 +35,7 @@
 						<view class="dataNameCls">
 							<view class="dataZhTypeCls"> 
 								<view class="dataZhNameCls">
-									{{item.znName}}
+									{{removeLeadingZeros(item)}}
 								</view>
 							</view>
 							<view class="dataEnNameCls">
@@ -90,6 +90,16 @@
 		pageSize:20
 	}
 	
+	// 当为句子时，组装所属课程
+	function removeLeadingZeros(item) {
+		let znName = item.znName;
+		let sort = item.sort;
+		let type = item.type;
+		if(type == "main"){
+			return znName;
+		}
+	  return "[课" + sort.replace(/^0+/, '') + "] " + znName;
+	}
 	
 	onMounted(()=>{
 		searchHisDatas.value = uni.getStorageSync(searchHisDataKey) || [];
