@@ -1,3 +1,5 @@
+import {ref} from "vue";
+
 export function isEmpty(str) {
   return str === null || str === undefined || str.trim() === '';
 }
@@ -38,13 +40,17 @@ export function getSystemWechatUser(){
 export function getSystemWechatUserForward(){
 	let wechatUser = getSystemWechatUser();
 	if(wechatUser == null || wechatUser.openid == null){
+		const userinfo = ref(uni.getStorageSync("myUser") || {"openid":"test","nickName":"点击头像登录","avatarUrl":"/static/images/user/noLogin.png"})
 		uni.showToast({
-			title:"跳转登录中..."
+			title:"以游客方式体验中..."
 		});
-		uni.reLaunch({
-			url:"/pages/my/my"
-		})
+		uni.setStorageSync("myUser", userinfo.value);
+		return userinfo;
+		// uni.reLaunch({
+		// 	url:"/pages/my/my"
+		// })
 	}
+	return wechatUser;
 }
 
 export function gotoHome(){

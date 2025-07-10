@@ -63,7 +63,7 @@ import {ref} from "vue";
 import {apiGetWechatMiniSessionKey} from "@/common/api/apis.js"
 
 const myHeadPopup = ref(null);
-const userinfo = ref(uni.getStorageSync("myUser") || {"nickName":"未登录","avatarUrl":"/static/images/user/noLogin.png"})
+const userinfo = ref(uni.getStorageSync("myUser") || {"nickName":"点击头像登录","avatarUrl":"/static/images/user/noLogin.png"})
 let userHeadAndName = null;
 
 function onChooseDone(e){ 
