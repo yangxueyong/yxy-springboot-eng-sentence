@@ -13,6 +13,7 @@ import com.example.eng.entity.eng.io.*;
 import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
 import com.example.eng.entity.eng.vo.EngSentenceWordVO;
+import com.example.eng.entity.eng.vo.SearchEngSentenceVO;
 import com.example.eng.entity.res.R;
 import com.example.eng.entity.user.wechat.WechatUser;
 import com.example.eng.entity.user.wechat.io.WechatTokenIO;
@@ -94,6 +95,12 @@ public class EngMainController {
     @Operation(summary = "搜索句子主表数据")
     public R<List<EngSentenceMain>> getEngMain(@RequestBody @Validated EngSentenceMainIO io){
         return R.data(engSentenceMainService.selectOrderBySort(io));
+    }
+
+    @PostMapping("/searchEng")
+    @Operation(summary = "新的搜索句子数据")
+    public R<List<SearchEngSentenceVO>> searchEng(@RequestBody @Validated EngSentenceMainIO io){
+        return R.data(engSentenceMainService.searchEng(io));
     }
 
     @PostMapping("/searchChangeEngMain")

@@ -54,7 +54,7 @@
 
 <script setup> 
 	import {ref} from "vue";
-	import {onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+	import {onReachBottom,onPullDownRefresh,onShow} from "@dcloudio/uni-app";
 	import {getSystemWechatUserForward,repstr,highlightedText} from "@/common/utils/common.js";
 	import {apiGetEngMain,
 	apiOperData,
@@ -185,6 +185,14 @@
 	  function eye(e){
 		  e.hide = !e.hide;
 	  } 
+	  
+	  onShow(()=>{
+	  	let id = uni.getStorageSync("onLoadPracticeId");
+	  	if(id){
+	  		getEngMain(); 
+	  		uni.removeStorageSync("onLoadPracticeId");
+	  	}
+	  });
 </script>
 
 <style lang="scss" scoped>

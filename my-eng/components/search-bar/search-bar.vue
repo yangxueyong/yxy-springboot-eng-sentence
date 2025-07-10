@@ -24,6 +24,7 @@
 
 <script setup> 
 	import {ref} from "vue"; 
+	import { showHint } from "@/common/utils/common.js";
 	
 	const emit = defineEmits(["funSearchData","funSearchChangeItem"]);
 	
@@ -51,6 +52,14 @@
 	});
 	
 	function search(e){
+		if(e.value == null || e.value.trim() == ''){
+			showHint("请输入你要搜索的内容");
+			return;
+		}
+		if(e.value.length > 20){
+			showHint("搜索的内容不能超过20个字");
+			return;
+		}
 		emit("funSearchData", e.value);
 	}
 	function changeItem(item){

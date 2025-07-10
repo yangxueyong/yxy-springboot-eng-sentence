@@ -157,7 +157,7 @@ public class EngSentenceDetailServiceImpl implements EngSentenceDetailService {
     }
 
     @NotNull
-    private EngSentenceDetail getAndDownDetail(EngSentenceDetail engSentenceDetail) {
+    public EngSentenceDetail getAndDownDetail(EngSentenceDetail engSentenceDetail) {
         String localAudioPath = engSentenceDetail.getLocalAudioPath();
 
         //如果本地音频存在，则返回

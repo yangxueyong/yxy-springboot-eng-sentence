@@ -43,6 +43,13 @@
 			{
 				"navigationBarTitleText" : ""
 			}
+		},
+		{
+			"path" : "pages/search/search",
+			"style" : 
+			{
+				"navigationBarTitleText" : "搜索"
+			}
 		}
 	],
 	"tabBar": {
@@ -54,6 +61,11 @@
 				"pagePath": "pages/index/index",
 				"iconPath": "static/images/tabBar/home.png",
 				"selectedIconPath": "static/images/tabBar/home-h.png"
+			},{
+				"text": "搜索",
+				"pagePath": "pages/search/search",
+				"iconPath": "/static/images/tabBar/search.png",
+				"selectedIconPath": "/static/images/tabBar/search-h.png"
 			},{
 				"text": "练练",
 				"pagePath": "pages/practice/practice",

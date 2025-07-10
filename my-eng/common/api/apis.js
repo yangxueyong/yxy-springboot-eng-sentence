@@ -58,6 +58,15 @@ export function apiSearchEngMain(data={}){
 	})
 }
 
+export function apiNewSearchEngMain(data={}){ 
+	return request({
+		url:"/engMain/searchEng",
+		data,
+		method:"post"
+	})
+}
+
+
 export function apiSearchChangeEngMain(data={}){ 
 	return request({
 		url:"/engMain/searchChangeEngMain",

@@ -1,5 +1,6 @@
 package com.example.eng.entity.eng.io;
 
+import com.example.eng.entity.base.MyPage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EngSentenceMainIO {
+public class EngSentenceMainIO extends MyPage {
     /**
      * 主键
      */
@@ -54,5 +55,11 @@ public class EngSentenceMainIO {
      */
     @Schema(name="loadType",description="loadType")
     private String loadType;
+
+    /**
+     * 查询类型
+     */
+    @Schema(name="ckType",description="ckType")
+    private String ckType;
 
 }

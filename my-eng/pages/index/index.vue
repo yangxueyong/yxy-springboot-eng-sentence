@@ -77,7 +77,7 @@
 
 <script setup>
 	import {ref} from "vue";
-	import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
+	import {onShareAppMessage,onReachBottom,onPullDownRefresh,onShow} from "@dcloudio/uni-app";
 	import {getSystemWechatUserForward} from "@/common/utils/common.js";
 	import {apiGetEngMain,
 	apiOperData,
@@ -332,6 +332,14 @@
 			path:"/pages/index/index"
 		}
 	})
+	
+	onShow(()=>{
+		let id = uni.getStorageSync("onLoadStudyId");
+		if(id){
+			getEngMain(); 
+			uni.removeStorageSync("onLoadStudyId");
+		}
+	});
 	
 </script>
 

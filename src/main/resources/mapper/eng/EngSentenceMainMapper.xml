@@ -40,6 +40,40 @@
     order by sort
   </select>
 
+  <select id="selectSearchOrderBySort" parameterType="com.example.eng.entity.eng.io.EngSentenceMainIO" resultType="com.example.eng.entity.eng.vo.SearchEngSentenceVO">
+    select * from (
+        select * from (
+          select id,zn_name,en_name,sort,'main' as type, null as local_audio_path
+          from t_eng_sentence_main
+          where 1=1
+          and
+          (
+                zn_name like concat('%', #{searchText,jdbcType=VARCHAR}, '%') or
+                en_name like concat('%', #{searchText,jdbcType=VARCHAR}, '%')
+          )
+          and status='available'
+          order by sort
+        ) a
+        <if test='ckType == "Y"'>
+          union all
+          select * from (
+            select d.main_id,d.zn_name,d.en_name,m.sort,'detail' as type,d.local_audio_path
+            from t_eng_sentence_detail d inner join t_eng_sentence_main m
+            on d.main_id = m.id
+            and d.status='available'
+            and m.status='available'
+            where 1=1
+            and
+            (
+                  d.zn_name like concat('%', #{searchText,jdbcType=VARCHAR}, '%')
+                or d.en_name like concat('%', #{searchText,jdbcType=VARCHAR}, '%')
+            )
+            order by d.main_id,m.sort,d.sort
+          )b
+        </if>
+    ) a1
+  </select>
+
 
   <select id="selectNextBySort" resultMap="BaseResultMap">
     select

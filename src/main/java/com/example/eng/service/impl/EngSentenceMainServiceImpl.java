@@ -7,15 +7,18 @@ import cn.hutool.core.util.StrUtil;
 import com.example.eng.config.annotation.CustomVerifyUser;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.constant.MyConstant;
+import com.example.eng.entity.eng.EngSentenceDetail;
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.EngUserOper;
 import com.example.eng.entity.eng.io.*;
 import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceDetailVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
+import com.example.eng.entity.eng.vo.SearchEngSentenceVO;
 import com.example.eng.entity.user.User;
 import com.example.eng.mapper.eng.EngSentenceMainMapper;
 import com.example.eng.service.*;
+import com.example.eng.util.UserUtil;
 import com.example.eng.util.VerifyUserUtil;
 import com.github.pagehelper.PageHelper;
 import org.jetbrains.annotations.NotNull;
@@ -49,10 +52,16 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
     private UserService userService;
 
 
+
     @Override
     public List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io) {
 
         return engSentenceMainMapper.selectOrderBySort(io);
+    }
+
+    @Override
+    public List<SearchEngSentenceVO> selectSearchOrderBySort(EngSentenceMainIO io) {
+        return engSentenceMainMapper.selectSearchOrderBySort(io);
     }
 
     @Override
@@ -81,6 +90,37 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         EngSentenceMain main = new EngSentenceMain();
         main.setId(io.getId());
         saveUserLastMain(main,io);
+    }
+
+    @Override
+    public List<SearchEngSentenceVO> searchEng(EngSentenceMainIO io) {
+        if(io.hasPrevious()){
+            PageHelper.startPage(io.getPageNum(),io.getPageSize());
+        }else{
+            PageHelper.startPage(1, 20);
+        }
+
+        //如果我是会员，则查询detail
+        if(!VerifyUserUtil.verifyUserIsGeneral()){
+            io.setCkType(MyConstant.QUERY_Y);
+        }
+
+        List<SearchEngSentenceVO> datas = selectSearchOrderBySort(io);
+        for (int i = 0; i < datas.size(); i++) {
+            SearchEngSentenceVO vo = datas.get(i);
+            if(ObjUtil.equals(vo.getType(), MyConstant.DATA_TYPE_MAIN)){
+                continue;
+            }
+
+            EngSentenceDetail engSentenceDetail = new EngSentenceDetail();
+            engSentenceDetail.setLocalAudioPath(vo.getLocalAudioPath());
+            engSentenceDetail.setId(vo.getId());
+            engSentenceDetail.setEnName(vo.getEnName());
+            EngSentenceDetail andDownDetail = detailService.getAndDownDetail(engSentenceDetail);
+            vo.setWebAudioPath(andDownDetail.getWebAudioPath());
+        }
+
+        return datas;
     }
 
     @Override

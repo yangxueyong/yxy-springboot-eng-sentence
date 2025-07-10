@@ -7,6 +7,7 @@ import com.example.eng.entity.eng.io.EngSentenceMainIO;
 import com.example.eng.entity.eng.io.EngSentenceMainNextIO;
 import com.example.eng.entity.eng.vo.EngCollectVO;
 import com.example.eng.entity.eng.vo.EngSentenceMainVO;
+import com.example.eng.entity.eng.vo.SearchEngSentenceVO;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ import java.util.List;
 public interface EngSentenceMainService {
     List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO record);
 
+    List<SearchEngSentenceVO> selectSearchOrderBySort(EngSentenceMainIO io);
+
     EngSentenceMain selectOrderByRandom(EngSentenceMainIO io);
 
     EngSentenceMainVO getIndexEngMain(EngSentenceMainIO io);
@@ -30,6 +33,8 @@ public interface EngSentenceMainService {
     EngSentenceMain selectUpBySort(EngSentenceMainIO io);
 
     void searchChangeEngMain(EngSentenceMainIO io);
+
+    List<SearchEngSentenceVO> searchEng(EngSentenceMainIO io);
 
     List<EngCollectVO> selectCollectByIO(EngSentenceCollectIO io);
 

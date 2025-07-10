@@ -2,6 +2,7 @@ package com.example.eng.mapper.eng;
 
 import com.example.eng.entity.eng.EngSentenceMain;
 import com.example.eng.entity.eng.io.EngSentenceMainIO;
+import com.example.eng.entity.eng.vo.SearchEngSentenceVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -40,6 +41,8 @@ public interface EngSentenceMainMapper {
     EngSentenceMain selectByPrimaryKey(String id);
 
     List<EngSentenceMain> selectOrderBySort(EngSentenceMainIO io);
+
+    List<SearchEngSentenceVO> selectSearchOrderBySort(EngSentenceMainIO io);
 
     EngSentenceMain selectNextBySort(EngSentenceMainIO io);
 

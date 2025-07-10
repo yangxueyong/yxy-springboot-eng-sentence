@@ -49,4 +49,6 @@ public class MyConstant {
      *  是否查我的成绩
      */
     public static final String QUERY_ME_1 = "1";
+
+    public static final String QUERY_Y = "Y";
 }

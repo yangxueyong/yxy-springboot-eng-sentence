@@ -23,6 +23,7 @@ public interface EngSentenceDetailService {
     List<EngSentenceDetail> selectAllDetailByIO(EngSentenceDetailIO io);
     List<EngSentenceDetailVO> getEngSentenceDetailVOS(EngSentenceMain main);
 
+    EngSentenceDetail getAndDownDetail(EngSentenceDetail engSentenceDetail);
     EngSentenceDetail selectDetailByIO(EngSentenceDetailIO io);
 
     int updateByPrimaryKeySelective(EngSentenceDetail record);
