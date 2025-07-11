@@ -320,6 +320,11 @@ function onFunCustomNumFinish(e){
 }
 
 function funChangeLevel(id){
+	let item = changeLevelMap.value.get(id); 
+	if(!ckUserPlay(item.userType)){
+		showHint("请先登录哦~ 才能玩其他的哦");
+		return;
+	}
 	currentLevel = 1;
 	currentLevelItem = null;
 	usedColorSet = new Set();
