@@ -79,7 +79,7 @@ public class VerifyUserUtil {
         String userType = user.getUserType();
         Date memberDueDate = user.getMemberDueDate();
         if(ObjUtil.equal(MyConstant.USER_TYPE_MEMBER, userType)
-                && (memberDueDate != null && DateUtil.date().getTime() >= memberDueDate.getTime())){
+                && (memberDueDate != null && DateUtil.date().getTime() <= memberDueDate.getTime())){
             return true;
         }
         return false;
