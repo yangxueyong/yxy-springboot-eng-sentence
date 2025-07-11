@@ -89,4 +89,8 @@ public class NumGameLevel {
     @Schema(name = "status", description = "available可用，unavailable不可用")
     @TableField(value = "status")
     private String status;
+
+    @TableField("user_type")
+    @Schema(name = "user_type", description = "用户类型 all所有人都能玩，general,member只有会员或普通用户能玩")
+    private String userType;
 }

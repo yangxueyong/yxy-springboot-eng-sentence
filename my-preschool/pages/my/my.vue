@@ -37,9 +37,10 @@
 <script setup> 
 import {ref} from "vue";
 import {apiGetWechatMiniSessionKey} from "@/common/api/apis.js"
+import {getSystemWechatUser,saveLoginUser} from "@/common/utils/common.js";
 
 const myHeadPopup = ref(null);
-const userinfo = ref(uni.getStorageSync("myUser") || {"nickName":"未登录","avatarUrl":"/static/images/user/noLogin.png"})
+const userinfo = ref(getSystemWechatUser())
 let userHeadAndName = null;
 
 function onChooseDone(e){ 
@@ -74,7 +75,7 @@ function userLogin(){
 					userinfo.value.avatarBase64 = userHeadAndName.avatarBase64;
 					console.log("个人信息", userinfo.value);
 					//存储个人信息到缓存
-					uni.setStorageSync("myUser", userinfo.value);
+					saveLoginUser(userinfo.value);
 					//获取用户的openId
 					getUserOpenId();
 	            }

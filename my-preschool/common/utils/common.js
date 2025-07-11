@@ -1,3 +1,5 @@
+import {ref} from "vue";
+
 export function isEmpty(str) {
   return str === null || str === undefined || str.trim() === '';
 }
@@ -29,9 +31,39 @@ export function showHint(content){
 	});
 }
 
+let defaultUser = {"openid":"test","nickName":"点击头像登录","avatarUrl":"/static/images/user/noLogin.png"};
+
 // 获取缓存中的用户信息
 export function getSystemWechatUser(){
-	return uni.getStorageSync("myUser");
+	let user = uni.getStorageSync("myUser") || defaultUser; 
+	uni.setStorageSync("myUser", user);
+	return user;
+}
+
+// 缓存用户信息
+export function saveSystemWechatUser(myUser){ 
+	let user = uni.getStorageSync("myUser") || defaultUser; 
+	user.userType = myUser.userType;
+	uni.setStorageSync("myUser", user);
+	return user;
+}
+
+// 缓存用户信息
+export function saveLoginUser(myUser){ 
+	uni.setStorageSync("myUser", myUser); 
+}
+
+// 检查用户是否可玩
+export function ckUserPlay(ckUserType){ 
+	console.log("正在对比->ckUserType", ckUserType);
+	let myUser = getSystemWechatUser();
+	if(ckUserType === "all" || ckUserType == null || ckUserType.trim() === ""){
+		return true;
+	}
+	if(ckUserType.includes(myUser.userType)){
+		return true;
+	}
+	return false;
 }
 
 
@@ -39,13 +71,20 @@ export function getSystemWechatUser(){
 export function getSystemWechatUserForward(){
 	let wechatUser = getSystemWechatUser();
 	if(wechatUser == null || wechatUser.openid == null){
+		const userinfo = ref(uni.getStorageSync("myUser") || defaultUser)
 		uni.showToast({
-			title:"跳转登录中..."
+			title:"以游客方式体验中..."
 		});
-		uni.reLaunch({
-			url:"/pages/my/my"
-		})
+		uni.setStorageSync("myUser", userinfo.value);
+		return userinfo;
+		// uni.showToast({
+		// 	title:"跳转登录中..."
+		// });
+		// uni.reLaunch({
+		// 	url:"/pages/my/my"
+		// })
 	}
+	return wechatUser;
 }
 
 export function gotoHome(){
@@ -315,7 +354,7 @@ export function calculateLayoutForScreen(total) {
     // #endif
   };
   
-  const minItemWidth = 50; // 最小元素宽度(px)
+  const minItemWidth = 70; // 最小元素宽度(px)
   const itemGap = rpxToPx(5); // 元素间距(px)
   const screenPadding = rpxToPx(20); // 屏幕预留空间(px)
   

@@ -82,8 +82,8 @@
 		<uni-popup ref="numPopup" :is-mask-click="true"  > 
 			<scroll-view class="numPopup" scroll-y="true">
 				<uni-section title="请选择数字类型" type="line">
-					<uni-list v-for="item in changeGridList" :key="item.id">
-						<view @click="onChangeGridType(item.id)" class="gridNumMainCls">
+					<uni-list v-for="item in changeLevelList" :key="item.id">
+						<view @click="funChangeLevel(item.id)" class="gridNumMainCls">
 							<view class="gridNumLeftClss">
 								<view class="gridNumTitleCls">{{item.title}}</view>
 								<view class="gridNumNoteCls">{{item.note}}</view>
@@ -105,7 +105,7 @@
 			<scroll-view class="numPopup" scroll-y="true"> 
 				<!-- <scroll-view class="container" scroll-y="true"> -->
 					<uni-section title="请选择游戏类型" type="line">
-						<uni-list v-for="item in changeGameList" :key="item.id">
+						<uni-list v-for="item in changeGameTypeList" :key="item.id">
 							<view @click="changeGameType(item)" >
 								<uni-list-item
 								 :title="item.title" 
@@ -120,6 +120,7 @@
 		</uni-popup>
 	  </view>
 		
+	<!-- <view class="bottomCls"></view> -->
 	  <!-- <view class="fireworkCls">
 		  <template>
 			<my-firework ref="myFireWorkComponent"></my-firework>
@@ -136,7 +137,7 @@
  import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
  import { onShow, onHide } from '@dcloudio/uni-app';
  import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
- import {getSystemWechatUserForward} from "@/common/utils/common.js";
+ import {getSystemWechatUserForward,ckUserPlay, showHint} from "@/common/utils/common.js";
  
  getSystemWechatUserForward();
  let kk = ref(null);
@@ -181,7 +182,7 @@ const findText = ref("");
 // 当前的游戏类型
 let currentGameType = "";
 // 游戏数字的map对象
-const changeGridMap = ref(null);
+const changeLevelMap = ref(null);
 // 游戏类型的map对象
 const changeGameTypeMap = ref(null);
 const currentItemGridNums = ref([]);
@@ -197,13 +198,13 @@ let usedColorSet = new Set();
 let usedAnimalSet = new Set(); 
 
 // 当前正在玩的关卡
-let currentGameItem = null;
+let currentLevelItem = null;
 let currentGameTypeItem = null;
 //当前的关卡信息
 const levelText = ref("");
 
 //关卡
-const changeGridList = ref([]); 
+const changeLevelList = ref([]); 
 //分享给好友
 onShareAppMessage((e)=>{
 	return {
@@ -222,33 +223,33 @@ onShow(() => {
 	myTimeCountDown.value.resumeInterval(); 
 });
 
-const getChangeGridList =async(code)=>{ 
+const getchangeLevelList =async(code)=>{ 
 	uni.showLoading({
 		title:"加载中.."
 	})
 	let res =await apiGetNumLevelList({ "type":"memory" });  
-	changeGridList.value = res.data; 
+	changeLevelList.value = res.data; 
 	console.log("得到的数据===>", res.data);
 	uni.hideLoading(); 
 	firstInit();
 }
-getChangeGridList();
+getchangeLevelList();
 
 // 游戏类型
-const changeGameList = ref([]);
+const changeGameTypeList = ref([]);
 
 
-const getChangeGameList =async(code)=>{ 
+const getChangeGameTypeList =async(code)=>{ 
 	uni.showLoading({
 		title:"加载中.."
 	})
 	let res =await apiGetGameTypeList({ "type":"memory" });  
-	changeGameList.value = res.data; 
+	changeGameTypeList.value = res.data; 
 	console.log("获取到的游戏类型->",res.data);
 	uni.hideLoading(); 
 	firstInit();
 }
-getChangeGameList();
+getChangeGameTypeList();
 
 // 颜色
 const changeColorList = ref([]);
@@ -289,7 +290,7 @@ const saveGameScore =async(game_level_id, game_type_id, consume_time)=>{
 // 删除我的矩阵
 function rmoveMyGridNum(param){
 	console.log("删除开始");
-	changeGridList.value = changeGridList.value.filter(item => item.id !== param.id);
+	changeLevelList.value = changeLevelList.value.filter(item => item.id !== param.id);
 	let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
 	if(myGameNumList != null && myGameNumList.length > 0){
 		myGameNumList = myGameNumList.filter(item => item.id !== param.id);
@@ -308,34 +309,40 @@ function onFunCustomNumFinish(e){
 	myGameNumList.unshift(e);
 	
 	uni.setStorageSync(storeMyGameNumKey, myGameNumList);
-	changeGridList.value.unshift(e);
+	changeLevelList.value.unshift(e);
 	
 	uni.setStorageSync(storeKey, e.id);
 	
 	currentLevel = 1;
-	currentGameItem = null;
+	currentLevelItem = null;
 	usedColorSet = new Set();
 	init();
 }
 
-function onChangeGridType(id){
+function funChangeLevel(id){
 	currentLevel = 1;
-	currentGameItem = null;
+	currentLevelItem = null;
 	usedColorSet = new Set();
 	changeGridType(id);
 }
 //更改选择的矩阵时
 function changeGridType(id){  
 	endFirework();
+	
+	let item = changeLevelMap.value.get(id); 
+	if(!ckUserPlay(item.userType)){
+		showHint("请先登录哦~ 才能玩其他的哦");
+		return;
+	}
+	
 	clickNumList = ref([]);
 	myTimeDown.value = false;
 	resultText.value = "";
 	wantFindText.value = "";
 	wantFindImg.value = null;
 	lastDragSuccessNum = 0;
-	currentGameSuccess = false; 
+	currentGameSuccess = false;  
 	
-	let item = changeGridMap.value.get(id); 
 	let typeKey = item.typeKey;
 	
 	if(typeKey == "custom"){
@@ -381,15 +388,15 @@ function changeGridType(id){
 		list.push(listItem);
 	} 
 	
-	// console.log("currentGameItem.id->", currentGameItem != null ? currentGameItem.id : "") ;
+	// console.log("currentLevelItem.id->", currentLevelItem != null ? currentLevelItem.id : "") ;
 	// console.log("item.id->", item.id);
 	
-	if(currentGameItem == null || currentGameItem.id != item.id){
+	if(currentLevelItem == null || currentLevelItem.id != item.id){
 		//开始计时
 		myTimeCountDown.value.start(countdownNum.value); 
 	}
 	
-	currentGameItem = item;
+	currentLevelItem = item;
 	
 	randData(list, item); 
 }
@@ -400,7 +407,7 @@ function randData(list, currentItem){
 	yesClickFlag = false;
 	
 	//随机获取数据(就是随机获取哪些元素被标记)
-	let newIndexSet = getRandomItems(list, parseInt(currentLevel) - 1 + parseInt(currentGameItem.beginBlock) );  
+	let newIndexSet = getRandomItems(list, parseInt(currentLevel) - 1 + parseInt(currentLevelItem.beginBlock) );  
 	
 	//随机的颜色
 	let colorIndex = 0; 
@@ -501,8 +508,12 @@ function randData(list, currentItem){
 
 //切换游戏类型
 function changeGameType(item){ 
+	if(!ckUserPlay(item.userType)){
+		showHint("请先登录哦~ 才能玩其他的哦");
+		return;
+	}
 	currentLevel = 1;
-	currentGameItem = null;
+	currentLevelItem = null;
 	usedColorSet = new Set();
 	usedAnimalSet = new Set();
 	if(gameTypePopup != null && gameTypePopup.value != null){
@@ -526,19 +537,19 @@ function calcGridItemWidth(){
 }
 //加载完成时重新发起
  function firstInit(){   
-	 if(changeGridList.value == null || changeGameList.value == null || changeColorList.value == null || changeAnimalList.value == null){
+	 if(changeLevelList.value == null || changeGameTypeList.value == null || changeColorList.value == null || changeAnimalList.value == null){
 		 return;
 	 }
 	 
-	 if(changeGridList.value.length <= 0 || changeGameList.value.length <= 0 || changeColorList.value.length <= 0 || changeAnimalList.value.length <= 0){
+	 if(changeLevelList.value.length <= 0 || changeGameTypeList.value.length <= 0 || changeColorList.value.length <= 0 || changeAnimalList.value.length <= 0){
 	 	 return;
 	 }
 	  
 	let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
 	if(myGameNumList != null && myGameNumList.length > 0){
-		changeGridList.value = [ ...myGameNumList, ...changeGridList.value];
+		changeLevelList.value = [ ...myGameNumList, ...changeLevelList.value];
 	}
-	console.log("--->",changeGridList);
+	console.log("--->",changeLevelList);
 	init(); 
  }; 
  
@@ -547,15 +558,15 @@ onMounted(()=>{
 });
  
  function init(){ 
-	 changeGridMap.value = new Map(changeGridList.value.map(item => [item.id, item]));
-	 changeGameTypeMap.value = new Map(changeGameList.value.map(item => [item.id, item]));
+	 changeLevelMap.value = new Map(changeLevelList.value.map(item => [item.id, item]));
+	 changeGameTypeMap.value = new Map(changeGameTypeList.value.map(item => [item.id, item]));
 	 
-	 let item = uni.getStorageSync(storeKey) || changeGridList.value[0].id;
-	 if(changeGridMap.value.get(item) == null){
-		 item = changeGridList.value[0].id;
+	 let item = uni.getStorageSync(storeKey) || changeLevelList.value[0].id;
+	 if(changeLevelMap.value.get(item) == null){
+		 item = changeLevelList.value[0].id;
 	 }
 	 //游戏类型
-	 currentGameType = uni.getStorageSync(storeGameTypeKey) || changeGameList.value[0].id;
+	 currentGameType = uni.getStorageSync(storeGameTypeKey) || changeGameTypeList.value[0].id;
 	 
 	 changeGridType(item); 
  }
@@ -572,7 +583,7 @@ const newList = ref([]) ;
 function calcDragSuccess(isTimeFinish){  
 	if(!currentGameSuccess){  
 		let successLevelNum = currentLevel - 1;
-		let failureNum = currentGameItem.levelSumNum - successLevelNum; 
+		let failureNum = currentLevelItem.levelSumNum - successLevelNum; 
 		resultText.value = "时间到了,再接再厉";
 		playAll_failVoice();
 	} 
@@ -651,7 +662,7 @@ let currentGameSuccess = false;
 let timer = null;
 //挑战成功
 function success(){    
-	if(currentLevel >= currentGameItem.levelSumNum){
+	if(currentLevel >= currentLevelItem.levelSumNum){
 		myStartFirework();
 		//花费的时间
 		let expendTime = myTimeCountDown.value.getExpendTime();
@@ -660,7 +671,7 @@ function success(){
 		//todo 可以播放音效
 		playAll_successVoice();
 		//保存成绩
-		saveGameScore(currentGameItem.id, currentGameTypeItem.id, expendTime);
+		saveGameScore(currentLevelItem.id, currentGameTypeItem.id, expendTime);
 		//停止计时
 		myTimeCountDown.value.stop();
 		yesClickFlag = false;
@@ -694,7 +705,7 @@ function funChangeGameType(){
 //打开排行榜
 function showGameScoreRank(){
 	uni.navigateTo({
-		url:"/pages/game-score-rank/game-score-rank?gameLevelId=" + currentGameItem.id + "&gameTypeId=" + currentGameTypeItem.id + "&name=" + currentGameTypeItem.title + " - " + currentGameItem.title
+		url:"/pages/game-score-rank/game-score-rank?gameLevelId=" + currentLevelItem.id + "&gameTypeId=" + currentGameTypeItem.id + "&name=" + currentGameTypeItem.title + " - " + currentLevelItem.title
 	})
 }
 //重新开始
@@ -705,7 +716,7 @@ function refreshChangeNum(){
 		success: function (res) {
 			if (res.confirm) {
 				currentLevel = 1;
-				currentGameItem = null;
+				currentLevelItem = null;
 				usedColorSet = new Set();
 				usedAnimalSet = new Set();
 				init();
@@ -876,7 +887,7 @@ function myEndFirework(){
 	}
 	.v1{
 		margin: 20rpx 50rpx;
-		border: 1px solid #18a058;  
+		// border: 1px solid #18a058;  
 	}
 	.v1_1{
 		// margin: 20rpx;
@@ -891,8 +902,10 @@ function myEndFirework(){
 		background:
 				linear-gradient(to bottom,transparent,#fff 400rpx),
 				linear-gradient(to right,#beecd8 20%,#F4E2D8);
-		height: calc(100% - 20rpx); 
-		margin: 10rpx 10rpx 10rpx 10rpx;
+		// height: calc(100% - 20rpx); 
+		// margin: 10rpx 10rpx 10rpx 10rpx;
+		height: calc(100% - 2rpx);
+		margin: 1rpx;
 		// padding: 10rpx;
 		vertical-align: middle;
 		text-align: center;
@@ -908,15 +921,15 @@ function myEndFirework(){
 		display: flex;
 		justify-content: center;  /* 水平居中 */
 		align-items: center;     /* 垂直居中 */ 
-		height: calc(100% - 20rpx); 
-		margin: 10rpx 10rpx 10rpx 10rpx;
+		height: calc(100% - 2rpx);
+		margin: 1rpx;
 		// padding: 10rpx;
 		vertical-align: middle;
 		text-align: center;
 		border-radius: 8px;  
 		color: white;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
-		              0 6px 20px rgba(0, 0, 0, 0.1); 
+		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+		//               0 6px 20px rgba(0, 0, 0, 0.1); 
 	}  
 	.v_item_faild{
 		flex: 1;
@@ -925,14 +938,14 @@ function myEndFirework(){
 		justify-content: center;  /* 水平居中 */
 		align-items: center;     /* 垂直居中 */
 		background-color: #ff0000;
-		height: calc(100% - 20rpx); 
-		margin: 10rpx 10rpx 10rpx 10rpx;
+		height: calc(100% - 2rpx); 
+		margin: 1rpx;
 		// padding: 10rpx;
 		vertical-align: middle;
 		text-align: center;
-		border-radius: 8px;   
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
-		              0 6px 20px rgba(0, 0, 0, 0.1); 
+		border-radius: 3px;   
+		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+		//               0 6px 20px rgba(0, 0, 0, 0.1); 
 					  
 	}
 	

@@ -87,6 +87,7 @@ public class WechatServiceImpl implements WechatService {
                 .thirdHeadImgPath(avatarUrl)
                 .createTime(DateUtil.date())
                 .updateTime(DateUtil.date())
+                .userType(MyConstant.USER_TYPE_GENERAL)
                 .build();
 
         String avatarBase64 = io.getWechatUser().getAvatarBase64();

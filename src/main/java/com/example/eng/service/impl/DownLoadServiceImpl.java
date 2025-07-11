@@ -86,7 +86,7 @@ public class DownLoadServiceImpl implements DownLoadService {
      */
     private void ckPermission(DownLoadFileIO io) {
         // 如果不是普通用户则不验证
-        if(!VerifyUserUtil.verifyUserIsGeneral()){
+        if(VerifyUserUtil.verifyMyIsMember()){
             return;
         }
         User user = UserContext.getUser();

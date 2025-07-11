@@ -1,4 +1,4 @@
-import {getSystemWechatUser} from "@/common/utils/common.js"
+import {getSystemWechatUser,saveSystemWechatUser} from "@/common/utils/common.js"
  
 const BASE_URL = 'http://172.20.10.10:8177'; 
 // const BASE_URL = 'https://www.yangxuexue.xyz';
@@ -69,8 +69,9 @@ export function request(config={}){
 			method,
 			header, 
 			success:res=>{ 
-				if(res.data.code=="200"){
-					resolve(res.data)
+				if(res.data.code=="200"){ 
+					saveUserType(res.data.myUser);
+					resolve(res.data);
 				}else if(res.data.code!="200"){
 					uni.showModal({
 						title:"错误提示",
@@ -91,4 +92,11 @@ export function request(config={}){
 			}
 		})
 	})
+}
+
+function saveUserType(myUser){ 
+	if(!myUser){
+		return;
+	}
+	saveSystemWechatUser(myUser);
 }

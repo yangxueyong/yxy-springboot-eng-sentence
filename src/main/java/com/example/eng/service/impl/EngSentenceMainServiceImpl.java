@@ -101,7 +101,7 @@ public class EngSentenceMainServiceImpl implements EngSentenceMainService {
         }
 
         //如果我是会员，则查询detail
-        if(!VerifyUserUtil.verifyUserIsGeneral()){
+        if(VerifyUserUtil.verifyMyIsMember()){
             io.setCkType(MyConstant.QUERY_Y);
         }
 

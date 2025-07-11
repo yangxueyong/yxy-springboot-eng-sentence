@@ -20,23 +20,66 @@ public class VerifyUserUtil {
      * @return boolean
      */
     public static boolean verifyUserIsMember() {
-        if(verifyUserIsGeneral()){
+        //如果不是会员
+        if(!verifyMyIsMember()){
             throw new RuntimeException("没有其他内容了---");
         }
         return true;
     }
 
     /**
+     * 如果是游客则报错
+     * @return boolean
+     */
+    public static boolean verifyUserIsVisitor(String msg) {
+        //如果是普通用户就报错
+        if(verifyMyIsVisitor()){
+            throw new RuntimeException("请先登录哦---" + msg);
+        }
+        return true;
+    }
+
+    /**
+     * 判断用户是否为游客
+     * @return boolean
+     */
+    public static boolean verifyMyIsVisitor() {
+        User user = UserContext.getUser();
+        String userType = user.getUserType();
+        Date memberDueDate = user.getMemberDueDate();
+        if(ObjUtil.equal(MyConstant.USER_TYPE_VISITOR, userType)){
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
      * 判断用户是否为普通用户
      * @return boolean
      */
-    public static boolean verifyUserIsGeneral() {
+    public static boolean verifyMyIsGeneral() {
         User user = UserContext.getUser();
         String userType = user.getUserType();
         Date memberDueDate = user.getMemberDueDate();
         if(ObjUtil.equal(MyConstant.USER_TYPE_GENERAL, userType)
                 || memberDueDate == null
                 || memberDueDate.before(DateUtil.date())){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断用户是否为会员
+     * @return boolean
+     */
+    public static boolean verifyMyIsMember() {
+        User user = UserContext.getUser();
+        String userType = user.getUserType();
+        Date memberDueDate = user.getMemberDueDate();
+        if(ObjUtil.equal(MyConstant.USER_TYPE_MEMBER, userType)
+                && (memberDueDate != null && DateUtil.date().getTime() >= memberDueDate.getTime())){
             return true;
         }
         return false;

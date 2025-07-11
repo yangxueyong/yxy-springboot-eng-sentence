@@ -18,6 +18,9 @@ public class MyConstant {
 
     public static final String DATA_TYPE_WORD = "word";
     public static final String USER_TYPE_GENERAL = "general";
+    public static final String USER_TYPE_MEMBER = "member";
+    // 游客
+    public static final String USER_TYPE_VISITOR = "visitor";
     public static final String TYPE_NEXT = "next";
 
     /**
@@ -51,4 +54,6 @@ public class MyConstant {
     public static final String QUERY_ME_1 = "1";
 
     public static final String QUERY_Y = "Y";
+
+    public static final String EMPTY_STR = "";
 }

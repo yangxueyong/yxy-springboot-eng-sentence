@@ -1,6 +1,7 @@
 package com.example.eng.entity.res;
 
 import com.example.eng.config.exception.ExceptionMember;
+import com.example.eng.entity.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.util.ObjectUtils;
@@ -23,6 +24,8 @@ public class R<T> implements Serializable {
 
     @Schema(name="承载数据")
     private T data;
+
+    private User myUser;
 
     private R(ExceptionMember resultCode) {
         this(resultCode, null, resultCode.getMsg());

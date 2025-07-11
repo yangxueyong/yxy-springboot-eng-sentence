@@ -1,326 +1,109 @@
 <template>
-  <scroll-view class="box" scroll-y="true">
-	<view class="changeNumCls">
-		<view class="changeNumRightCls">
-			<view class="changeNumTextCls" @click="showGameScoreRank" v-if="btnShowGameScoreRank">排行榜</view>
-			<view class="changeNumTextCls" @click="refreshChangeNum">重来</view>
-			<view class="changeNumTextCls" @click="funChangeGameType">
-				{{currentGameType.title}}
-				<!-- <picker mode="selector" :range="gameTypeList" range-key="title" @change="onGameTypeChange">
-				  <view class="picker">{{currentGameType.title}}</view>
-				</picker> -->
-			</view>
-			<view class="changeNumTextCls" @click="funChangeGameLevel">
-				{{currentLevel.title}}
-				<!-- <picker mode="selector" :range="gameLevels" range-key="title" @change="onLevelChange">
-				  <view class="picker">{{currentLevel.title}}</view>
-				</picker> -->
-			</view>
-		</view>
-	</view>
-    <view class="container"> 
+  <view class="container">
     <!-- 游戏类型选择 -->
-		<!-- <picker mode="selector" :range="gameTypeList" range-key="title" @change="onGameTypeChange">
-		  <view class="picker">当前游戏：{{currentGameType.title}}</view>
-		</picker> -->
-		
-		<!-- 游戏难度选择 -->
-		<!-- <picker mode="selector" :range="gameLevels" range-key="title" @change="onLevelChange">
-		  <view class="picker">当前难度：{{currentLevel.title}}</view>
-		</picker> -->
-		
-		<view class="game-info">
-		  <text>剩余: {{timeLeft}}秒</text>
-		  <text>消除了: {{score}}/{{sumNum}}个</text>
-		</view>
-		
-		<view class="game-board-wrapper" :style="{width: boardWidth + 'px'}">
-		  <view class="game-board" :style="boardStyle">
-			<view 
-			  v-for="(item, index) in boardItems" 
-			  :key="index"
-			  class="game-item"
-			  :class="{
-				'active': activeIndexes.includes(index),
-				'hidden': item.hidden,
-				'matched': item.matched
-			  }"
-			  :style="getItemStyle(item)"
-			  @click="handleItemClick(index)"
-			>
-			  <template v-if="currentGameType.id === 'kk1'">
-				{{item.hidden ? '' : item.value}}
-			  </template>
-			  <template v-else-if="currentGameType.id === 'kk2'">
-				<view class="color-item" :style="{backgroundColor: item.value}"></view>
-			  </template>
-			  <template v-else-if="currentGameType.id === 'kk3' || currentGameType.id === 'kk4'">
-				<image :src="item.value" mode="aspectFit" class="animal-image"></image>
-			  </template>
-			</view>
-		  </view>
-		  
-		  <canvas 
-			canvas-id="lineCanvas" 
-			class="line-canvas"
-			:style="canvasStyle"
-			@touchmove.prevent
-			@touchstart.prevent
-		  ></canvas>
-		</view>
-	  </view>
-  </scroll-view>
-  
-  <uni-popup ref="levelPopup" :is-mask-click="true"  >
-  	<scroll-view class="numPopup" scroll-y="true">
-  		<uni-section title="请选择数字类型" type="line">
-  			<uni-list v-for="item in gameLevels" :key="item.id">
-  				<view @click="onChangeGameLevel(item)" class="gridNumMainCls">
-  					<view class="gridNumLeftClss">
-  						<view class="gridNumTitleCls">{{item.title}}</view>
-  						<view class="gridNumNoteCls">{{item.note}}</view>
-  					</view>
-  					<view class="gridNumRightCls" @click.stop="rmoveMyGridlevel(item)" v-if="item.typeKey == 'myCustom'">
-  						删除
-  					</view>
-  				 </view>
-  			</uni-list>
-  		</uni-section>
-  	</scroll-view> 
-  </uni-popup>
-  <uni-popup ref="customMumPopup" :is-mask-click="true"  >
-  	<custom-set-remove
-  	ref="customMumSet"
-  	@customNumFinish="onFunCustomNumFinish" ></custom-set-remove>
-  </uni-popup>
-  <uni-popup ref="gameTypePopup" :is-mask-click="true"  >
-  	<scroll-view class="numPopup" scroll-y="true"> 
-  		<!-- <scroll-view class="container" scroll-y="true"> -->
-  			<uni-section title="请选择游戏类型" type="line">
-  				<uni-list v-for="item in gameTypeList" :key="item.id">
-  					<view @click="onChangeGameType(item)" >
-  						<uni-list-item
-  						 :title="item.title" 
-  						 showArrow 
-  						 :note="item.note" 
-  						 :rightText="item.rightText" />
-  					 </view>
-  				</uni-list>
-  			</uni-section>
-  		<!-- </scroll-view> -->
-  	</scroll-view>
-  </uni-popup>
+    <picker mode="selector" :range="changeGameList" range-key="title" @change="onGameTypeChange">
+      <view class="picker">当前游戏：{{currentGameType.title}}</view>
+    </picker>
+    
+    <!-- 游戏难度选择 -->
+    <picker mode="selector" :range="gameLevels" range-key="title" @change="onLevelChange">
+      <view class="picker">当前难度：{{currentLevel.title}}</view>
+    </picker>
+    
+    <view class="game-info">
+      <text>时间: {{timeLeft}}s</text>
+      <text>分数: {{score}}</text>
+    </view>
+    
+    <view class="game-board-wrapper" :style="{width: boardWidth + 'px'}">
+      <view class="game-board" :style="boardStyle">
+        <view 
+          v-for="(item, index) in boardItems" 
+          :key="index"
+          class="game-item"
+          :class="{
+            'active': activeIndexes.includes(index),
+            'hidden': item.hidden,
+            'matched': item.matched
+          }"
+          :style="getItemStyle(item)"
+          @click="handleItemClick(index)"
+        >
+          <template v-if="currentGameType.id === 'a1'">
+            {{item.hidden ? '' : item.value}}
+          </template>
+          <template v-else-if="currentGameType.id === 'a2'">
+            <view class="color-item" :style="{backgroundColor: item.value}"></view>
+          </template>
+          <template v-else-if="currentGameType.id === 'a3' || currentGameType.id === 'a4'">
+            <image :src="item.value" mode="aspectFit" class="animal-image"></image>
+          </template>
+        </view>
+      </view>
+      
+      <canvas 
+        canvas-id="lineCanvas" 
+        class="line-canvas"
+        :style="canvasStyle"
+        @touchmove.prevent
+        @touchstart.prevent
+      ></canvas>
+    </view>
+  </view>
 </template>
 
 <script setup>
- import { ref, computed, onMounted, watch, nextTick } from 'vue'
- import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_successVoice} from "@/common/utils/request.js"
- import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
- import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
- import {getSystemWechatUserForward,calculateLayoutForScreen,ckUserPlay, showHint} from "@/common/utils/common.js";
- 
- getSystemWechatUserForward();
- //排行帮
- let btnShowGameScoreRank = ref(true);
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
+
 // 游戏类型列表
-const gameTypeList = ref([]);
+const changeGameList = ref([
+  {"id":"a1","note":"数字消消","rightText":"","sort":"01","status":"available","title":"数字消消","type":"xx"},
+  {"id":"a2","note":"颜色消消","rightText":"","sort":"01","status":"available","title":"颜色消消","type":"xx"},
+  {"id":"a3","note":"动物消消","rightText":"","sort":"01","status":"available","title":"动物消消","type":"xx"},
+  {"id":"a4","note":"动物和影子消消","rightText":"","sort":"01","status":"available","title":"动物和影子消消","type":"xx"}
+])
+
 // 难度等级
-const gameLevels = ref([]);
+const gameLevels = ref([
+  {"id":"cc1","type":"memory","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"24","gameTime":"15","numSum":"9","title":"初级","note":"1-9的数字","rightText":""},
+  {"id":"cc2","type":"memory","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"20","gameTime":"60","numSum":"16","title":"中级","note":"1-16的数字","rightText":""},
+  {"id":"cc3","type":"memory","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"18","gameTime":"100","numSum":"25","title":"高级","note":"1-25的数字","rightText":""},
+  {"id":"cc4","type":"memory","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"16","gameTime":"300","numSum":"36","title":"专家","note":"1-36的数字","rightText":""},
+  {"id":"cc5","type":"memory","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"14","gameTime":"500","numSum":"49","title":"大师","note":"1-49的数字","rightText":""},
+  {"id":"cc6","type":"memory","beginNum":"1","typeKey":"general","itemCls":"v_item","fontSize":"14","gameTime":"500","numSum":"100","title":"超级","note":"1-100的数字","rightText":""}
+])
+
 // 颜色列表
-const changeColorList = ref([]);
+const changeColorList = ref([
+  {"content":"黄色 yellow","createTime":1751962136000,"id":"cba0ec4f-5bd2-11f0-8c35-b8cef6abb4dc","key":"yellow","status":"available","value":"#FFD700"},
+  {"content":"红色 red","createTime":1751962136000,"id":"cba0ef33-5bd2-11f0-8c35-b8cef6abb4dc","key":"red","status":"available","value":"#FF0000"},
+  {"content":"棕色 brown","createTime":1751962136000,"id":"cba0efb2-5bd2-11f0-8c35-b8cef6abb4dc","key":"brown","status":"available","value":"#A52A2A"},
+  {"content":"紫色 purple","createTime":1751962136000,"id":"cba0f018-5bd2-11f0-8c35-b8cef6abb4dc","key":"purple","status":"available","value":"#800080"},
+  {"content":"粉色 pink","createTime":1751962136000,"id":"cba0f05f-5bd2-11f0-8c35-b8cef6abb4dc","key":"pink","status":"available","value":"#FFC0CB"},
+  {"content":"绿色 green","createTime":1751962136000,"id":"cba0f0a1-5bd2-11f0-8c35-b8cef6abb4dc","key":"green","status":"available","value":"#008000"},
+  {"content":"蓝色 blue","createTime":1751962136000,"id":"cba0f0e6-5bd2-11f0-8c35-b8cef6abb4dc","key":"blue","status":"available","value":"#0000FF"},
+  {"content":"白色 white","createTime":1751962136000,"id":"cba0f137-5bd2-11f0-8c35-b8cef6abb4dc","key":"white","status":"available","value":"#FFFFFF"},
+  {"content":"黑色 black","createTime":1751962136000,"id":"cba0f18a-5bd2-11f0-8c35-b8cef6abb4dc","key":"black","status":"available","value":"#000000"}
+])
+
 // 动物列表
-const changeAnimalList = ref([]);
-// 存储到缓存中的key
-let storeMyRemoveGameLevelListKey = "myRemoveGameLevelListKey";
+const changeAnimalList = ref([
+  {"createTime":1751962136000,"id":"cbb771f2-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/longxia.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/longxia (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb7751e-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/22-乌龟.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/22-乌龟 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb7759f-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/狗狗出售.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/狗狗出售 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb775f6-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/卡通大象.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/卡通大象 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb7763b-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/卡通海豚.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/卡通海豚 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb7767d-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/卡通猴子.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/卡通猴子 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb776b3-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/卡通鸡.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/卡通鸡 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb776ea-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/卡通鹿.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/卡通鹿 (1).png","status":"available"},
+  {"createTime":1751962136000,"id":"cbb77733-5bd2-11f0-8c35-b8cef6abb4dc","imgSrc":"https://www.yangxuexue.xyz//images/卡通马.png","key":"a","shadowSrc":"https://www.yangxuexue.xyz//images/卡通马 (1).png","status":"available"}
+])
 
-let storeChangeRemoveGameLevelKey = "myChangeRemoveGameLevelKey";
-let storeChangeRemoveGameTypeKey = "myChangeRemoveGameTypeKey";
-
-//分享给好友
-onShareAppMessage((e)=>{
-	return {
-		title:"小朋友认数字来啦~",
-		path:"/pages/know-num/know-num"
-	}
-})
-
-
-const getgameTypeList =async(code)=>{ 
-	uni.showLoading({
-		title:"加载中.."
-	})
-	let res =await apiGetGameTypeList({ "type":"remove" });  
-	gameTypeList.value = res.data; 
-	console.log("获取到的游戏类型->",res.data);
-	uni.hideLoading();  
-}
-
-const getGameLevelList =async(code)=>{ 
-	uni.showLoading({
-		title:"加载中.."
-	})
-	let res =await apiGetNumLevelList({ "type":"remove" });  
-	gameLevels.value = res.data;  
-	uni.hideLoading();  
-} 
-
-const getChangeColorList =async(code)=>{ 
-	uni.showLoading({
-		title:"加载中.."
-	})
-	let res =await apiGetGameColorList({ });  
-	changeColorList.value = res.data; 
-	uni.hideLoading(); 
-}
-
-const getChangeAnimalList =async(code)=>{ 
-	uni.showLoading({
-		title:"加载中.."
-	})
-	let res =await apiGetGameAnimalList({ });  
-	changeAnimalList.value = res.data; 
-	uni.hideLoading(); 
-}
-
-// 保存成绩
-const saveGameScore =async(game_level_id, game_type_id, consume_time)=>{ 
-	
-	console.log("game_level_id",game_level_id);
-	console.log("game_type_id",game_type_id);
-	console.log("consume_time",consume_time);
-	
-	let res =await apiSaveGameScore({ "gameLevelId":game_level_id, "gameTypeId":game_type_id, "consumeTime":consume_time });  
-}
-
-
-//刷新
-function refreshChangeNum(){
-	uni.showModal({
-		title: '提示',
-		content: '确定重新开始吗？',
-		success: function (res) {
-			if (res.confirm) {
-				initGame();
-			} else if (res.cancel) {
-				console.log('用户点击取消');
-			}
-		}
-	});
-}
-
-//打开排行榜
-function showGameScoreRank(){
-	uni.navigateTo({
-		url:"/pages/game-score-rank/game-score-rank?gameLevelId=" + currentLevel.value.id 
-		+ "&gameTypeId=" + currentGameType.value.id 
-		+ "&name=" + currentGameType.value.title + " - " + currentLevel.value.title
-	})
-}
-
-function funChangeGameType(){
-	gameTypePopup.value.open();
-}
-
-function onChangeGameType(item){
-	if(!ckUserPlay(item.userType)){
-		showHint("请先登录哦~ 才能玩其他的哦");
-		return;
-	}
-	console.log("itemitemitemitemitemitem->",item);
-	currentGameType.value = item;
-	uni.setStorageSync(storeChangeRemoveGameTypeKey, item);
-	gameTypePopup.value.close();
-}
-
-function funChangeGameLevel(){
-	levelPopup.value.open();
-}
-
-// 是否展示排行
-function showRank(){
-	if(currentLevel.value.typeKey == "myCustom"){
-		btnShowGameScoreRank.value = false;
-	}else{
-		btnShowGameScoreRank.value = true;
-	}
-}
-
-function onChangeGameLevel(item){
-	if(!ckUserPlay(item.userType)){
-		showHint("请先登录哦~ 才能玩其他的哦");
-		return;
-	}
-	let typeKey = item.typeKey;
-	console.log("你选择了->", item);
-	if(typeKey == "custom"){
-		customMumSet.value.setnumv(currentGameType.value.id);
-		customMumPopup.value.open(); 
-		levelPopup.value.close();
-		return;
-	} 
-	
-	currentLevel.value = item;
-	uni.setStorageSync(storeChangeRemoveGameLevelKey, item);
-	showRank();
-	levelPopup.value.close(); 
-}
-
-// 删除我的矩阵
-function rmoveMyGridlevel(param){ 
-	gameLevels.value = gameLevels.value.filter(item => item.id !== param.id);
-	let myGameLevelList = uni.getStorageSync(storeMyRemoveGameLevelListKey);
-	if(myGameLevelList != null && myGameLevelList.length > 0){
-		myGameLevelList = myGameLevelList.filter(item => item.id !== param.id);
-		uni.setStorageSync(storeMyRemoveGameLevelListKey, myGameLevelList);
-	}
-	if(uni.getStorageSync(storeChangeRemoveGameLevelKey) == param.id){
-		uni.removeStorageSync(storeChangeRemoveGameLevelKey);
-	}
-}
-
-function onFunCustomNumFinish(e){
-	console.log("你输入的内容->", e);
-	customMumPopup.value.close(); 
-	
-	let myGameLevelList = uni.getStorageSync(storeMyRemoveGameLevelListKey) || [];
-	myGameLevelList.unshift(e);
-	gameLevels.value.unshift(e);
-	
-	//我自定义的所有级别
-	uni.setStorageSync(storeMyRemoveGameLevelListKey, myGameLevelList); 
-	//我选中的级别
-	uni.setStorageSync(storeChangeRemoveGameLevelKey, e);
-	//选中当前这个级别
-	currentLevel.value = e;
-}
-
-// 设置数据
-async function selectData(){ 
-	let myGameLevelList = uni.getStorageSync(storeMyRemoveGameLevelListKey);
-	if(myGameLevelList != null && myGameLevelList.length > 0){
-		gameLevels.value = [ ...myGameLevelList, ...gameLevels.value];
-	}
-	
-	currentLevel.value = uni.getStorageSync(storeChangeRemoveGameLevelKey) || gameLevels.value[0];
-	
-	currentGameType.value = uni.getStorageSync(storeChangeRemoveGameTypeKey) || gameTypeList.value[0];
-	
-}
-
-
-
-let gameBeginTime = new Date();
-const levelPopup = ref(null);
-const gameTypePopup = ref(null);
-const customMumPopup = ref(null);
-const customMumSet = ref(null);
-
-const currentGameType = ref({})
-const currentLevel = ref({})
+const currentGameType = ref(changeGameList.value[0])
+const currentLevel = ref(gameLevels.value[0])
 const boardItems = ref([])
 const activeIndexes = ref([])
 const score = ref(0)
-const sumNum = ref(0)
 const timeLeft = ref(0)
 const gameTimer = ref(null)
 const itemSize = ref(50) // 最小项目大小
@@ -365,7 +148,7 @@ const getItemStyle = (item) => {
     aspectRatio: '1/1'
   }
   
-  if (currentGameType.value.id === 'kk2' && !item.hidden) {
+  if (currentGameType.value.id === 'a2' && !item.hidden) {
     style.backgroundColor = item.value
     style.border = '1px solid #eee'
   }
@@ -396,7 +179,7 @@ const calculateLayout = () => {
         const totalItems = numSum % 2 === 0 ? numSum : numSum - 1
         
         // 计算最佳行列数，使矩阵尽可能接近正方形
-        const minItemSize = 70 // 最小项目大小
+        const minItemSize = 50 // 最小项目大小
         const padding = 20 // 两边留白
         const maxBoardWidth = screenInfo.value.safeArea.right - screenInfo.value.safeArea.left - padding * 2
         
@@ -458,23 +241,18 @@ const resetGameState = () => {
   gameTimer.value = null
   activeIndexes.value = []
   isProcessing.value = false
-  gameBeginTime = new Date();
   clearCanvas()
 }
 
-
-
 // 初始化游戏
 const initGame = async () => {
-  showRank();
-  // selectData();
-  resetGameState();
+  resetGameState()
   
-  // if (currentGameType.value.id === 'kk1') {
-    timeLeft.value = currentLevel.value.gameTime ? parseInt(currentLevel.value.gameTime) : 120;
-  // } else {
-    // timeLeft.value = 120 // 其他游戏类型固定2分钟
-  // }
+  if (currentGameType.value.id === 'a1') {
+    timeLeft.value = parseInt(currentLevel.value.gameTime)
+  } else {
+    timeLeft.value = 120 // 其他游戏类型固定2分钟
+  }
   
   score.value = 0
   
@@ -492,16 +270,15 @@ const generateBoard = () => {
   const evenTotalItems = totalItems % 2 === 0 ? totalItems : totalItems - 1
   
   switch (currentGameType.value.id) {
-    case 'kk1': // 数字消消乐
+    case 'a1': // 数字消消乐
       const numSum = Math.min(parseInt(currentLevel.value.numSum), evenTotalItems)
-	  const beginNum = parseInt(currentLevel.value.beginNum) || 1;
       const numPairs = Math.floor(numSum / 2)
       for (let i = 1; i <= numPairs; i++) {
-        pairs.push(i + (beginNum - 1), i + (beginNum - 1))
+        pairs.push(i, i)
       }
       break;
       
-    case 'kk2': // 颜色消消乐
+    case 'a2': // 颜色消消乐
       const colorCount = Math.min(changeColorList.value.length, Math.floor(evenTotalItems / 2))
       // 随机选择颜色并确保有足够的配对
       const selectedColors = []
@@ -519,7 +296,7 @@ const generateBoard = () => {
       }
       break;
       
-    case 'kk3': // 动物消消乐
+    case 'a3': // 动物消消乐
       const animalCount = Math.min(changeAnimalList.value.length, Math.floor(evenTotalItems / 2))
       // 随机选择动物并确保有足够的配对
       const selectedAnimals = []
@@ -537,7 +314,7 @@ const generateBoard = () => {
       }
       break;
       
-    case 'kk4': // 动物和影子消消乐
+    case 'a4': // 动物和影子消消乐
       const shadowAnimalCount = Math.min(changeAnimalList.value.length, Math.floor(evenTotalItems / 2))
       // 随机选择动物并确保有足够的配对
       const selectedShadowAnimals = []
@@ -557,15 +334,13 @@ const generateBoard = () => {
   
   // 随机打乱
   pairs = pairs.sort(() => Math.random() - 0.5)
-  // 更新总个数
-  sumNum.value = pairs.length;
   
   // 创建游戏项
   boardItems.value = pairs.map(value => ({
     value,
     hidden: false,
     matched: false,
-    key: currentGameType.value.id === 'kk4' 
+    key: currentGameType.value.id === 'a4' 
       ? value && value.includes('(1)') ? value.replace('(1)', '') : value
       : value
   }))
@@ -579,16 +354,12 @@ const handleItemClick = (index) => {
   
   if (item.hidden || item.matched || activeIndexes.value.includes(index)) return
   
-  activeIndexes.value.push(index)
-  
-  let lgt = activeIndexes.value.length;
-   
-  // 如果已经有2个激活项，先取最后两个
+  // 如果已经有2个激活项，先清空
   if (activeIndexes.value.length >= 2) {
-    activeIndexes.value = activeIndexes.value.slice(-2);
+    activeIndexes.value = []
   }
   
- 
+  activeIndexes.value.push(index)
   
   if (activeIndexes.value.length === 2) {
     const [firstIndex, secondIndex] = activeIndexes.value
@@ -597,7 +368,7 @@ const handleItemClick = (index) => {
     
     let isMatch = false
     
-    if (currentGameType.value.id === 'kk4') {
+    if (currentGameType.value.id === 'a4') {
       // 动物和影子模式特殊匹配逻辑
       const firstIsShadow = firstItem.value && firstItem.value.includes('(1)')
       const secondIsShadow = secondItem.value && secondItem.value.includes('(1)')
@@ -616,34 +387,28 @@ const handleItemClick = (index) => {
     }
     
     if (isMatch) {
-      // isProcessing.value = true
+      isProcessing.value = true
       drawLightningLine(firstIndex, secondIndex)
       
       // 立即隐藏元素，但保留视觉效果
       firstItem.matched = true
       secondItem.matched = true
-	  activeIndexes.value = [];
-      // 播放音效
-	  playItem_successVoice();
-	  
+      
       setTimeout(() => {
         firstItem.hidden = true
         secondItem.hidden = true
-        
-        score.value = boardItems.value.filter(item => item.hidden === true).length;
-		// boardItems.value
+        activeIndexes.value = []
+        score.value += 10
         isProcessing.value = false
         
         checkGameEnd()
-      }, 500)
+      }, 1000)
     } else {
-	  // 播放音效
-	  // playItem_failVoice();
-      // isProcessing.value = true
+      isProcessing.value = true
       setTimeout(() => {
-        // activeIndexes.value = []
+        activeIndexes.value = []
         isProcessing.value = false
-      }, 500)
+      }, 1000)
     }
   }
 }
@@ -710,7 +475,7 @@ const drawLightningLine = (index1, index2) => {
   
   ctx.draw()
   
-  setTimeout(clearCanvas, 500)
+  setTimeout(clearCanvas, 1000)
 }
 
 // 清除画布
@@ -727,8 +492,6 @@ const startTimer = () => {
     timeLeft.value--
     
     if (timeLeft.value <= 0) {
-	  playAll_failVoice();
-	  isProcessing.value = true;
       clearInterval(gameTimer.value)
       uni.showToast({
         title: '时间到！游戏结束',
@@ -742,12 +505,9 @@ const startTimer = () => {
 const checkGameEnd = () => {
   const remainingItems = boardItems.value.filter(item => !item.hidden)
   if (remainingItems.length <= 1) {
-	//先保存成绩
-	saveGameScore(currentLevel.value.id, currentGameType.value.id, new Date().getTime() - gameBeginTime.getTime());
-	playAll_successVoice();
-    clearInterval(gameTimer.value);
+    clearInterval(gameTimer.value)
     uni.showToast({
-      title: `恭喜完成！`,
+      title: `恭喜完成！得分: ${score.value}`,
       icon: 'none'
     })
   }
@@ -755,7 +515,7 @@ const checkGameEnd = () => {
 
 // 游戏类型变更
 const onGameTypeChange = (e) => {
-  currentGameType.value = gameTypeList.value[e.detail.value]
+  currentGameType.value = changeGameList.value[e.detail.value]
   initGame()
 }
 
@@ -766,17 +526,8 @@ const onLevelChange = (e) => {
 }
 
 // 初始化
-onMounted(async () => {
-	await getgameTypeList();
-	await getGameLevelList();
-	await getChangeColorList();
-	await getChangeAnimalList();
-	console.log("获取完了gameType：数据->",gameTypeList.value);
-	
-	await selectData(); 
-	
-	console.log("开始初始化游戏");
-	// initGame();
+onMounted(() => {
+  initGame()
 })
 
 // 监听变化
@@ -785,54 +536,29 @@ watch([currentGameType, currentLevel], () => {
 }, { immediate: true })
 </script>
 
-<style lang="scss" scoped>
-	.box{
-		width: 100vw;
-		height: 100vh; 
-		background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-		overflow: hidden; 
-	}
+<style>
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px; 
+  padding: 10px;
+  background-color: #f5f5f5;
   min-height: 100vh;
   box-sizing: border-box;
-  // height: 100vh;
-}
-	.numPopup{
-		background: #fff;
-		// padding: 30rpx;
-		border-radius: 30rpx 30rpx 30rpx 30rpx;
-		width: 80vw;
-		max-height: 60vh;
-		overflow: hidden; 
-		font-size: 30rpx;
-	}
-	
-.picker {
-  // padding: 12px 20px;
-  // background-color: #4a6baf;
-  // color: white;
-  // border-radius: 25px;
-  // margin: 8px 0;
-  // font-weight: bold;
-  // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  // width: 90%;
-  // max-width: 400px;
-  // text-align: center;
 }
 
-.gridNumRightCls {
-	  margin-left: 16px;
-	  font-size: 14px;
-	  color: #f56c6c;
-	  padding: 4px 8px;
-	  border-radius: 4px;
-	  background-color: rgba(245, 108, 108, 0.1);
-	  flex-shrink: 0; /* 防止被压缩 */
-	}
+.picker {
+  padding: 12px 20px;
+  background-color: #4a6baf;
+  color: white;
+  border-radius: 25px;
+  margin: 8px 0;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
 
 .game-info {
   display: flex;
@@ -923,48 +649,4 @@ watch([currentGameType, currentLevel], () => {
 .game-item:active {
   animation: pulse 0.3s ease;
 }
-
-.changeNumCls{
-		margin-right: 50rpx; 
-		margin-top: 50rpx;
-		margin-bottom: 50rpx;
-		display: flex;
-		justify-content: flex-end;  
-		
-		.changeNumRightCls{
-			display: flex;
-			align-items: center; /* 子元素垂直居中 */ 
-			
-			.changeNumTextCls{ 
-				 margin: 10rpx 10rpx; 
-				 display: flex; 
-				 padding: 10rpx;
-				 height: 40rpx;
-				 border-radius: 20rpx; 
-				 font-size: $text-font-size-1;
-				 align-items: center; /* 如果需要垂直居中可以加上这一行 */
-				 text-align: center;  
-				 justify-content: center; 
-				 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 
-				               0 6px 20px rgba(0, 0, 0, 0.1);
-			}
-		}  
-	}
-	
-	.gridNumMainCls {
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: center;
-	  padding: 12px 16px;
-	  margin-bottom: 8px;
-	  background-color: #ffffff;
-	  border-radius: 8px;
-	  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-	  transition: all 0.3s ease;
-	}
-	
-	.gridNumMainCls:active {
-	  background-color: #f5f5f5;
-	}
-	
 </style>

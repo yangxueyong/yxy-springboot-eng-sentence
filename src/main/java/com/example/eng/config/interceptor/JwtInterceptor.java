@@ -60,6 +60,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 .build();
         log.info("正在验证用户-> openId:{},appId:{},thirdType:{}",openId,appId,thirdType);
         User user = userService.selectByOpenId(io);
+        log.info("当前用户的类型-> userType:{}",user.getUserType());
         if(user == null){
             throw new RuntimeException("登录信息无效，请重新登录");
         }

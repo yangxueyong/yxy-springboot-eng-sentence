@@ -10,7 +10,7 @@
 	  </view>
 	</template>
 	
-	<view class="box">
+	<scroll-view class="box" scroll-y="true">
 		<view class="changeNumCls"> 
 			<view class="changeNumRightCls">
 				<view class="changeNumTextCls" @click="showGameScoreRank" v-if="btnShowGameScoreRank">排行榜</view>
@@ -57,8 +57,8 @@
 		<uni-popup ref="numPopup" :is-mask-click="true"  > 
 			<scroll-view class="numPopup" scroll-y="true">
 				<uni-section title="请选择数字类型" type="line">
-					<uni-list v-for="item in changeGridList" :key="item.id">
-						<view @click="changeGridType(item.id)" class="gridNumMainCls">
+					<uni-list v-for="item in changeLevelList" :key="item.id">
+						<view @click="funChangeLevel(item.id)" class="gridNumMainCls">
 							<view class="gridNumLeftClss">
 								<view class="gridNumTitleCls">{{item.title}}</view>
 								<view class="gridNumNoteCls">{{item.note}}</view>
@@ -79,7 +79,7 @@
 			<view class="numPopup">
 				<view class="container">
 					<uni-section title="请选择游戏类型" type="line">
-						<uni-list v-for="item in changeGameList" :key="item.id">
+						<uni-list v-for="item in changeGameTypeList" :key="item.id">
 							<view @click="changeGameType(item)" >
 								<uni-list-item
 								 :title="item.title" 
@@ -92,7 +92,9 @@
 				</view>
 			</view>
 		</uni-popup>
-	</view>
+		<view class="bottomCls"></view>
+	</scroll-view>
+
 </template>
 
 <script setup> 
@@ -101,7 +103,7 @@ import {playAll_failVoice,playAll_successVoice,playItem_failVoice,playItem_succe
 import {apiGetGameTypeList,apiGetGameAnimalList,apiGetGameColorList,apiGetNumLevelList,apiSaveGameScore} from "@/common/api/apis.js";
 import {startFirework,endFirework,showCanvas,canvasWidth,canvasHeight,initCtx} from "@/common/utils/firework.js";
 import {onShareAppMessage,onReachBottom,onPullDownRefresh} from "@dcloudio/uni-app";
-import {getSystemWechatUserForward} from "@/common/utils/common.js";
+import {getSystemWechatUserForward,calculateLayoutForScreen,ckUserPlay, showHint} from "@/common/utils/common.js";
 
 getSystemWechatUserForward();
 // 存储我选择的游戏数字
@@ -139,7 +141,7 @@ const resultText = ref("");
 // 当前的游戏类型
 let currentGameType = "";
 // 游戏数字的map对象
-const changeGridMap = ref(null);
+const changeLevelMap = ref(null);
 // 游戏类型的map对象
 const changeGameTypeMap = ref(null);
 const currentItemGridNums = ref([]);
@@ -148,7 +150,7 @@ const myTimeDown = ref(false);
 const customMumPopup = ref(null);
 //目前已经拖拽了成功了多少个
 let lastDragSuccessNum = 0;
-const changeGridList = ref([]); 
+const changeLevelList = ref([]); 
 
 //分享给好友
 onShareAppMessage((e)=>{
@@ -158,43 +160,40 @@ onShareAppMessage((e)=>{
 	}
 })
 
-const getChangeGridList =async()=>{ 
+const getchangeLevelList =async()=>{ 
 	uni.showLoading({
 		title:"加载中.."
 	})
 	let res =await apiGetNumLevelList({ "type":"simple" });   
 	console.log("得到的level-->", res.data);
-	changeGridList.value = res.data; 
+	changeLevelList.value = res.data; 
 	uni.hideLoading(); 
 	firstInit();
 }
-getChangeGridList();
 
-const changeGameList = ref([]);
+const changeGameTypeList = ref([]);
 
-const getChangeGameList =async()=>{ 
+const getchangeGameTypeList =async()=>{ 
 	uni.showLoading({
 		title:"加载中.."
 	})
 	let res =await apiGetGameTypeList({ "type":"simple" });  
 	console.log("得到的type-->", res.data);
-	changeGameList.value = res.data; 
+	changeGameTypeList.value = res.data; 
 	uni.hideLoading(); 
 	firstInit();
 }
-getChangeGameList();
-
 //打开排行榜
 function showGameScoreRank(){
 	uni.navigateTo({
-		url:"/pages/game-score-rank/game-score-rank?gameLevelId=" + currentGameItem.id + "&gameTypeId=" + currentGameTypeItem.id + "&name=" + currentGameTypeItem.title + " - " + currentGameItem.title
+		url:"/pages/game-score-rank/game-score-rank?gameLevelId=" + currentGameLevelItem.id + "&gameTypeId=" + currentGameTypeItem.id + "&name=" + currentGameTypeItem.title + " - " + currentGameLevelItem.title
 	})
 }
 
 //删除我的矩阵
 function rmoveMyGridNum(param){
 	console.log("删除开始");
-	changeGridList.value = changeGridList.value.filter(item => item.id !== param.id);
+	changeLevelList.value = changeLevelList.value.filter(item => item.id !== param.id);
 	let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
 	if(myGameNumList != null && myGameNumList.length > 0){
 		myGameNumList = myGameNumList.filter(item => item.id !== param.id);
@@ -213,25 +212,26 @@ function onFunCustomNumFinish(e){
 	myGameNumList.unshift(e);
 	
 	uni.setStorageSync(storeMyGameNumKey, myGameNumList);
-	changeGridList.value.unshift(e);
+	changeLevelList.value.unshift(e);
 	
 	uni.setStorageSync(storeKey, e.id);
 	init();
 }
 // 当前正在玩的关卡
-let currentGameItem = null;
+let currentGameLevelItem = null;
 let currentGameTypeItem = null;
 //更改选择的矩阵时
-function changeGridType(id){ 
+function funChangeLevel(id){ 
+	let item = changeLevelMap.value.get(id);
+	if(!ckUserPlay(item.userType)){
+		showHint("请先登录哦~ 才能玩其他的哦");
+		return;
+	}
 	clickNumList = ref([]);
 	myTimeDown.value = false;
 	resultText.value = "";
 	lastDragSuccessNum = 0;
-	
-	console.log("id->",id)
-	
-	let item = changeGridMap.value.get(id);
-	
+	 
 	let typeKey = item.typeKey;
 	
 	if(typeKey == "custom"){
@@ -261,8 +261,9 @@ function changeGridType(id){
 	if(gameTypePopup != null && gameTypePopup.value != null){
 		gameTypePopup.value.close();
 	}
-	gridColumn.value = item.colNum;
+	// gridColumn.value = item.colNum;
 	let endNum = item.endNum || item.numSum;
+	gridColumn.value = calculateLayoutForScreen(endNum).width;
 	changeNumText.value = item.title;
 	countdownNum.value = item.gameTime;
 	let beginNum = item.beginNum;
@@ -279,11 +280,11 @@ function changeGridType(id){
 	//随机排序
 	randomList(list);
 	
-	if(currentGameItem == null || currentGameItem.id != item.id){ 
+	if(currentGameLevelItem == null || currentGameLevelItem.id != item.id){ 
 		//开始计时
 		myTimeCountDown.value.start(countdownNum.value);
 	}
-	currentGameItem = item;
+	currentGameLevelItem = item;
 	
 	if(currentGameType == "b1"){
 		//允许拖动
@@ -299,6 +300,11 @@ function changeGameType(item){
 	if(gameTypePopup != null && gameTypePopup.value != null){
 		gameTypePopup.value.close();
 	}
+	if(!ckUserPlay(item.userType)){
+		showHint("请先登录哦~ 才能玩其他的哦");
+		return;
+	}
+	
 	if(currentGameType == item.id){
 		return;
 	}
@@ -329,37 +335,41 @@ function calcGridItemWidth(){
 //加载完成时重新发起
  function firstInit(){   
 	 // initCtx();
-	 if(changeGridList.value == null || changeGameList.value == null){
+	 if(changeLevelList.value == null || changeGameTypeList.value == null){
 		 return;
 	 }
 	 
-	 if(changeGridList.value.length <= 0 || changeGameList.value.length <= 0){
+	 if(changeLevelList.value.length <= 0 || changeGameTypeList.value.length <= 0){
 	 	 return;
 	 }
-	// setTimeout(()=>{
-	let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
-	if(myGameNumList != null && myGameNumList.length > 0){
-		changeGridList.value = [ ...myGameNumList, ...changeGridList.value];
-	}
-	init();
-	// },500) 
+	setTimeout(()=>{
+		let myGameNumList = uni.getStorageSync(storeMyGameNumKey);
+		if(myGameNumList != null && myGameNumList.length > 0){
+			changeLevelList.value = [ ...myGameNumList, ...changeLevelList.value];
+		}
+		init();
+	},500) 
 }
 onMounted(()=>{
 	initCtx(); 
+	
+	getchangeLevelList();
+
+	getchangeGameTypeList();
 });
  
  function init(){ 
-	 changeGridMap.value = new Map(changeGridList.value.map(item => [item.id, item]));
-	 changeGameTypeMap.value = new Map(changeGameList.value.map(item => [item.id, item]));
+	 changeLevelMap.value = new Map(changeLevelList.value.map(item => [item.id, item]));
+	 changeGameTypeMap.value = new Map(changeGameTypeList.value.map(item => [item.id, item]));
 	 
-	 let item = uni.getStorageSync(storeKey) || changeGridList.value[0].id;
-	 if(changeGridMap.value.get(item) == null){
-		 item = changeGridList.value[0].id;
+	 let item = uni.getStorageSync(storeKey) || changeLevelList.value[0].id;
+	 if(changeLevelMap.value.get(item) == null){
+		 item = changeLevelList.value[0].id;
 	 }
 	 //游戏类型
-	 currentGameType = uni.getStorageSync(storeGameTypeKey) || changeGameList.value[0].id;
+	 currentGameType = uni.getStorageSync(storeGameTypeKey) || changeGameTypeList.value[0].id;
 
-	 changeGridType(item); 
+	 funChangeLevel(item); 
  }
  
  function onTimeFinish(){
@@ -488,7 +498,7 @@ function success(){
 	//todo 可以播放音效
 	playAll_successVoice();
 	//保存成绩
-	saveGameScore(currentGameItem.id, currentGameTypeItem.id, expendTime);
+	saveGameScore(currentGameLevelItem.id, currentGameTypeItem.id, expendTime);
 	//停止计时
 	myTimeCountDown.value.stop();
 	//不允许拖动
@@ -524,7 +534,7 @@ function refreshChangeNum(){
 		content: '确定重新开始吗？',
 		success: function (res) {
 			if (res.confirm) {
-				currentGameItem = null;
+				currentGameLevelItem = null;
 				init();
 			} else if (res.cancel) {
 				console.log('用户点击取消');
@@ -554,7 +564,11 @@ function myEndFirework(){
 		height: 100vh;
 		background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 		overflow: hidden; /* 添加这行防止margin塌陷 */
+		// padding-bottom: 25rpx;
 		// background-color: #18a058;
+	}
+	.bottomCls{
+		height: 50rpx;
 	}
 	.containerCls {
 	  position: fixed;
@@ -611,7 +625,7 @@ function myEndFirework(){
 	
 	.v1{
 		margin: 50rpx 50rpx;
-		border: 1px solid #18a058;  
+		// border: 1px solid #18a058;  
 	}
 	.v1_1{
 		// margin: 20rpx;
@@ -624,15 +638,15 @@ function myEndFirework(){
 		justify-content: center;  /* 水平居中 */
 		align-items: center;     /* 垂直居中 */
 		background-color: #66BB6A;
-		height: calc(100% - 20rpx); 
-		margin: 10rpx 10rpx 10rpx 10rpx;
+		height: calc(100% - 2rpx); 
+		margin: 1rpx 1rpx 1rpx 1rpx;
 		// padding: 10rpx;
 		vertical-align: middle;
 		text-align: center;
-		border-radius: 8px;  
+		border-radius: 3px;  
 		color: white;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
-		              0 6px 20px rgba(0, 0, 0, 0.1); 
+		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+		//               0 6px 20px rgba(0, 0, 0, 0.1); 
 	}  
 	.v_item_success{ 
 		flex: 1;
@@ -641,15 +655,17 @@ function myEndFirework(){
 		justify-content: center;  /* 水平居中 */
 		align-items: center;     /* 垂直居中 */
 		background-color: #18a058;
-		height: calc(100% - 20rpx); 
-		margin: 10rpx 10rpx 10rpx 10rpx;
+		// height: calc(100% - 20rpx); 
+		height: calc(100% - 2rpx); 
+		margin: 1rpx;
+		// margin: 2rpx 2rpx 2rpx 2rpx;
 		// padding: 10rpx;
 		vertical-align: middle;
 		text-align: center;
-		border-radius: 8px;  
+		border-radius: 3px;  
 		color: white;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
-		              0 6px 20px rgba(0, 0, 0, 0.1); 
+		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+		//               0 6px 20px rgba(0, 0, 0, 0.1); 
 	}  
 	.v_item_faild{
 		flex: 1;
@@ -658,15 +674,16 @@ function myEndFirework(){
 		justify-content: center;  /* 水平居中 */
 		align-items: center;     /* 垂直居中 */
 		background-color: #ff0000;
-		height: calc(100% - 20rpx); 
-		margin: 10rpx 10rpx 10rpx 10rpx;
+		height: calc(100% - 2rpx); 
+		margin: 1rpx;
+		// margin: 2rpx 2rpx 2rpx 2rpx;
 		// padding: 10rpx;
 		vertical-align: middle;
 		text-align: center;
-		border-radius: 8px;  
+		border-radius: 3px;  
 		color: white;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
-		              0 6px 20px rgba(0, 0, 0, 0.1); 
+		// box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+		//               0 6px 20px rgba(0, 0, 0, 0.1); 
 	}
 	
 	.numPopup{

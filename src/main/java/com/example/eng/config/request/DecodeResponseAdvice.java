@@ -1,7 +1,12 @@
 package com.example.eng.config.request;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.eng.config.interceptor.UserContext;
+import com.example.eng.constant.MyConstant;
+import com.example.eng.entity.res.R;
+import com.example.eng.entity.user.User;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -38,6 +43,22 @@ public class DecodeResponseAdvice implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+
+        try {
+            if(body instanceof R){
+                R r = (R) body;
+                User loginUser = UserContext.getUser();
+                if(loginUser != null){
+                    if(StrUtil.isEmptyIfStr(loginUser.getUserType())){
+                        loginUser.setUserType(MyConstant.USER_TYPE_VISITOR);
+                    }
+                    r.setMyUser(loginUser);
+                }
+            }
+        }catch (Exception e){
+            log.warn("无法设置user->{}", e.getMessage());
+        }
+
         try {
             log.info("返参->{}", JSON.toJSONString(body));
         }catch (Exception e){

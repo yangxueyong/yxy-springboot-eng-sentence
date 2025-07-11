@@ -50,4 +50,8 @@ public class NumGameType {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(name = "update_time", description = "更新时间")
     private Date updateTime;
+
+    @TableField("user_type")
+    @Schema(name = "user_type", description = "用户类型 all所有人都能玩，general,member只有会员或普通用户能玩")
+    private String userType;
 }

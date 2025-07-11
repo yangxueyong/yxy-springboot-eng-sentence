@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.eng.config.annotation.CustomVerifyUser;
 import com.example.eng.config.interceptor.UserContext;
 import com.example.eng.constant.MyConstant;
 import com.example.eng.entity.game.score.GameScore;
@@ -44,6 +45,7 @@ public class GameScoreServiceImpl extends ServiceImpl<GameScoreMapper, GameScore
      * @return boolean
      */
     @Override
+    @CustomVerifyUser(yesTypeError = MyConstant.USER_TYPE_VISITOR, notTypeError = MyConstant.EMPTY_STR, msg = "请先登录才能保存成绩哦~")
     public boolean saveGameScore(GameScore gameScore) {
         //校验游戏级别是否有效
         List<NumGameLevel> levelList = iNumGameLevelService.lambdaQuery()
